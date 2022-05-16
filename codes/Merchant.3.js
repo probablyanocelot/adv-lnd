@@ -8,8 +8,8 @@ webFrame.setZoomFactor(0.8);
 
 let BANK_ITEMS = {};
 BANK_ITEMS['items0'] = [];
-BANK_ITEMS['items1'] = [];
-BANK_ITEMS['items2'] = ["snakefang", "frogt", "vitscroll", "gemfragment"];
+BANK_ITEMS['items1'] = ["snakefang", "frogt", "vitscroll", "gemfragment"];
+BANK_ITEMS['items2'] = [];
 
 
 class Merchant extends Character {
@@ -65,7 +65,7 @@ class Merchant extends Character {
 				log(`Idle: ${this.idle_counter}`);
 				}
 
-			if (this.idle_counter > 30) {
+			if (this.idle_counter > 90) {
 				this.do_runs()
 			}
 		}
@@ -168,6 +168,7 @@ class Merchant extends Character {
 			smart_move("bank");
 		}
 		if (character.bank) {
+			this.bank_dropoff();
 			for (let item in character.bank.items2) {
 				if (!character.bank.items2[item]) continue;
 				bank_retrieve("items2", item);
@@ -400,10 +401,25 @@ class Merchant extends Character {
 		}
 	}
 
+
 	bank_dropoff() {
 		for (let idx in character.items) {
 			let item = character.items[idx];
 			if (item) {
+				if (character.bank) {
+					if (!G.items[item.name].upgrade && !G.items[item.name].compound) bank_store(idx, "items1");
+				}
+			}
+		} return;
+	}
+
+
+
+	bank_dropoff2() {
+		for (let idx in character.items) {
+			let item = character.items[idx];
+			if (item) {
+				if (!G.items[item.name].upgrade && !G.items[item.name].compound) bank_store(idx, "items1");
 				for (let teller of Object.keys(BANK_ITEMS)) {
 					let bank = BANK_ITEMS[teller]
 					if (bank.includes(item.name)) {
