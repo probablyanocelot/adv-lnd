@@ -1,0 +1,202 @@
+log("1 - Main");
+//load_code(88) // bots; 
+load_code(12) // utility fns; locate_items(), getPosition("charname"), savePosition()
+load_code(14) // partying
+
+class Character {
+	constructor() {
+		this.thinking = false;
+		// prevents us from conflicting actions
+		this.current_action = "";
+		this.idle_counter = 0;
+
+		this.class = character.ctype;
+		this.hp = character.hp;
+		this.mp = character.mp;
+		
+		this.support = false
+
+		this.state;
+		this.action;
+		this.target;
+		this.target_name;
+		this.target_type;
+		this.target_hp;
+		this.target_mp;
+		this.target_distance;
+		this.target_distance_x;
+		this.target_distance_y;
+
+		setInterval(this.regen, 500);
+
+	}
+	show() {
+		log(this.class)
+	}
+
+	set_current_action(action) {
+		log(`Requesting to update '${this.current_action}' to '${action}'`);
+		if (!this.current_action && action) {
+			this.current_action = action;
+			this.idle_counter = 0;
+		}	
+	}
+	clear_current_action() {
+		log(`Requesting to clear: ${this.current_action}`);
+		if (this.current_action) {
+			this.current_action = ""
+		}
+	}
+
+
+
+	do_action(action) {
+		// dont do if there's something else going on
+		if (this.current_action || this.thinking)
+			return;
+
+		// don't do anything while it's on cooldown
+		if (is_on_cooldown(action)) {
+			// clear it out if we are done
+			if (this.current_action == action) {
+				//this.current_action = "";
+				log("Action cooldown clear")
+				this.clear_current_action();
+			}
+
+			return;
+
+		}
+		
+		log(`Doing: ${action}`)
+
+		// where to go
+		let location_map = {
+			fishing: {map: 'main', x: -1368, y: -216},
+			mining: {map: 'tunnel', x: -264, y: -196}
+		}
+
+		let location = location_map[action]
+		
+		this.set_current_action(action);
+		this.thinking = true;
+		smart_move(location)
+			.then(
+				(success) => {
+					log("got to destination")
+					this.thinking = false;
+
+					// turn on current action
+					this.set_current_action(action);
+
+					let item_map = {
+						fishing: "rod",
+						mining: "pickaxe"
+					}
+
+					let itemName = item_map[action]
+					let itemIndex = locate_item(itemName)
+				
+					if (action == "fishing" || action == "mining") {
+						if (character.slots.offhand) unequip("offhand")
+					
+						if (!character.slots.mainhand || !(character.slots.mainhand.name == itemName)) equip(itemIndex)
+					}
+				
+					let actionInterval = setInterval(() => {
+				
+						if (is_on_cooldown(action)) {
+							log("Action cooldown clear 2")
+							switch (action) {
+								case "fishing":
+								case "mining":
+									unequip("mainhand")
+									break;
+								default:
+									break;
+							}
+							this.clear_current_action();
+
+							clearInterval(actionInterval);
+
+						} else {
+							
+							if (!character.c[action]) {
+								use_skill(action)
+							}
+						}
+					}, 1000)
+				},
+				(failure) => {
+					this.thinking = false;
+					log(`Couldn't go ${action}`)
+				}
+		)
+	}
+
+
+	buff(skill) {
+
+		// do more dynamic character solution later
+		let characters = ["VendorGuy", "camelCase", "cannaMace", "couplaGrapes"];
+		for (let idx in characters) {
+			let name = characters[idx]
+			let target = get_player(name)
+			if (target) {
+				if (!target.s.skill || target.s.skill.f !== character.name) {
+					use_skill(skill, name)
+				}
+			}
+		}
+	}
+
+	regen() {
+		if (character.max_mp !== character.mp) {
+			if (!is_on_cooldown("regen_mp"))
+				use_skill("regen_mp");
+		}
+
+		if (character.max_hp !== character.hp) {
+			if (!is_on_cooldown("regen_hp"))
+				use_skill("regen_hp");
+		}
+		setTimeout(this.regen, 500);
+	}
+}
+
+
+
+
+var base = new Character();
+
+switch (base.class) {
+	case "mage":
+		require_code(2);
+		break;
+
+	case "merchant":
+		require_code(3);
+		break;
+	
+	case "paladin":
+		require_code(4);
+		break;
+	
+	case "priest":
+		require_code(5);
+		break;
+	
+	case "ranger":
+		require_code(6)
+		break;
+	
+	case "rogue":
+		require_code(7);
+		break;
+
+	case "warrior":
+		require_code(8);
+		break;
+			
+	
+}
