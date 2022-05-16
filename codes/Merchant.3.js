@@ -29,7 +29,6 @@ class Merchant extends Character {
 	loop() {
 		this.counter += 1
 		if (this.current_action && this.counter % 5 == 0) log(`Processing loop with action: ${this.current_action}`)
-
 		//this.sell_trash()
 
 		
@@ -69,7 +68,7 @@ class Merchant extends Character {
 				this.do_runs()
 			}
 		}
-
+		
 		setTimeout(() => {
 			this.loop()
 		}, 1000);
@@ -379,6 +378,7 @@ class Merchant extends Character {
 								this.clear_current_action();
 							} else {
 								this.set_current_action(action);
+								if (character.ctype == "merchant" && !character.s.massproductionpp) use_skill("massproductionpp")
 								upgrade(itemIndex, scrollSlot).then(
 									success => {
 										if (this.current_action == action) {
@@ -409,7 +409,7 @@ class Merchant extends Character {
 				if (character.bank) {
 					if (!G.items[item.name].upgrade && !G.items[item.name].compound) bank_store(idx, "items1");
 				}
-			}
+			} continue;
 		} return;
 	}
 
@@ -507,7 +507,7 @@ function high_upgrade_all() {
                 } else {
                     // upgrade if we got here
 					if (!parent.character.q.upgrade) {
-						if (character.ctype == "merchant") use_skill("massproductionpp")
+						if (character.ctype == "merchant" && !character.s.massproductionpp) use_skill("massproductionpp")
                         upgrade(itemIndex, scrollSlot)
                         break;
                     }
