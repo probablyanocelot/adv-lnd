@@ -137,10 +137,10 @@ class Merchant extends Character {
 	do_runs() {
 		if (this.current_action) return;
 		this.set_current_action("doing runs")
-		smart_move("secondhands").then(
+		smart_move(this.home).then(
 			success => {
 				buyFromPonty()
-				smart_move("lostandfound").then(
+				smart_move("woffice").then(
 					success => {
 						buyFromGoblin()
 						this.clear_current_action();
@@ -175,13 +175,13 @@ class Merchant extends Character {
 		}
 		this.clear_current_action();
 		if (!this.current_action) {
-			smart_move("upgrade").then(
+			smart_move(this.home).then(
 				success => {
 					this.idle_counter = 0;
 					this.clear_current_action();
 				},
 				failure => {
-					this.handleFailTravel("upgrade");
+					this.handleFailTravel(this.home);
 					this.idle_counter = 0;
 					this.clear_current_action()
 				}
@@ -313,6 +313,7 @@ class Merchant extends Character {
 			}
 		)
 	}
+	
 
 
 
@@ -359,7 +360,7 @@ class Merchant extends Character {
 					if (character.real_x != -204 && character.real_y != -129) {
 						if (!this.thinking) {
 							this.thinking = true;
-							smart_move("upgrade").then(
+							smart_move(this.home).then(
 								success => this.thinking = false,
 								failure => this.thinking = false
 							)
