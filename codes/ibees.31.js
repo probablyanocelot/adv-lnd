@@ -53,7 +53,7 @@ function bee_bank() {
 	smart_move("bank").then(
 		success => {
 			for (let i = 5; i < 42; i++){
-				bank_store(i, "items2")
+				if(character.items[i]) bank_store(i, "items2")
 			}
 			if (character.gold > 1250000){
 				let reserve = 500000;
@@ -78,9 +78,7 @@ setInterval(function () {
 	if(character.rip) handle_death();
 	
 	if (character.rip || smart.moving) return;	
-	
-	valuaBank()
-	
+		
 	if(character.gold < 500000) {
 		smart_move({to:"bank", return:true}, function(){ //return:true
 			log("Bank success clear");
@@ -90,13 +88,13 @@ setInterval(function () {
 	}
 	let u = setInterval(loot(), 100);
 	
+	valuaBank()
 	
-	if(character.rip||smart.moving) return;	
-
 	if (character.esize <= 1) bee_bank();
+
+	if (character.bank) smart_move(locations[character.id])
 	
 	if(character.hp<character.max_hp*.85 || character.mp<=character.max_mp-400) use_hp_or_mp();
-	loot();
 	
 	if(!attack_mode || character.rip || is_moving(character)) return;
 	
