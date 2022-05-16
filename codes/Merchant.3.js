@@ -31,6 +31,7 @@ class Merchant extends Character {
 		if (this.current_action && this.counter % 5 == 0) log(`Processing loop with action: ${this.current_action}`)
 
 		//this.sell_trash()
+
 		
 		this.stander()
 
@@ -161,39 +162,41 @@ class Merchant extends Character {
 		);
 	}
 
+
+	doBank() {
+		for (let item in character.bank.items2) {
+			if (!character.bank.items2[item]) continue;
+			bank_retrieve("items2", item);
+		}
+		this.clear_current_action();
+	}
+
 	bank() {
 		this.clear_current_action();
 		this.set_current_action("banking");
-		if (!character.bank) {
+		if (character.bank) this.doBank()
+		if (!character.bank && this.current_action == "banking" && !character.moving) {
 			smart_move("bank").then(
 				success => {
-					log("Arrived at bank")
-					for (let item in character.bank.items2) {
-						bank_retrieve("items2", item);
-					}
-					this.clear_current_action();
-					// if (!character.bank.items2.length) smart_move(this.home);
-					smart_move("main").then(
-						success => {
-							this.idle_counter = 0;
-							this.clear_current_action();
-						},
-						failure => {
-							this.handleFailTravel("main");
-							this.idle_counter = 0;
-							this.clear_current_action()
-						}
-					)
-					
+					this.doBank()			
 				},
-			
 				failure => {
-					log("FAILURE Bank");
-					this.idle_counter = 0;
-					this.clear_current_action()
-					smart_move(this.home)
+					this.bank()
 				}
 			)
+		}
+		if (!this.current_action) {
+			smart_move("main").then(
+				success => {
+					this.idle_counter = 0;
+					this.clear_current_action();
+				},
+				failure => {
+					this.handleFailTravel("main");
+					this.idle_counter = 0;
+					this.clear_current_action()
+				}
+			);
 		}
 	}
 	
@@ -214,31 +217,19 @@ class Merchant extends Character {
 	}
 
 	bank_mining() {
-		for (let idx in character.items) {
-			let item = character.items[idx];
-			if (item) {
-				if (item.name === "gemfragment") {
-					this.set_current_action("banking");
-					smart_move("bank").then(
-						success => {
-							log("Bank success clear")
-							bank_store(idx, "items1");
-							if (character.bank.items2.length){
-								for (let i=0; i<character.bank.items1.length; i++){
-									bank_retrieve("items2", i);
-								}
-							}
-							
-							smart_move(this.home);
-							this.clear_current_action();
-						},
-						failure => {
-							log("Bank fail clear")
-							this.clear_current_action()
-						}
-					)
+		if (locate_item("gemfragment") > 0) {
+			this.set_current_action("banking");
+			smart_move("bank").then(
+				success => {
+					log("Bank success clear")
+					bank_store(locate_item("gemfragment"), "items1");
+					this.doBank();
+				},
+				failure => {
+					log("Bank fail clear")
+					this.clear_current_action()
 				}
-			}
+			)
 		}
 	}
 
