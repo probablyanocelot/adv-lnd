@@ -80,7 +80,6 @@ setInterval(function () {
 	if (character.bank) smart_move(locations[character.id])
 	
 	if(character.hp<character.max_hp*.85 || character.mp<=character.max_mp-400) use_hp_or_mp();
-	loot();
 	
 	if(!attack_mode || character.rip || is_moving(character)) return;
 	
