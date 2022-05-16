@@ -65,7 +65,7 @@ class Merchant extends Character {
 				log(`Idle: ${this.idle_counter}`);
 				}
 
-			if (this.idle_counter > 90) {
+			if (this.idle_counter > 30) {
 				this.do_runs()
 			}
 		}
@@ -164,11 +164,29 @@ class Merchant extends Character {
 
 
 	doBank() {
-		for (let item in character.bank.items2) {
-			if (!character.bank.items2[item]) continue;
-			bank_retrieve("items2", item);
+		if (!character.bank && this.current_action == "banking" && !character.moving) {
+			smart_move("bank");
+		}
+		if (character.bank) {
+			for (let item in character.bank.items2) {
+				if (!character.bank.items2[item]) continue;
+				bank_retrieve("items2", item);
+			}
 		}
 		this.clear_current_action();
+		if (!this.current_action) {
+			smart_move("upgrade").then(
+				success => {
+					this.idle_counter = 0;
+					this.clear_current_action();
+				},
+				failure => {
+					this.handleFailTravel("upgrade");
+					this.idle_counter = 0;
+					this.clear_current_action()
+				}
+			);
+		}
 	}
 
 	bank() {
@@ -184,19 +202,6 @@ class Merchant extends Character {
 					this.bank()
 				}
 			)
-		}
-		if (!this.current_action) {
-			smart_move("main").then(
-				success => {
-					this.idle_counter = 0;
-					this.clear_current_action();
-				},
-				failure => {
-					this.handleFailTravel("main");
-					this.idle_counter = 0;
-					this.clear_current_action()
-				}
-			);
 		}
 	}
 	
