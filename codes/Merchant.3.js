@@ -358,7 +358,7 @@ class Merchant extends Character {
 						continue;
 					
 					}
-					if (character.real_x != -204 && character.real_y != -129) {
+					if (character.real_x != this.home.x && character.real_y != this.home.y) {
 						if (!this.thinking) {
 							this.thinking = true;
 							smart_move(this.home).then(
