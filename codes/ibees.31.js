@@ -1,4 +1,4 @@
-log("33")
+log("31")
 load_code(13)	//skill3shot(), get_nearby_entitties()
 load_code(14)	// PARTY
 load_code(15)	//bots
@@ -42,9 +42,15 @@ if (camelCase) locations["camelCase"] = camelCase;
 
 
 
-function main_loop(){
-	if (distance(character, getPosition("Auctions")) > 300){
-		smart_move({x: getPosition("Auctions").x, y: getPosition("Auctions").y});
+function leaveBank(){
+	if (character.bank) {
+		smart_move("main").then(
+			s => {smart_move(locations[character.id])
+				 return}
+			,
+			f => {smart_move("main")
+				 }
+			)
 	}
 }
 
@@ -60,12 +66,13 @@ function bee_bank() {
 				let deposit = character.gold - reserve;
 				bank_deposit(deposit)
 			}
-			smart_move(locations[character.id])
+			return
 		},
 		failure => {
 			log("bank failed");
 			smart_move(locations[character.id]);
 		});
+	leaveBank();
 }
 
 
@@ -91,8 +98,9 @@ setInterval(function () {
 	valuaBank()
 	
 	if (character.esize <= 1) bee_bank();
-
-	if (character.bank) smart_move(locations[character.id])
+	
+	
+	if(character.rip) return;	
 	
 	if(character.hp<character.max_hp*.85 || character.mp<=character.max_mp-400) use_hp_or_mp();
 	

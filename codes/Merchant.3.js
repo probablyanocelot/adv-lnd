@@ -26,8 +26,23 @@ class Merchant extends Character {
 	}
 	
 
+	myBuy(){
+		if (character.in == location && is_in_range(npc) && !character.items.length >= 42 && !locate_item(item)){
+		buy_with_gold(item)
+		}
+	}
+
+	
+	Buyble(location, npc, item) {
+	
+		//maybe need sockets?
+	}
+	
+	
 	loop() {
 		this.counter += 1
+		
+				
 		if (this.current_action && this.counter % 5 == 0) log(`Processing loop with action: ${this.current_action}`)
 		//this.sell_trash()
 
@@ -244,7 +259,7 @@ class Merchant extends Character {
 		if (this.current_action || this.thinking)
 			return;
 		
-		let exchangeItems = ["basketofeggs", "goldenegg", "gem0", "weaponbox", ];
+		let exchangeItems = ["basketofeggs", "goldenegg", "gem0", "weaponbox", "candy1", "candy0", "candycane",];
 		
 		let hasExchangeable = false;
 		for (let idx in exchangeItems) {
@@ -370,6 +385,7 @@ class Merchant extends Character {
 					if (character.items[itemIndex] && character.items[itemIndex].p && !itemName === "stinger") {
 						log("has some modifier");
 						this.clear_current_action();
+						continue;
 					} else {
 						// upgrade if we got here
 						if (!parent.character.q.upgrade) {
@@ -478,10 +494,10 @@ function do_combine(item_name) {
 
 function high_upgrade_all() {
 	var TIMEOUT = 1000;
-	let itemList = [ 'xmasshoes', 'xmaspants', 'xmassweater', "xmashat",'merry', "epyjamas", "eears", "pants1", "gloves1", "firestaff", "shoes1", "stinger", "fireblade", "quiver", 'ecape',] //"bataxe", "oozingterror", "harbringer","basher",
+	let itemList = [ 'xmasshoes', 'xmaspants', 'xmassweater', "xmashat",'merry', "epyjamas", "eears", "pants1", "gloves1", "firestaff", "shoes1", "stinger", "fireblade", "quiver", 'ecape', 'pinkie',] //"bataxe", "oozingterror", "harbringer","basher",
 	let scrollType = "scroll1"
 	let scrollSlot = locate_item(scrollType)
-    let maxLevel = 5;
+    let maxLevel = 6;
 	
     for (var level = 0; level < maxLevel; level++) {
         for (var idx in itemList) {
