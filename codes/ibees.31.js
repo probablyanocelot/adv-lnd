@@ -19,14 +19,15 @@ let rangers = ["cannaMace", "camelCase", "couplaGrapes"]
 
 for (var toon of rangers)
 {
-	if (toon == character.id) continue;
+	if (toon == character.id|| toon == "camelCase") continue;
 	start_character(toon, 30)
 	}
 
 
 // SET UP A MOB DICT FOR THIS
 let cannaMace = {x:-1175.7559333568836, y:-94.26759905415406}//crab
-let camelCase = {x:-1143.6557029608748, y:423.21328251075323}//"squig"
+let camelCase = { x: -1143.6557029608748, y: 423.21328251075323 }//"squig"
+let couplaGrapes = { x: -1143.6557029608748, y: 423.21328251075323 }//"squig"
 
 // let cMacePos = {map: "main", x: 524.6951256023658, y: 806.8168003462486}
 // let cGrapesPos = { map: "main", x: 745.0119325069998, y: 713.0353542476796 }
@@ -56,8 +57,16 @@ function leaveBank(){
 
 
 function bee_bank() {
+	if (smart.moving || character.moving) return;
 	smart_move("bank").then(
 		success => {
+			if(character.gold < 500000) {
+				smart_move({to:"bank", return:true}, function(){ //return:true
+					log("Bank success clear");
+					bank_withdraw(500000);
+				}
+				);
+			}
 			for (let i = 5; i < 42; i++){
 				if(character.items[i]) bank_store(i, "items2")
 			}
@@ -82,17 +91,12 @@ var attack_mode=true
 var playerName = character.id;    
     // get our self
 setInterval(function () {
+	savePosition()
 	if(character.rip) handle_death();
 	
 	if (character.rip || smart.moving) return;	
 		
-	if(character.gold < 500000) {
-		smart_move({to:"bank", return:true}, function(){ //return:true
-			log("Bank success clear");
-			bank_withdraw(500000);
-		}
-		);
-	}
+
 	let u = setInterval(loot(), 100);
 	
 	valuaBank()
@@ -129,9 +133,9 @@ function item_quantity(name)
 	return 0;
 }
 
-function death_return(locations){
+function death_return(location){
 		if (character.rip || is_moving(character)) return;
-		smart_move(locations)
+		smart_move(location)
 	}
 
 

@@ -1,10 +1,11 @@
 log("3 - Merchant") // display load_code() page number for debugging purposes
+load_code(1) // main
 load_code(11) // NPCS - buyFromPonty()/Goblin
 //load_code(53) // upgrade_all2 WILL ADD MORE
 performance_trick()
 
 const { webFrame } = require('electron');
-webFrame.setZoomFactor(0.8);
+webFrame.setZoomFactor(0.65);
 
 let BANK_ITEMS = {};
 BANK_ITEMS['items0'] = [];
@@ -21,10 +22,22 @@ class Merchant extends Character {
 
 		this.buyList = ["ink", "quiver", "hbow", "snakefang", "cryptkey", 'rednose', 'tigerhelmet', 'wattire', 'wbreeches', 'wgloves', "poison", "mistletoe", "basketofeggs", "candycane", "candy0", "candy1", "leather", "troll", "candypop", "mshield", "mearring", "dexearring", "intearring", "spookyamulet", "jacko", "tracker"]
 
+		setInterval(this.regen, 500);
 
 		setInterval(this.buff("mluck"), 1000);
 	}
-	
+	regen() {
+		if (character.max_mp !== character.mp) {
+			if (!is_on_cooldown("regen_mp"))
+				use_skill("regen_mp");
+		}
+
+		if (character.max_hp !== character.hp) {
+			if (!is_on_cooldown("regen_hp"))
+				use_skill("regen_hp");
+		}
+		setTimeout(this.regen, 500);
+	}
 
 	myBuy(){
 		if (character.in == location && is_in_range(npc) && !character.items.length >= 42 && !locate_item(item)){
@@ -394,7 +407,7 @@ class Merchant extends Character {
 								this.clear_current_action();
 							} else {
 								this.set_current_action(action);
-								if (character.ctype == "merchant" && !character.s.massproductionpp) use_skill("massproductionpp")
+								if (character.ctype == "merchant" && !character.s.massproductionpp && character.mp > 400) use_skill("massproductionpp")
 								upgrade(itemIndex, scrollSlot).then(
 									success => {
 										if (this.current_action == action) {
@@ -483,7 +496,7 @@ function do_combine(item_name) {
 		if (itemList.length >= 3) {
 			// do the compound
 			if (!parent.character.q.compound) {
-				if (character.ctype == "merchant") use_skill("massproductionpp")
+				if (character.ctype == "merchant" && character.mp > 400 && !character.s.massproductionpp) use_skill("massproductionpp")
 				compound(itemList[0], itemList[1], itemList[2], scrollSlot)
 			}
 		}
@@ -494,10 +507,10 @@ function do_combine(item_name) {
 
 function high_upgrade_all() {
 	var TIMEOUT = 1000;
-	let itemList = [ 'xmasshoes', 'xmaspants', 'xmassweater', "xmashat",'merry', "epyjamas", "eears", "pants1", "gloves1", "firestaff", "shoes1", "stinger", "fireblade", "quiver", 'ecape', 'pinkie',] //"bataxe", "oozingterror", "harbringer","basher",
+	let itemList = [ 'xmasshoes', 'xmaspants', 'xmassweater', "xmashat",'merry', "epyjamas", "eears", "pants1", "gloves1", "firestaff", "shoes1", "stinger", "fireblade", "quiver", 'ecape', 'pinkie','t2bow',] //"bataxe", "oozingterror", "harbringer","basher",
 	let scrollType = "scroll1"
 	let scrollSlot = locate_item(scrollType)
-    let maxLevel = 6;
+    let maxLevel = 5;
 	
     for (var level = 0; level < maxLevel; level++) {
         for (var idx in itemList) {
@@ -523,7 +536,7 @@ function high_upgrade_all() {
                 } else {
                     // upgrade if we got here
 					if (!parent.character.q.upgrade) {
-						if (character.ctype == "merchant" && !character.s.massproductionpp) use_skill("massproductionpp")
+						if (character.ctype == "merchant" && !character.s.massproductionpp && character.mp > 400) use_skill("massproductionpp")
                         upgrade(itemIndex, scrollSlot)
                         break;
                     }

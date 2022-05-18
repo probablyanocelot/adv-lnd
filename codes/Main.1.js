@@ -5,19 +5,20 @@ load_code(14) // partying
 
 class Character {
 	constructor() {
+		
+		// LIMITERS
 		this.thinking = false;
 		// prevents us from conflicting actions
 		this.current_action = "";
 		this.idle_counter = 0;
 
-		this.class = character.ctype;
-		this.hp = character.hp;
-		this.mp = character.mp;
 		
-		this.support = false
-
-		this.state;
+		// IDENTIFIERS
+		this.class = character.ctype;
 		this.action;
+		this.state;		
+		this.support = false
+	//		TARGETTING
 		this.target;
 		this.target_name;
 		this.target_type;
@@ -26,8 +27,6 @@ class Character {
 		this.target_distance;
 		this.target_distance_x;
 		this.target_distance_y;
-
-		setInterval(this.regen, 500);
 
 	}
 	show() {
@@ -142,61 +141,49 @@ class Character {
 		for (let idx in characters) {
 			let name = characters[idx]
 			let target = get_player(name)
-			if (target) {
-				if (!target.s.skill || target.s.skill.f !== character.name) {
-					use_skill(skill, name)
-				}
+			if(!target) continue;
+			if (!target.s.skill || target.s.skill.f !== character.name) {
+				use_skill(skill, name)
 			}
-		}
-	}
-
-	regen() {
-		if (character.max_mp !== character.mp) {
-			if (!is_on_cooldown("regen_mp"))
-				use_skill("regen_mp");
-		}
-
-		if (character.max_hp !== character.hp) {
-			if (!is_on_cooldown("regen_hp"))
-				use_skill("regen_hp");
-		}
-		setTimeout(this.regen, 500);
-	}
+		}	
+	}	
 }
 
 
 
 
-var base = new Character();
 
-switch (base.class) {
-	case "mage":
-		require_code(2);
-		break;
 
-	case "merchant":
-		require_code(3);
-		break;
-	
-	case "paladin":
-		require_code(4);
-		break;
-	
-	case "priest":
-		require_code(5);
-		break;
-	
-	case "ranger":
-		require_code(6)
-		break;
-	
-	case "rogue":
-		require_code(7);
-		break;
+// var base = new Character();
 
-	case "warrior":
-		require_code(8);
-		break;
+// switch (base.class) {
+// 	case "mage":
+// 		require_code(2);
+// 		break;
+
+// 	case "merchant":
+// 		require_code(3);
+// 		break;
+	
+// 	case "paladin":
+// 		require_code(4);
+// 		break;
+	
+// 	case "priest":
+// 		require_code(5);
+// 		break;
+	
+// 	case "ranger":
+// 		require_code(6)
+// 		break;
+	
+// 	case "rogue":
+// 		require_code(7);
+// 		break;
+
+// 	case "warrior":
+// 		require_code(8);
+// 		break;
 			
 	
-}
+// }
