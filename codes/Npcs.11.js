@@ -15,8 +15,9 @@ let itemsToBuy = ["ink", 'suckerpunch', 'tshirt88', 'supermittens', 'powerglove'
     'solitaire', 'fierygloves', 'cyber', 'fury', 'oxhelmet', "jacko", 'merry', 't2bow', 't3bow',
     'bowofthedead', 'xmace', 'crossbow', 'pinkie', 'ooze', 'oozingterror', 'cupid', 'bataxe',
     'xmasshoes', 'xmaspants', 'xmassweater', "xmashat", "hbow", "cryptkey", 'rednose', 'tigerhelmet',
-     'wbreeches', 'wgloves', "vitring", "dexearring", "intearring", "dexring", "dexbelt",
-    "tracker", 'eears', 'epyjamas', 'eslippers', 'ornament', 'feather0', 'gemfragment', 'carrot',] // 'ecape','wattire',
+    'wbreeches', 'wgloves', "vitring", "dexearring", "dexring", "dexbelt", "dexamulet","strring", 'strearring', 'stramulet',
+    "strbelt", "stramulet", "intbelt", "intring", "intearring", "intamulet",  
+    "tracker", 'ornament', 'feather0', 'gemfragment', 'carrot',] // 'ecape','wattire','eears', 'epyjamas','eslippers',
 
 
 function buyFromPonty() {

@@ -5,14 +5,14 @@ load_code(11) // NPCS - buyFromPonty()/Goblin
 performance_trick()
 
 const { webFrame } = require('electron');
-webFrame.setZoomFactor(0.65);
+webFrame.setZoomFactor(0.75);
 
 let BANK_ITEMS = {};
 BANK_ITEMS['items0'] = [];
 BANK_ITEMS['items1'] = ["snakefang", "frogt", "vitscroll", "gemfragment"];
 BANK_ITEMS['items2'] = [];
 
-
+var block_unpack = false;
 class Merchant extends Character {
     constructor(){
 		super()
@@ -187,6 +187,42 @@ class Merchant extends Character {
 				this.clear_current_action()
 			}
 		);
+	}
+
+	unpack(char, location) {
+		//if (!message == "unpack") return;
+		//let location = getPosition(character);
+		//let location = ;
+		log(`Unpack request from ${char} at ${location}`);
+		// dont do if there's something else going on
+		//if (this.current_action || this.thinking)
+			//return;
+
+		this.set_current_action("unpacking");
+		smart_move(location).then(
+			(success) => {
+				send_cm(char, "arrived")
+				
+				for (let idx in character.items) {
+					let item = character.items[idx];
+					if (item) {
+						if (item.name.includes('egg') || item.name === "seashell" || item.name === "crabclaw") {
+							send_item(char, idx, item.q)
+						}
+					}
+				}
+				// go back
+				smart_move(idle_spot).then(
+					success => {
+						log("Unpack success clear");
+						this.clear_current_action()
+					}
+				)
+			},
+			(failure) => {
+				log("Failed to unpack")
+			}
+		)
 	}
 
 
@@ -569,3 +605,12 @@ setInterval(hanoi, 30000)
 compound_loop();
 high_upgrade_all();
 //upgrade_all2();
+
+character.on("cm",  function(data) {
+	if (block_unpack) return;
+	switch (data.message.code) {
+		case "unpack":
+			char.unpack(data.name, data.message.loc)	
+	}
+	;
+});

@@ -12,7 +12,9 @@ load_code(16)	// cm
 
 performance_trick()
 var attack_mode = false
-let mobs=["bee", "crab", "squigtoad", 'arcticbee', "snake", "osnake", "rat", "armadillo", "croc", "squig", "spider", "porcupine", "goo", "tortoise", "bat", "goldenbat", "phoenix", "scorpion"];
+let mobs = ["bee", "crab", "squigtoad", 'arcticbee', "snake", "osnake", "rat", "armadillo",
+    "croc", "squig", "spider", "porcupine", "goo", "tortoise", "bat", "goldenbat", "phoenix",
+    "scorpion", "tinyp", "greenjr", "bbpompom","minimush","iceroamer",];
 
 
 //if (this.task.hp > character.att * 3 || this.task.att > character.max_hp / 11) {
@@ -20,7 +22,8 @@ let mobs=["bee", "crab", "squigtoad", 'arcticbee', "snake", "osnake", "rat", "ar
 let desired_potion_count = 500;
 let desired_mp_pot = "mpot1"
 let desired_hp_pot = "hpot1"
-
+let MERCHANT_NAME = "VendorGuy";
+let PACK_THRESHOLD = 28;
 
 //send_cm("camelCase", {code: "move", loc: locations["camelCase"]})
 class Paladin extends Character {
@@ -127,11 +130,11 @@ class Paladin extends Character {
             }
         }
         if (target) {
-            if (target.max_hp <= 720 && character.slots.mainhand.name != "ololipop"|| target.mtype == "phoenix") {
+            if (target.max_hp <= 620 && character.slots.mainhand.name != "ololipop") {
                 equip(locate_item("ololipop"))
                 character.slots.mainhand.name = "ololipop"
             }
-            if (target.max_hp > 720 && character.slots.mainhand.name != "xmace" && target.mtype != "phoenix") { // > character.attack
+            if (target.max_hp > 620 && character.slots.mainhand.name != "xmace") { // > character.attack
                 equip(locate_item("xmace"))
                 character.slots.mainhand.name = "xmace"
             }
@@ -168,6 +171,32 @@ class Paladin extends Character {
         setTimeout(this.death_return(getPosition(character.id)), 26000);
     }
 
+    merchant(start, end) {
+		var MERCHANT_NAME = MERCHANT_NAME;
+		for (var i = start; i < end; i++) {
+			if (character.items[i])
+				send_item(MERCHANT_NAME, i)
+		}
+    }
+
+        unpack() {
+        this.merchant(0, 28);
+		let excessGold = character.gold - 1000000
+		if (excessGold > 0) {
+			send_gold(MERCHANT_NAME, excessGold)
+		}
+    }
+
+
+    requestUnpack() {
+        let unpackPayload = {
+            type: 'unpack',
+            data: current_location()
+        }
+        send_cm( MERCHANT_NAME, unpackPayload)
+    }
+
+
 }
 
 function moveInCircle(center, radius = 30, angle = Math.PI / 2.5) { //\
@@ -181,6 +210,29 @@ function moveInCircle(center, radius = 30, angle = Math.PI / 2.5) { //\
         xmove(center)
     }
 }
+
+character.on("loot",function(data){
+	if (data.opener === character.name) {
+		
+		// periodically check when looting if we have mluck
+		if (!character.s.mluck || !character.s.mluck.f == MERCHANT_NAME) {
+			char.requestUnpack()
+		}
+
+		let itemCount = 0;
+		for (let idx in character.items) {
+			if (character.items[idx]) {
+				itemCount += 1
+			}
+		}
+
+		if (itemCount > PACK_THRESHOLD) {
+			log("Requesting unpack")
+			char.requestUnpack();
+		}
+	}
+});
+
 
 
 

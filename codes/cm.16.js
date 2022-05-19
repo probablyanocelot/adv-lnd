@@ -1,29 +1,43 @@
 log( "16 - cm.16.js" )
 character.on("cm", function (m) {
-	if(is_friendly(m.name)){
-	// Make sure the message is from a trusted character
+	if (is_friendly(m.name)) {
+		// Make sure the message is from a trusted character
 		log(m.message);  // Do something with the message!
-		if (m.message.code == "move") smart_move(m.message.loc)
-		if (m.message.code == "incoming") {
-			smart_move(getPosition(m.name)).then(
-				success => {
-					change_target(get_player(m.name).target)
-					let target = get_current_target();
-					a = setInterval(rangerPVP(target), 220)
-					if (target.rip || !target) clearInterval(a);
-				},
-				failure => {
-					xmove(getPosition(m.name))
-					change_target(get_player(m.name).target)
-					let target = get_current_target();
-					a = setInterval(rangerPVP(target), 220)
-					if (target.rip || !target) clearInterval(a);
-				}
+		switch (m.message.code) {
+			case "move":
+				smart_move(m.message.loc)
+			case "incoming":
+				smart_move(getPosition(m.name)).then(
+					success => {
+						change_target(get_player(m.name).target)
+						let target = get_current_target();
+						a = setInterval(rangerPVP(target), 220)
+						if (target.rip || !target) clearInterval(a);
+					},
+					failure => {
+						xmove(getPosition(m.name))
+						change_target(get_player(m.name).target)
+						let target = get_current_target();
+						a = setInterval(rangerPVP(target), 220)
+						if (target.rip || !target) clearInterval(a);
+					}
 				)
+
 		}
 	}
-})
-
+		
+	}
+)
+// case "unpack":
+// 	switch (character.ctype) {
+// 		case "mage":
+// 		case "priest":
+// 		case "paladin":
+// 		case "rogue":
+// 		case "ranger":
+// 		case "warrior":
+			
+// 	}
 
 
 function group_cm(my_code, my_loc) {
