@@ -1,9 +1,11 @@
-log("4 - Paladin.6.js")
-load_code(1)
-load_code(13)	//skill3shot(), get_nearby_entitties()
-load_code(14)	// PARTY
-load_code(15)	//bots
-load_code(16)	// cm
+// import {Character,} from './Main.1.js'
+const Character = require('C:\\Users\\proba\\caracAL\\CODE\\mine\\Main.1.js')
+// log("4 - Paladin.6.js")
+// load_code(1)
+// load_code(13)	//skill3shot(), get_nearby_entitties()
+// load_code(14)	// PARTY
+// load_code(15)	//bots
+// load_code(16)	// cm
 //load_code(17) // getParentOfCharacter
 
 //const { webFrame } = require('electron');
@@ -227,7 +229,7 @@ character.on("loot",function(data){
 		}
 
 		if (itemCount > PACK_THRESHOLD) {
-			log("Requesting unpack")
+			console.log("Requesting unpack")
 			char.requestUnpack();
 		}
 	}

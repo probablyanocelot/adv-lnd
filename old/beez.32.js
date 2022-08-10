@@ -4,19 +4,29 @@ load_code(14)	// PARTY
 load_code(15)	//bots
 load_code(16)	// cm
 
+const { webFrame } = require('electron');
+webFrame.setZoomFactor(0.5);
+
+//send_cm("camelCase", {code: "move", loc: locations["camelCase"]})
+
 performance_trick()
 
 let mobs=["bee", "crab", "squigtoad", "snake", "rat", "armadillo", "croc", "squig", "spider", "porcupine", "goo", "tortoise",];
 
-const invite_bots = map_key("9","snippet","sendInvites()")
+const invite_bots = map_key("9","snippet","sendInvites('r3')")
 
+let rangers = ["cannaMace", "camelCase", "couplaGrapes"]
+
+for (var toon of rangers)
+{
+	if (toon == character.id) continue;
+	start_character(toon, 30)
+	}
 
 
 // SET UP A MOB DICT FOR THIS
 let cannaMace = {x:-1175.7559333568836, y:-94.26759905415406}//crab
-let couplaGrapes = { x: -1143.6557029608748, y: 423.21328251075323 }//"squig"
-let camelCase = { x: -1143.6557029608748, y: 423.21328251075323 }//"squig"
-
+let camelCase = {x:-1143.6557029608748, y:423.21328251075323}//"squig"
 
 // let cMacePos = {map: "main", x: 524.6951256023658, y: 806.8168003462486}
 // let cGrapesPos = { map: "main", x: 745.0119325069998, y: 713.0353542476796 }
@@ -39,71 +49,54 @@ function main_loop(){
 }
 
 
-function leaveBank(){
-	if (character.bank) {
-		if (smart.moving) return;
-		smart_move("main").then(
-			s => {smart_move(locations[character.id])
-				 return}
-			,
-			f => {smart_move("main")
-				 }
-			)
-	}
-}
-
-
-
 function bee_bank() {
-	if (smart.moving || character.moving) return;
 	smart_move("bank").then(
 		success => {
-			if(character.gold < 500000) {
-				smart_move({to:"bank", return:true}, function(){ //return:true
-					log("Bank success clear");
-					bank_withdraw(500000);
-				}
-				);
-			}
 			for (let i = 5; i < 42; i++){
-				if(character.items[i]) bank_store(i, "items2")
+				bank_store(i, "items2")
 			}
 			if (character.gold > 1250000){
 				let reserve = 500000;
 				let deposit = character.gold - reserve;
 				bank_deposit(deposit)
 			}
-			return
+			smart_move(locations[character.id])
 		},
 		failure => {
 			log("bank failed");
 			smart_move(locations[character.id]);
-			return
 		});
-	leaveBank();
 }
+
+
 
 
 var attack_mode=true
 var playerName = character.id;    
     // get our self
 setInterval(function () {
-	savePosition()
 	if(character.rip) handle_death();
 	
 	if (character.rip || smart.moving) return;	
-		
-
-	let u = setInterval(loot(), 100);
 	
 	valuaBank()
 	
+	if(character.gold < 500000) {
+		smart_move({to:"bank", return:true}, function(){ //return:true
+			log("Bank success clear");
+			bank_withdraw(500000);
+		}
+		);
+	}
+	let u = setInterval(loot(), 100);
+	
+	
+	if(character.rip||smart.moving) return;	
+
 	if (character.esize <= 1) bee_bank();
 	
-	
-	if(character.rip) return;	
-	
 	if(character.hp<character.max_hp*.85 || character.mp<=character.max_mp-400) use_hp_or_mp();
+	loot();
 	
 	if(!attack_mode || character.rip || is_moving(character)) return;
 	
@@ -166,4 +159,3 @@ function toSnek(){
 		xmove(-495,-500);
 	},5000);
 }
-

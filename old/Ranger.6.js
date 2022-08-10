@@ -1,17 +1,75 @@
-log("31")
+log("6 - Ranger.6.js")
+load_code(1)
 load_code(13)	//skill3shot(), get_nearby_entitties()
 load_code(14)	// PARTY
 load_code(15)	//bots
 load_code(16)	// cm
+//load_code(17) // getParentOfCharacter
 
 //const { webFrame } = require('electron');
 //webFrame.setZoomFactor(0.5);
 
-//send_cm("camelCase", {code: "move", loc: locations["camelCase"]})
 
 performance_trick()
 
-let mobs=["bee", "crab", "squigtoad", "snake", "rat", "armadillo", "croc", "squig", "spider", "porcupine", "goo", "tortoise",];
+
+
+//if (this.task.hp > character.att * 3 || this.task.att > character.max_hp / 11) {
+
+
+
+
+//send_cm("camelCase", {code: "move", loc: locations["camelCase"]})
+class Ranger extends Character {
+    constructor() {
+        super()
+		
+		this.master = "camelCase"
+		
+		this.task;
+    }
+
+    botsUp() {
+        if (this.master == character.id) {
+            log("I am the master")
+            start_character("couplaGrapes", 6)
+        }
+    }
+
+    sequence() {
+        this.get_action()
+        this.do()
+        this.idle()
+    }
+
+
+    loop() {
+        if (this.current_action) log(`Processing loop with action: ${this.current_action}`)
+
+        //log(get_active_characters())
+
+        if (this.thinking) {
+            return;
+        }
+
+        if (character.rip) {
+            respawn();
+            log("Rip! Respawn clear")
+            this.clear_current_action();
+            this.thinking = false;
+        } else {
+            
+            if (!this.current_action) {
+			}
+        }
+        setTimeout(() => {
+			this.loop()
+		}, 1000)
+    }
+    
+
+
+
 
 const invite_bots = map_key("9","snippet","sendInvites('r3')")
 
@@ -19,6 +77,7 @@ let rangers = ["cannaMace", "camelCase", "couplaGrapes"]
 
 for (var toon of rangers)
 {
+	continue;
 	if (toon == character.id|| toon == "camelCase") continue;
 	start_character(toon, 30)
 	}
@@ -133,9 +192,9 @@ function item_quantity(name)
 	return 0;
 }
 
-function death_return(location){
+function death_return(locations){
 		if (character.rip || is_moving(character)) return;
-		smart_move(location)
+		smart_move(locations)
 	}
 
 
@@ -169,3 +228,24 @@ function toSnek(){
 		xmove(-495,-500);
 	},5000);
 }
+
+
+
+
+    get_task() {
+        if (!this.task) {
+            this.task = "some_task_logic"
+        }
+        else if (this.task == "high") {
+            // check back in 30 min... how?
+        }
+    }
+
+}
+
+
+char = new Ranger;
+char.loop();
+botsUp()
+
+//setInterval(parentTargetting(), 2000)

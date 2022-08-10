@@ -1,7 +1,7 @@
-log("1 - Main");
+// log("1 - Main");
 //load_code(88) // bots; 
-load_code(12) // utility fns; locate_items(), getPosition("charname"), savePosition()
-load_code(14) // partying
+// load_code(12) // utility fns; locate_items(), getPosition("charname"), savePosition()
+// load_code(14) // partying
 
 class Character {
 	constructor() {
@@ -14,7 +14,7 @@ class Character {
 
 		
 		// IDENTIFIERS
-		this.class = character.ctype;
+		this.class = parent.character.ctype;
 		this.action;
 		this.state;		
 		this.support = false
@@ -149,7 +149,7 @@ class Character {
 	}	
 }
 
-
+module.exports = Character;
 
 
 
