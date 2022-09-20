@@ -11,134 +11,22 @@ load_code('16Relations')	// cm
 let merchant = 'VendorGuy';
 let group = '3r'
 let currentGroup = getGroup(group)
+
 let farmerReserve = 2500000;
+let desired_potion_count = 9999;
+let desired_mp_pot = "mpot1"
+let desired_hp_pot = "hpot1"
+let PACK_THRESHOLD = 28;
 
-
-function serverEvents2() {
-	if (parent.S.hasOwnProperty()) { }
-}
-
-
-
-
-function getGroup(group) {
-	return bots[group]
-}
-
-function killBots(currentGroup){
-	for (let i = 1; i < currentGroup.length; i++) {
-		stop_character(currentGroup[i]);
-	}
-}
 
 //STARTUP
 startBots(currentGroup);
 const keyInviteBots = map_key("9", "snippet", "sendInvites('r3')")
 const keyKillBots = map_key('8', 'snippet', "killBots(currentGroup)")
-//send_cm("camelCase", {code: "move", loc: locations["camelCase"]})
 setInterval(loot, 65)
 
-const friendly_other_players = [
-    'Diocles', 'Mommy', 'Atlus', 'Cuts', 'Pokehontas',
-]
 
-function is_friendly(char_name) {
-    //check if it's one of the accounts characters
-    for (char of get_characters()) {
-        if (char.name === char_name) {
-            return true;
-        }
-    }
-    //see if the player is in our friendly list
-    if (friendly_other_players.includes(char_name)) {
-        return true;
-    }
-
-    return false;
-}
-
-
-function handle_party() {
-	// if we are not in party && we are group leader
-	if (character.name == currentGroup[0]) {
-		// send out invites
-		if (Object.keys(parent.party).length < currentGroup.length) {
-			for (let player of currentGroup) {
-				// send invite to non-main characters
-				if (player != currentGroup[0]) send_party_invite(player)
-			}
-		}
-	}
-	if (character.party && character.party != currentGroup[0]) {
-		// we are in the wrong party and need to leave current party
-		leave_party();
-	}
-}
-
-
-function sendToMerchant() {
-	if (character.ctype == 'merchant') return;
-	if (!get_player(merchant)) return;
-	// execute only if farmer & merchant in range
-	let extraGold = character.gold - farmerReserve
-	if (character.gold > farmerReserve) send_gold(merchant, extraGold)
-	// send extra gold to merch
-	for (let idx in character.items) {
-		let item = character.items[idx]
-		if (!item) continue;
-		if (sell_dict['keep'].includes(item.name)) continue;
-		if (item.p || sell_dict['toMerch'].includes(item.name) || item.q) send_item(merchant, idx, 9999)
-		// shiny / toMerch whitelisted / stackable : send
-	}
-}
-
-
-
-
-let desired_potion_count = 9999;
-let desired_mp_pot = "mpot1"
-let desired_hp_pot = "hpot1"
-let MERCHANT_NAME = "VendorGuy";
-let PACK_THRESHOLD = 28;
-
-
-function sell_extras() {
-	log('selling extras')
-	// index of item in inv
-	for (let itemSlot in character.items) {
-		
-		let item = character.items[itemSlot]
-		if (!item) continue;
-		
-		let itemName = item.name
-        // not in list or is shiny, skip
-        if (!sell_dict['low'].includes(itemName) || item.p) continue;
-        
-		sell(itemSlot)
-    }
-}
-
-
-function sellAllByName(sellItem) {
-	log(`selling by name ${sellItem}`)
-	for (itemSlot in character.items) {
-		if (!character.items[itemSlot]) continue
-		if (character.items[itemSlot].name == sellItem)
-			sell(sellItem)
-	}
-}
-
-
-function backToTheFarm() {
-	if (!farmDefault[character.name].x == character.x && !farmDefault[character.name].y == character.y) {
-		smart_move(farmDefault[character.name])
-			.then(this.set_current_action('farming'))
-	}
-	log('BACK TO THE FARM!')
-	return
-}
-
-function farmBank(char) {
+function farmSell(char) {
 
 
 	if (smart.moving || character.ctype == 'merchant') return;
@@ -282,14 +170,7 @@ class Ranger {
 			// if (!joinEvent(eventMob)) continue;
 			if (this.joinEvent(eventMob)) this.current_action = eventMob
 	
-	
-			// if (this.current_action == eventMob && eventMob != 'abtesting' && !get_monster({ mtype: eventMob })) {
-			// // action is the event, so we must be there... but mob isn't? must be dead.
-			// 	log('first')
-			// 	if (!smart.moving && !character.moving) smart_move(farmDefault[character.id]).catch(use_skill('use_town'))
-			// 	this.clear_current_action();
-			// }
-	
+
 			if (this.current_action == eventMob && !parent.S[eventMob]) {
 				log('second')
 				if (!smart.moving && !character.moving) smart_move(farmDefault[character.id]).catch(use_skill('use_town'))
@@ -301,19 +182,13 @@ class Ranger {
 
 	manage_idle() {
 
-		// if (this.current_action = 'farming' && character.moving) this.current_action = false;
-
-		// if (this.current_action == 'farming' && smart.moving) this.current_action = false
-
 		if (smart.moving || this.current_action || (this.current_action && !this.current_action == '')) return;
-
-		if (this.current_action == 'farming') return
 
 		if (character.moving) {
 			this.idle_counter = 0;
 		}
-		// increment counter when we're doing nothing
-		
+
+		// only increment counter when we're doing nothing
 		if (!this.current_action && !character.moving && !this.thinking) {
 			this.idle_counter += 0.2
 			if (this.idle_counter % 1 == 0) log(`Idle: ${this.idle_counter}`);
@@ -334,7 +209,7 @@ class Ranger {
 		if (smart.moving) return
 		// stuck in main
 		if (character.x == 0 && character.y == 0) {
-			char.clear_current_action();
+			this.clear_current_action();
 			smart_move(farmDefault[character.id])
 		}
 	}
@@ -390,7 +265,7 @@ class Ranger {
 	manage_inv() {
 	  	if (this.dry()) this.get_pot();
 		valuaBank();
-		if (character.esize <= 5) farmBank(char);
+		if (character.esize <= 5) farmSell(char);
 	}
 	
   

@@ -37,18 +37,44 @@ character.on("cm", function (m) {
 	}
 )
 
-function current_location() {
-	return {
-        server: {
-            region: server.region,
-            id: server.id
-        },
-        time: new Date().toISOString(),
-        in: character.in,
-        map: character.map,
-        x: character.x,
-        y: character.y
-    }
+
+character.on("incoming",function(data){
+	if (data.damage> 50 && data.source != "mluck" && get_player(data.actor)){
+		game_log("Incoming! "+data.damage+" from" + data.actor);
+		savePosition();
+		group_cm("incoming");
+		change_target(get_player(data.actor));
+		let target = get_current_target();
+		let a = setInterval(rangerPVP(target), 220)
+		if (!target || target.rip) clearInterval(a);		
+	}
+})
+
+function rangerPVP(target) {
+	if (!target || target.rip) return;
+	if (is_in_range(target) && !is_on_cooldown("huntersmark") && character.mp>G.skills.huntersmark.mp) use_skill("huntersmark", target);
+	if (is_in_range(data.actor) && !is_on_cooldown("supershot") && character.mp>G.skills.supershot.mp) use_skill("supershot", target);
+	if (is_in_range(target)) attack(target)
+}
+
+
+
+// ############### - MERCHANT - ###############
+
+function sendToMerchant() {
+	if (character.ctype == 'merchant') return;
+	if (!get_player(merchant)) return;
+	// execute only if farmer & merchant in range
+	let extraGold = character.gold - farmerReserve
+	if (character.gold > farmerReserve) send_gold(merchant, extraGold)
+	// send extra gold to merch
+	for (let idx in character.items) {
+		let item = character.items[idx]
+		if (!item) continue;
+		if (sell_dict['keep'].includes(item.name)) continue;
+		if (item.p || sell_dict['toMerch'].includes(item.name) || item.q) send_item(merchant, idx, 9999)
+		// shiny / toMerch whitelisted / stackable : send
+	}
 }
 
 function request_merchant() {
@@ -72,21 +98,17 @@ let full_pack = () => {
 }
 
 
-character.on("incoming",function(data){
-	if (data.damage> 50 && data.source != "mluck" && get_player(data.actor)){
-		game_log("Incoming! "+data.damage+" from" + data.actor);
-		savePosition();
-		group_cm("incoming");
-		change_target(get_player(data.actor));
-		let target = get_current_target();
-		let a = setInterval(rangerPVP(target), 220)
-		if (!target || target.rip) clearInterval(a);		
-	}
-})
 
-function rangerPVP(target) {
-	if (!target || target.rip) return;
-	if (is_in_range(target) && !is_on_cooldown("huntersmark") && character.mp>G.skills.huntersmark.mp) use_skill("huntersmark", target);
-	if (is_in_range(data.actor) && !is_on_cooldown("supershot") && character.mp>G.skills.supershot.mp) use_skill("supershot", target);
-	if (is_in_range(target)) attack(target)
+function current_location() {
+	return {
+        server: {
+            region: server.region,
+            id: server.id
+        },
+        time: new Date().toISOString(),
+        in: character.in,
+        map: character.map,
+        x: character.x,
+        y: character.y
+    }
 }

@@ -1,27 +1,7 @@
 log('partying')
 
-function is_friendly(char_name){
-
-    //check if it's one of the accounts characters
-    for(char of get_characters()){
-        if(char.name === char_name){
-            return true;
-        }
-    }
-
-    return false;
-
-}
-
-function on_party_request(name)
-{
-    if(is_friendly(name))
-        accept_party_request(name);
-}
-
-function on_party_invite(name){
-    if(is_friendly(name))
-        accept_party_invite(name);
+function getGroup(group) {
+	return bots[group]
 }
 
 function getCharacter(name) {
@@ -42,6 +22,11 @@ function startBots(group) {
 	}
 }
 
+function killBots(currentGroup){
+	for (let i = 1; i < currentGroup.length; i++) {
+		stop_character(currentGroup[i]);
+	}
+}
 
 function sendInvites() {
 	let activeChars = Object.keys(get_active_characters())
@@ -52,3 +37,45 @@ function sendInvites() {
 	}
 }
 
+function is_friendly(char_name) {
+    //check if it's one of the accounts characters
+    for (char of get_characters()) {
+        if (char.name === char_name) {
+            return true;
+        }
+    }
+    //see if the player is in our friendly list
+    if (friendly_other_players.includes(char_name)) {
+        return true;
+    }
+
+    return false;
+}
+
+function on_party_request(name)
+{
+    if(is_friendly(name))
+        accept_party_request(name);
+}
+
+function on_party_invite(name){
+    if(is_friendly(name))
+        accept_party_invite(name);
+}
+
+function handle_party() {
+	// if we are not in party && we are group leader
+	if (character.name == currentGroup[0]) {
+		// send out invites
+		if (Object.keys(parent.party).length < currentGroup.length) {
+			for (let player of currentGroup) {
+				// send invite to non-main characters
+				if (player != currentGroup[0]) send_party_invite(player)
+			}
+		}
+	}
+	if (character.party && character.party != currentGroup[0]) {
+		// we are in the wrong party and need to leave current party
+		leave_party();
+	}
+}

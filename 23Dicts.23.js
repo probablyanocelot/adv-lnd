@@ -7,6 +7,10 @@ let snake = { map:'main', x: -99.00430360974092, y: 1892.1728334181553}
 let osnake = {"map": "halloween","x": -585.5701569278165,"y": -350.4367234174731,}
 let cgoo = {map:'arena'}
 
+const friendly_other_players = [
+    'Diocles', 'Mommy', 'Atlus', 'Cuts', 'Pokehontas',
+]
+
 
 let bots = {
 	'3r': ['couplaGrapes','cannaMace','camelCase',]

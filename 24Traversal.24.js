@@ -16,3 +16,13 @@ function savePosition() {
         y: character.y
     })
 }
+
+
+function backToTheFarm() {
+	if (!farmDefault[character.name].x == character.x && !farmDefault[character.name].y == character.y) {
+		smart_move(farmDefault[character.name])
+			.then(this.set_current_action('farming'))
+	}
+	log('BACK TO THE FARM!')
+	return
+}
