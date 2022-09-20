@@ -5,6 +5,7 @@ load_code('1Main')
 load_code('13Skills')	//skill3shot(), get_nearby_entitties()
 load_code('14Partying')	// PARTY, bots
 load_code('16Relations')	// cm
+load_code('19management') //sell extras -- merge this and 12Inv?
 // load_code('24Traversal')
 
 
@@ -26,19 +27,7 @@ const keyKillBots = map_key('8', 'snippet', "killBots(currentGroup)")
 setInterval(loot, 65)
 
 
-function farmSell(char) {
 
-
-	if (smart.moving || character.ctype == 'merchant') return;
-	// if (!character.esize <= 5) return;
-	smart_move('main').then(() => {
-		sell_extras();
-		char.clear_current_action()
-		// 	// sellAllByName('ringsj');
-		// })
-	})
-
-}
 
 
 function valuaBank() {
@@ -65,7 +54,11 @@ function valuaBank() {
 
 
 function farmerBank() {
-	if (!character.bank && !smart.moving) smart_move('bank')
+	if (smart.moving) return;
+	if (!character.bank && !smart.moving) {
+		log('farmerBank move')
+		smart_move('bank')
+	}
 	if (smart.moving || character.moving) return;
 	char.current_action = undefined;
 	if (character.gold > 2500000) {
@@ -86,6 +79,7 @@ function farmerBank() {
 		}
 	
 	}
+	log('farmerBank return move')
 	smart_move(farmDefault[character.name]).then(()=>{
 		if (char.current_action != 'farming') char.set_current_action('farming');
 	})
@@ -172,7 +166,7 @@ class Ranger {
 	
 
 			if (this.current_action == eventMob && !parent.S[eventMob]) {
-				log('second')
+				log('end event move')
 				if (!smart.moving && !character.moving) smart_move(farmDefault[character.id]).catch(use_skill('use_town'))
 				this.clear_current_action();
 			}
@@ -195,6 +189,7 @@ class Ranger {
 		}
 		
 		if (this.idle_counter > 10 && !smart.moving) {
+			log('idle move')
 			smart_move(farmDefault[character.id])
 				.catch(() => {
 					if (!character.moving && !smart.moving) use_skill('use_town')
@@ -210,6 +205,7 @@ class Ranger {
 		// stuck in main
 		if (character.x == 0 && character.y == 0) {
 			this.clear_current_action();
+			log('stuck move')
 			smart_move(farmDefault[character.id])
 		}
 	}
@@ -251,6 +247,7 @@ class Ranger {
 	  this.thinking = true;
   
 	  // go to the nearest potion seller & buy
+		log('pot move')
 		smart_move({ to: "potions", return: true }, () => {
 				this.clear_current_action()
 				if (HP_TO_BUY > 0) buy(desired_hp_pot, HP_TO_BUY);
@@ -260,12 +257,26 @@ class Ranger {
 		})
 	}
   
-  
+  farmSell() {
+
+
+	if (smart.moving || character.ctype == 'merchant') return;
+	// if (!character.esize <= 5) return;
+	  log('farmSell move')
+	smart_move('main').then(() => {
+		sell_extras();
+		this.clear_current_action()
+		// 	// sellAllByName('ringsj');
+		// })
+	})
+
+	}
+	
 	// if full, call merchant. if merchant, manage inv
 	manage_inv() {
 	  	if (this.dry()) this.get_pot();
 		valuaBank();
-		if (character.esize <= 5) farmSell(char);
+		if (character.esize <= 5) this.farmSell();
 	}
 	
   
@@ -355,12 +366,14 @@ class Ranger {
 				if (!target && nearest) change_target(nearest)
 	
 				// if not there, go!
+				log('monsterhunt move')
 				if (!nearest && !smart.moving) smart_move(mobType)
 			}
 
 	
 			// if finished, turn in.
 			if (character.s.monsterhunt.c == 0 && !smart.moving){
+				log('monsterhunt complete move')
 				smart_move(monsterHunterLocation).then(() => {
 					parent.socket.emit('monsterhunt')
 					this.clear_current_action()
@@ -369,6 +382,7 @@ class Ranger {
 		}
 		if (!character.s.monsterhunt && !smart.moving){
 			// get quest from Daisy
+			log('monsterhunt get quest move')
 			smart_move(monsterHunterLocation).then(() => {
 				parent.socket.emit('monsterhunt')
 				setTimeout(function(){
@@ -402,7 +416,6 @@ class Ranger {
 		this.handle_death()
 		if (character.rip) return;
 		handle_party()
-		this.fixStuck();
 		this.manage_item_bounty
 		//this.handleMonsterHunt();
 		this.manage_idle()
@@ -411,6 +424,7 @@ class Ranger {
 		this.manage_healing()
 		//this.manage_buffs()
 		this.manage_combat()
+		// this.fixStuck();
 		this.serverEvents();
 	}
 
@@ -472,8 +486,9 @@ function item_quantity(name)
 }
 
 function death_return(location){
-		if (character.rip || is_moving(character)) return;
-		smart_move(location)
+		if (character.rip || is_moving(character)||smart.moving) return;
+	log('death return move')	
+	smart_move(location)
 	}
 
 
