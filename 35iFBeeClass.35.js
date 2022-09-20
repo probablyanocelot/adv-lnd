@@ -14,27 +14,11 @@ let currentGroup = getGroup(group)
 let farmerReserve = 2500000;
 
 
-function serverEvents() {
-    if (character.ctype == 'merchant') return;
-	for (let eventMob in G.events) {
-		eventMob = String(eventMob)
-		if (eventMob == 'franky') return;
-        // eventMob = 'icegolem', etc
-        if (parent.S[eventMob] && !get_monster({ type: eventMob })) {
-        // Event is on and can't find mob?
-            join(eventMob);
-            // Go there, then!
-        }
-        if (get_monster({ type: eventMob }) && !char.current_action === eventMob) char.set_current_action(eventMob)
-        // if we get there and we jigglin, block the nonsense and tellem bout it
-        if (character.moving || smart.moving) return;
-        if (char.current_action && char.current_action === eventMob && !get_nearest_monster({ type: eventMob })) {
-        // action is the event, so we must be there... but mob isn't? must be dead.
-			smart_move(farmDefault[character.id]).catch(use_skill('use_town'))
-            char.clear_current_action();
-        }
-    }
+function serverEvents2() {
+	if (parent.S.hasOwnProperty()) { }
 }
+
+
 
 
 function getGroup(group) {
@@ -277,6 +261,43 @@ class Ranger {
 	  }
 	}
   
+	joinEvent(eventMob) {
+		if (eventMob == 'franky') return;
+		// eventMob = 'icegolem', etc
+		if (this.current_action != eventMob && parent.S[eventMob] && !get_monster({ type: eventMob })) {
+		// Event is on and can't find mob?
+			join(eventMob)
+			return true;
+			// Go there, then!
+		}
+		return false;
+	}
+	
+	
+	serverEvents() {
+		if (character.ctype == 'merchant') return;
+		for (let eventMob in G.events) {
+			eventMob = String(eventMob)
+	
+			// if (!joinEvent(eventMob)) continue;
+			if (this.joinEvent(eventMob)) this.current_action = eventMob
+	
+	
+			// if (this.current_action == eventMob && eventMob != 'abtesting' && !get_monster({ mtype: eventMob })) {
+			// // action is the event, so we must be there... but mob isn't? must be dead.
+			// 	log('first')
+			// 	if (!smart.moving && !character.moving) smart_move(farmDefault[character.id]).catch(use_skill('use_town'))
+			// 	this.clear_current_action();
+			// }
+	
+			if (this.current_action == eventMob && !parent.S[eventMob]) {
+				log('second')
+				if (!smart.moving && !character.moving) smart_move(farmDefault[character.id]).catch(use_skill('use_town'))
+				this.clear_current_action();
+			}
+			
+		}
+	}
 
 	manage_idle() {
 
@@ -578,7 +599,7 @@ class Ranger {
 		this.manage_healing()
 		//this.manage_buffs()
 		this.manage_combat()
-		serverEvents();
+		this.serverEvents();
 	}
 
   
