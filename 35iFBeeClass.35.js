@@ -12,6 +12,7 @@ load_code('19management') //sell extras -- merge this and 12Inv?
 let merchant = 'VendorGuy';
 let group = '3r'
 let currentGroup = getGroup(group)
+let myFarmDefault = farmDefault[character.id]
 
 let farmerReserve = 2500000;
 let desired_potion_count = 9999;
@@ -80,7 +81,7 @@ function farmerBank() {
 	
 	}
 	log('farmerBank return move')
-	smart_move(farmDefault[character.name]).then(()=>{
+	smart_move(myFarmDefault).then(()=>{
 		if (char.current_action != 'farming') char.set_current_action('farming');
 	})
 }
@@ -165,13 +166,19 @@ class Ranger {
 			if (this.joinEvent(eventMob)) this.current_action = eventMob
 	
 
-			if (this.current_action == eventMob && !parent.S[eventMob]) {
-				log('end event move')
-				if (!smart.moving && !character.moving) smart_move(farmDefault[character.id]).catch(use_skill('use_town'))
-				this.clear_current_action();
-			}
+			if (this.current_action == eventMob && !parent.S[eventMob]) this.moveToThen(myFarmDefault, this.clear_current_action())
 			
 		}
+	}
+
+	moveToThen(loc, then) {
+		smart_move(loc)
+		.catch(() => {
+			if (!character.moving && !smart.moving) use_skill('use_town')
+				.then(smart_move(loc))
+		})
+		.then(then)
+
 	}
 
 	manage_idle() {
@@ -190,12 +197,7 @@ class Ranger {
 		
 		if (this.idle_counter > 10 && !smart.moving) {
 			log('idle move')
-			smart_move(farmDefault[character.id])
-				.catch(() => {
-					if (!character.moving && !smart.moving) use_skill('use_town')
-						.then(smart_move(farmDefault[character.id]))
-				})
-				.then(this.current_action = 'farming')
+			this.moveToThen(myFarmDefault, this.set_current_action('farming'))
 		}
 	}
 
@@ -206,16 +208,8 @@ class Ranger {
 		if (character.x == 0 && character.y == 0) {
 			this.clear_current_action();
 			log('stuck move')
-			smart_move(farmDefault[character.id])
+			smart_move(myFarmDefault)
 		}
-	}
-
-
-	// use as limiter - if you have action; don't do anything else
-	manage_task() {
-	  if (!this.current_action) {
-		this.current_action = "idle"
-	  }
 	}
   
   
@@ -459,7 +453,7 @@ character.on("cm", (m) => {
 		case 'move':
 			char.current_action = false;
 			if (!data.loc) {
-				smart_move(farmDefault(character.id))
+				smart_move(myFarmDefault)
 				break;
 			}
 			smart_move(data.loc)
