@@ -1,3 +1,7 @@
+function getKeyByValue(object, value) {
+	return Object.keys(object).find(key => object[key] === value);
+}
+
 function transcribe(fromDataStructure, toDataStructure) {
     for (child in fromDataStructure) {
         toDataStructure[child] = fromDataStructure[child]

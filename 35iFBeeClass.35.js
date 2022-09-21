@@ -215,12 +215,12 @@ class Ranger {
 	dry() {
 	  // checks to see if we're out of weed
 	  // if no health potions, go get them
-	  if (quantity(desired_hp_pot) < 15) {
+	  if (quantity(desired_hp_pot) < 100) {
 		  return true;
 	  }
   
 	  // if no mana potions, go get them
-	  if (quantity(desired_mp_pot) < 15) {
+	  if (quantity(desired_mp_pot) < 100) {
 		  return true;
 	  }
 	  
@@ -228,27 +228,15 @@ class Ranger {
 	}
   
   
-	get_pot() {
-  
-	  // get potions since we're out of one of them
-	  // determine how many we need to buy
-	  let HP_TO_BUY = desired_potion_count - quantity(desired_hp_pot);
-	  let MP_TO_BUY = desired_potion_count - quantity(desired_mp_pot);
-  
-  
-	  if (character.moving || smart.moving || this.thinking) return;
-	  this.thinking = true;
-  
-	  // go to the nearest potion seller & buy
-		log('pot move')
-		smart_move({ to: "potions", return: true }, () => {
-				this.clear_current_action()
-				if (HP_TO_BUY > 0) buy(desired_hp_pot, HP_TO_BUY);
-				if (MP_TO_BUY > 0) buy(desired_mp_pot, MP_TO_BUY);
-				sell_extras();
-				this.thinking = false;
-		})
+	count_pot() {
+		// determine how many we need to buy
+		let HP_TO_BUY = desired_potion_count - quantity(desired_hp_pot);
+		let MP_TO_BUY = desired_potion_count - quantity(desired_mp_pot);	
+		let pots = { h:[desired_hp_pot, HP_TO_BUY], m:[desired_mp_pot, MP_TO_BUY] }
+		return pots
 	}
+
+
   
   farmSell() {
 
@@ -267,9 +255,9 @@ class Ranger {
 	
 	// if full, call merchant. if merchant, manage inv
 	manage_inv() {
-	  	if (this.dry()) this.get_pot();
+		if (this.dry()) send_cm(merchant, { cmd: 'unpack', loc:current_location(), pots: this.count_pot() });
 		pvpBank();
-		if (character.esize <= 14) send_cm(merchant, {cmd:'unpack', loc:current_location()});
+		if (character.esize <= 14) send_cm(merchant, {cmd:'unpack', loc:current_location(), pots: this.count_pot()});
 	}
 	
   

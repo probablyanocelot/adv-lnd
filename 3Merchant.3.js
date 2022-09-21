@@ -219,6 +219,14 @@ class Merchant extends Character {
 		);
 	}
 
+	get_pots(pots) {
+  
+		// get potions since we're out of one of them
+		buy(pots.h[0], pots.h[1]);
+		buy(pots.m[0], pots.m[1]);
+	}
+  
+
 	unpack(name, location) {
 		//if (!message == "unpack") return;
 		//let location = getPosition(character);

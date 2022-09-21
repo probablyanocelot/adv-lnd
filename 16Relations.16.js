@@ -37,8 +37,10 @@ character.on("cm", (m) => {
 			char.thinking = true
 			if (char.current_action == 'unpacking') break;
 			char.current_action = 'unpacking'
-			smart_move(data.loc)
-				.then(send_cm(m.name, { cmd: 'arrived' }))
+			smart_move('potions')
+				.then(char.get_pots(pots))
+				.then(smart_move(data.loc)
+					.then(send_cm(m.name, { cmd: 'arrived' })))
 			break;
 		
 		case 'arrived':
