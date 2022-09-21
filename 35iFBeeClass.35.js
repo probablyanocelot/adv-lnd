@@ -6,7 +6,6 @@ load_code('13Skills')	//skill3shot(), get_nearby_entitties()
 load_code('14Partying')	// PARTY, bots
 load_code('16Relations')	// cm
 load_code('19management') //sell extras -- merge this and 12Inv?
-// load_code('24Traversal')
 
 
 let merchant = 'VendorGuy';
@@ -257,7 +256,7 @@ class Ranger {
 	manage_inv() {
 		if (this.dry()) send_cm(merchant, { cmd: 'unpack', loc:current_location(), pots: this.count_pot() });
 		pvpBank();
-		if (character.esize <= 14) send_cm(merchant, {cmd:'unpack', loc:current_location(), pots: this.count_pot()});
+		if (character.esize <= 28) send_cm(merchant, {cmd:'unpack', loc:current_location(), pots: this.count_pot()});
 	}
 	
   

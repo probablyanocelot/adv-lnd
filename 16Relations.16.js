@@ -10,7 +10,7 @@ function group_cm(botlist, my_code) {
 
 
 character.on("cm", (m) => {
-	log(m)
+	if (character.ctype != 'merchant') log(m)
 
 	// Make sure the message is from a trusted character
 	if (!is_friendly(m.name)) {
@@ -18,14 +18,15 @@ character.on("cm", (m) => {
 		return
 	}	
 		let data = m.message
-	log(data);  // Do something with the message!
+	if (data.m.cmd != 'unpack') log(data);  // Do something with the message!
 	if (!data.cmd) return;
 	switch (data.cmd) {
 		
 		case 'move':
-			char.current_action = false;
+			if (character.ctype != 'merchant') char.current_action = false;
+			if (character.ctype == 'merchant') merchantBot.current_action = false;
 			if (!data.loc) {
-				if (character.ctype != 'merchant')smart_move(myFarmDefault)
+				if (character.ctype != 'merchant') smart_move(myFarmDefault)
 				break;
 			}
 			smart_move(data.loc)
@@ -33,32 +34,45 @@ character.on("cm", (m) => {
 				
 		case 'unpack':
 			// maybe bank first?
-			if (char.current_action == 'mining') break;
-			char.thinking = true
-			if (char.current_action == 'unpacking') break;
-			char.current_action = 'unpacking'
+			log('unpack1')
+			if (character.ctype != 'merchant') break;
+			if (merchantBot.current_action == 'mining') break;
+			merchantBot.thinking = true
+			if (merchantBot.current_action == 'unpacking') break;
+			merchantBot.current_action = 'unpacking'
 			smart_move('potions')
-				.then(char.get_pots(pots))
-				.then(smart_move(data.loc)
-					.then(send_cm(m.name, { cmd: 'arrived' })))
+				.then(() => {
+					log('unpack2')
+					merchantBot.get_pots(data.pots)
+					smart_move(data.loc)
+						.then(() => {
+							log('unpack3')
+							if (is_in_range(get_player(m.name))) send_cm(m.name, { cmd: 'arrived' })
+							send_item(m.name, locate_item(data.pots.h[0]), 9999)
+							send_item(m.name, locate_item(data.pots.m[0]), 9999)
+							merchantBot.clear_current_action()
+							
+						})
+				})
 			break;
 		
 		case 'arrived':
-			if (!is_in_range(get_player(m.name))) break;
+			// if (!is_in_range(get_player(m.name))) break;
 
 			if (character.gold > farmerReserve) send_gold(merchant, character.gold - farmerReserve)
 
 			for (let itemIndex in character.items) {
 				if (!character.items[itemIndex]) continue;
 				let item = character.items[itemIndex]
-				if (!sell_dict['keep'].includes(item.name))send_item(m.name, item, 9999)
+				if (!sell_dict['keep'].includes(item.name))send_item(m.name, itemIndex, 9999)
 			}
 			send_cm(m.name, { cmd: 'done_unpack'})
 			break;
 		
 		case 'done_unpack':
+			if (character.ctype != 'merchant') break;
 			use_skill('mluck', m.name)
-			char.bank_mining()
+			merchantBot.bank()
 			break;
 		
 		case 'itemBounty':

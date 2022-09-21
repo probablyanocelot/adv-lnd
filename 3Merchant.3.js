@@ -6,25 +6,12 @@ load_code('12Inv')
 load_code('14Partying')
 load_code('16Relations')
 load_code('19Management')
-load_code('24Traversal')
 
 //load_code(53) // upgrade_all2 WILL ADD MORE
 //performance_trick()
 
 const { webFrame } = require('electron');
 webFrame.setZoomFactor(.9);
-
-
-character.on("cm", function (data) {
-	if (!is_friendly()) return;
-	if (block_unpack) return;
-	if (!isFriendly()) return;
-	switch (data.message.code) {
-		case "unpack":
-			char.unpack(data.name, data.message.loc)	
-	}
-	;
-});
 
 
 let BANK_ITEMS = {};
@@ -34,7 +21,6 @@ BANK_ITEMS['items2'] = [];
 
 
 
-var block_unpack = false;
 class Merchant extends Character {
     constructor(){
 		super()
@@ -222,44 +208,8 @@ class Merchant extends Character {
 	get_pots(pots) {
   
 		// get potions since we're out of one of them
-		buy(pots.h[0], pots.h[1]);
-		buy(pots.m[0], pots.m[1]);
-	}
-  
-
-	unpack(name, location) {
-		//if (!message == "unpack") return;
-		//let location = getPosition(character);
-		//let location = ;
-		log(`Unpack request from ${name} at ${location}`);
-		// dont do if there's something else going on
-		//if (this.current_action || this.thinking)
-			//return;
-
-		this.set_current_action("unpacking");
-		smart_move(location)
-			.then(() => {
-				send_cm(name, "arrived")
-				
-				for (let idx in character.items) {
-					let item = character.items[idx];
-					if (item) {
-						if (item.name.includes('egg') || item.name === "seashell" || item.name === "crabclaw") {
-							send_item(char, idx, item.q)
-						}
-					}
-				}
-				// go back
-				smart_move(idle_spot).then(() => {
-						log("Unpack success clear");
-						this.clear_current_action()
-					}
-				)
-			})
-			.catch(() => {
-				log("Failed to unpack")
-			}
-		)
+		if (!character.items[locate_item(pots.h[0])] || character.items[locate_item(pots.h[0])].q < pots.h[1])buy(pots.h[0], pots.h[1]);
+		if (!character.items[locate_item(pots.m[0])] || character.items[locate_item(pots.m[0])].q < pots.m[1])buy(pots.m[0], pots.m[1]);
 	}
 
 
@@ -293,8 +243,8 @@ class Merchant extends Character {
 	bank() {
 		this.clear_current_action();
 		this.set_current_action("banking");
-		if (character.bank) this.doBank()
-		if (!character.bank && this.current_action == "banking" && !character.moving) {
+
+		if (!character.bank && !smart.moving && !character.moving) {
 			smart_move("bank").then(() => {
 					this.doBank()			
 				})

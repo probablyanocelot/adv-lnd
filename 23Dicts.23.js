@@ -21,7 +21,7 @@ let itemMobDict = {
 let sell_dict = {
 	'keep': 
 		[
-			'hpot0', 'hpot1', 'mpot0', 'mpot1', 'tracker',
+			'hpot0', 'hpot1', 'mpot0', 'mpot1', 'tracker', 'scroll0','scroll1','scroll2','primling'
 		],
     'low':
 		[
@@ -35,7 +35,7 @@ let sell_dict = {
 		],
 	'merchTrash':
 		[
-			'coat1','helmet1',
+			'coat1','helmet1', 'hpbelt','hpamulet',
 		]
 }
 let mobsLow = [
@@ -43,7 +43,7 @@ let mobsLow = [
 	"croc", "squig", "goo", "tortoise", 
 	"goldenbat", "phoenix", "tinyp", "greenjr", "minimush", 'bgoo', "icegolem",
 	'rgoo', 'crabxx', 'franky', 'grinch', 'crabx', 'frog', 'cutebee',
-	'crabx',
+	'crabx', 'cutebee',
 ];
 
 let mobsMed = [
