@@ -46,6 +46,8 @@ character.on("cm", (m) => {
 		case 'arrived':
 			if (!is_in_range(get_player(m.name))) break;
 
+			if (character.gold > farmerReserve) send_gold(merchant, character.gold - farmerReserve)
+
 			for (let itemIndex in character.items) {
 				if (!character.items[itemIndex]) continue;
 				let item = character.items[itemIndex]
