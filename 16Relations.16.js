@@ -18,7 +18,7 @@ character.on("cm", (m) => {
 		return
 	}	
 		let data = m.message
-	if (data.m.cmd != 'unpack') log(data);  // Do something with the message!
+	if (data.cmd != 'unpack') log(data);  // Do something with the message!
 	if (!data.cmd) return;
 	switch (data.cmd) {
 		
@@ -50,6 +50,7 @@ character.on("cm", (m) => {
 							if (is_in_range(get_player(m.name))) send_cm(m.name, { cmd: 'arrived' })
 							send_item(m.name, locate_item(data.pots.h[0]), 9999)
 							send_item(m.name, locate_item(data.pots.m[0]), 9999)
+							merchantBot.thinking = false
 							merchantBot.clear_current_action()
 							
 						})
