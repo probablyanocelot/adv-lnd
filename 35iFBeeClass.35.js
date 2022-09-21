@@ -433,38 +433,6 @@ let char = new Ranger;
 char.loop();
 
 
-// send_cm("CHARACTERNAME",{a:1,b:2,c:"something"});
-character.on("cm", (m) => {
-	log(m)
-
-	// Make sure the message is from a trusted character
-	if (!is_friendly(m.name)) {
-		log(`UNAUTHORIZED CM ATTEMPT: ${m.name}`)
-		return
-	}	
-		let data = m.message
-	log(data);  // Do something with the message!
-	if (!data.cmd) return;
-	switch (data.cmd) {
-		case 'move':
-			char.current_action = false;
-			if (!data.loc) {
-				smart_move(myFarmDefault)
-				break;
-			}
-			smart_move(data.loc)
-			break;
-		case 'itemBounty':
-			if (!data.itemBounty || !data.itemBountyQty) break;
-			char.current_action = data.cmd
-			char.itemBounty = data.itemBounty
-			char.itemBountyQty = data.itemBountyQty
-			for (let mobToFarm in itemMobDict) if (itemMobDict[mobToFarm].includes(data.itemBounty)) smart_move(mobToFarm)
-			break;
-	}
-	// if (data.cmd == 'move' && data.loc) smart_move(data.loc) 
-	}
-)
 
 function item_quantity(name)
 {

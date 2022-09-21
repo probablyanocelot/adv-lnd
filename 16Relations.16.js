@@ -9,31 +9,75 @@ function group_cm(botlist, my_code) {
 }
 
 
-character.on("cm", function (m) {
-	if (is_friendly(m.name)) {
-		// Make sure the message is from a trusted character
-		log(m.message);  // Do something with the message!
-		switch (m.message.code) {
-			case "move":
-				smart_move(m.message.loc)
-				break;
-			case "incoming":
-				smart_move(getPosition(m.name)).then(() =>{
-					change_target(get_player(m.name).target)
-					let target = get_current_target();
-					a = setInterval(rangerPVP(target), 220)
-					if (target.rip || !target) clearInterval(a);
-				}).catch(()=> {
-					xmove(getPosition(m.name))
-					change_target(get_player(m.name).target)
-					let target = get_current_target();
-					a = setInterval(rangerPVP(target), 220)
-					if (target.rip || !target) clearInterval(a);
-				})
-				break;
-		}
-	}
+character.on("cm", (m) => {
+	log(m)
+
+	// Make sure the message is from a trusted character
+	if (!is_friendly(m.name)) {
+		log(`UNAUTHORIZED CM ATTEMPT: ${m.name}`)
+		return
+	}	
+		let data = m.message
+	log(data);  // Do something with the message!
+	if (!data.cmd) return;
+	switch (data.cmd) {
 		
+		case 'move':
+			char.current_action = false;
+			if (!data.loc) {
+				if (character.ctype != 'merchant')smart_move(myFarmDefault)
+				break;
+			}
+			smart_move(data.loc)
+			break;
+				
+		case 'unpack':
+			// maybe bank first?
+			if (char.current_action == 'mining') break;
+			char.thinking = true
+			char.current_action = 'unpacking'
+			moveToThen(data.loc, send_cm(m.name, {cmd:'arrived'}))
+			break;
+		
+		case 'arrived':
+			if (!is_in_range(get_player(m.name))) break;
+
+			for (let itemIndex in character.items) {
+
+				let item = character.slots[itemIndex]
+				if (!sell_dict['keep'].includes(item.name))send_item(m.name, item, 9999)
+			}
+			send_cm(m.name, { cmd: 'done_unpack'})
+			break;
+		
+		case 'done_unpack':
+			use_skill('mluck', m.name)
+			char.bank_mining()
+			break;
+		
+		case 'itemBounty':
+			if (!data.itemBounty || !data.itemBountyQty) break;
+			char.current_action = data.cmd
+			char.itemBounty = data.itemBounty
+			char.itemBountyQty = data.itemBountyQty
+			for (let mobToFarm in itemMobDict) if (itemMobDict[mobToFarm].includes(data.itemBounty)) smart_move(mobToFarm)
+			break;
+		
+		case "incoming":
+			smart_move(getPosition(m.name)).then(() =>{
+				change_target(get_player(m.name).target)
+				let target = get_current_target();
+				a = setInterval(rangerPVP(target), 220)
+				if (target.rip || !target) clearInterval(a);
+			}).catch(()=> {
+				xmove(getPosition(m.name))
+				change_target(get_player(m.name).target)
+				let target = get_current_target();
+				a = setInterval(rangerPVP(target), 220)
+				if (target.rip || !target) clearInterval(a);
+			})
+			break;
+		}
 	}
 )
 

@@ -159,23 +159,23 @@ class Merchant extends Character {
 	}
 
 	traveller(loc1, loc2, a, b, c, d) {
-		smart_move(loc1).then(
-			success => {
+		smart_move(loc1)
+			.then(() => {
 				a && this.clearWrap(a)
 				b && this.clearWrap(b)
 				c && this.clearWrap(c)
 				d && this.clearWrap(d)
-				if (loc2) loc2().then(
-					success => {
+				if (loc2) loc2()
+					.then(() => {
 						this.clear_current_action();
-					},
-					failure => {
+					})
+					.catch(() => {
 						this.idle_counter = 0;
 						this.clear_current_action();
 					}
 				);
-			},
-			failure => {
+			})
+			.catch(() => {
 				log("FAILURE traveller");
 				this.idle_counter = 0;
 				this.clear_current_action()
@@ -189,24 +189,24 @@ class Merchant extends Character {
 	do_runs() {
 		if (this.current_action) return;
 		this.set_current_action("doing runs")
-		smart_move(this.home).then(
-			success => {
+		smart_move(this.home)
+			.then(() => {
 				buyFromPonty()
-				smart_move("woffice").then(
-					success => {
+				smart_move("woffice")
+					.then(() => {
 						buyFromGoblin()
 						this.clear_current_action();
 						this.bank()
 						//this.clear_current_action()
-					},
-					failure => {
+					})
+					.catch(() => {
 						log("FAILURE Gobbo");
 						this.idle_counter = 0;
 						this.clear_current_action()
 					}
 				);
-			},
-			failure => {
+			})
+			.catch(() => {
 				log("FAILURE: Ponty")
 				this.idle_counter = 0;
 				this.clear_current_action()
@@ -214,19 +214,19 @@ class Merchant extends Character {
 		);
 	}
 
-	unpack(char, location) {
+	unpack(name, location) {
 		//if (!message == "unpack") return;
 		//let location = getPosition(character);
 		//let location = ;
-		log(`Unpack request from ${char} at ${location}`);
+		log(`Unpack request from ${name} at ${location}`);
 		// dont do if there's something else going on
 		//if (this.current_action || this.thinking)
 			//return;
 
 		this.set_current_action("unpacking");
-		smart_move(location).then(
-			(success) => {
-				send_cm(char, "arrived")
+		smart_move(location)
+			.then(() => {
+				send_cm(name, "arrived")
 				
 				for (let idx in character.items) {
 					let item = character.items[idx];
@@ -237,14 +237,13 @@ class Merchant extends Character {
 					}
 				}
 				// go back
-				smart_move(idle_spot).then(
-					success => {
+				smart_move(idle_spot).then(() => {
 						log("Unpack success clear");
 						this.clear_current_action()
 					}
 				)
-			},
-			(failure) => {
+			})
+			.catch(() => {
 				log("Failed to unpack")
 			}
 		)
@@ -265,12 +264,11 @@ class Merchant extends Character {
 //		}
 		this.clear_current_action();
 		if (!this.current_action) {
-			smart_move(this.home).then(
-				success => {
+			smart_move(this.home).then(() => {
 					this.idle_counter = 0;
 					this.clear_current_action();
-				},
-				failure => {
+				})
+				.catch(() => {
 					this.handleFailTravel(this.home);
 					this.idle_counter = 0;
 					this.clear_current_action()
@@ -284,11 +282,10 @@ class Merchant extends Character {
 		this.set_current_action("banking");
 		if (character.bank) this.doBank()
 		if (!character.bank && this.current_action == "banking" && !character.moving) {
-			smart_move("bank").then(
-				success => {
+			smart_move("bank").then(() => {
 					this.doBank()			
-				},
-				failure => {
+				})
+				.catch(() => {
 					this.bank()
 				}
 			)
@@ -298,12 +295,12 @@ class Merchant extends Character {
 	handleFailTravel(location) {
 		log(`'${this.current_action}' fail clear`)
 		// this.thinking = true;
-		smart_move(location).then(
-			success => {
+		if (smart.moving) return
+		smart_move(location).then(() => {
 				// this.thinking = false
 				this.clear_current_action()
-			},
-			failure => {
+			})
+			.catch(() => {
 				// this.thinking = false
 				this.clear_current_action()
 				xmove(location);
@@ -317,18 +314,17 @@ class Merchant extends Character {
 
 			if (smart.moving) return
 			
-			smart_move("bank").then(
-				success => {
+			smart_move("bank")
+				.then(() => {
 					if (character.bank) this.thinking = false
 					log("Bank success clear")
 					bank_store(locate_item("gemfragment"), "items1");
 					this.doBank();
-				},
-				failure => {
+				})
+				.catch(() => {
 					log("Bank fail clear")
 					this.clear_current_action()
-				}
-			)
+				})
 		}
 	}
 
@@ -353,8 +349,8 @@ class Merchant extends Character {
 		this.thinking = true;
 		
 		let exchangeCoordinates = { map: 'main', x: -204, y: -344 }
-		smart_move(exchangeCoordinates).then(
-			success => {
+		smart_move(exchangeCoordinates)
+			.then(() => {
 				this.set_current_action("exchange");
 				this.thinking = false;
 				
@@ -400,8 +396,8 @@ class Merchant extends Character {
 						clearInterval(exchangeInterval);
 					}
 				}, 1000)
-			},
-			failure => {
+			})
+			.catch(() => {
 				log("failed to go to exchange");
 				this.thinking = false;
 			}
@@ -461,10 +457,12 @@ class Merchant extends Character {
 					if (character.real_x != this.home.x && character.real_y != this.home.y) {
 						if (!this.thinking) {
 							this.thinking = true;
-							smart_move(this.home).then(
-								success => this.thinking = false,
-								failure => this.thinking = false
-							)
+							smart_move(this.home)
+								.then(this.thinking = false)
+								.catch(() => {
+									smart_move('main')
+									this.thinking = false
+								})
 						}
 					}
 					
@@ -481,14 +479,14 @@ class Merchant extends Character {
 							} else {
 								this.set_current_action(action);
 								if (character.ctype == "merchant" && !character.s.massproductionpp && character.mp > 400) use_skill("massproductionpp")
-								upgrade(itemIndex, scrollSlot).then(
-									success => {
+								upgrade(itemIndex, scrollSlot)
+									.then(() => {
 										if (this.current_action == action) {
 											log("Upgrade success clear")
 											this.clear_current_action();
 										}
-									},
-									failure => {
+									})
+									.catch(() => {
 										if (this.current_action == action) {
 											log("Upgrade failure clear")
 											this.clear_current_action();
@@ -526,14 +524,14 @@ class Merchant extends Character {
 					let bank = BANK_ITEMS[teller]
 					if (bank.includes(item.name)) {
 						this.set_current_action("banking");
-						smart_move("bank").then(
-							success => {
+						smart_move("bank")
+							.then(() => {
 								log("Bank success clear")
 								this.clear_current_action();
 								bank_store(idx, teller);
 								//this.do_idle();
-							},
-							failure => {
+							})
+							.catch(() => {
 								log("Bank fail clear")
 								this.clear_current_action()
 							}
