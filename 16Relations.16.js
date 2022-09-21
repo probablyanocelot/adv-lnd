@@ -23,8 +23,8 @@ character.on("cm", (m) => {
 	switch (data.cmd) {
 		
 		case 'move':
-			if (character.ctype != 'merchant') char.current_action = false;
-			if (character.ctype == 'merchant') merchantBot.current_action = false;
+			if (character.ctype != 'merchant') char.clear_current_action()
+			if (character.ctype == 'merchant') merchantBot.clear_current_action()
 			if (!data.loc) {
 				if (character.ctype != 'merchant') smart_move(myFarmDefault)
 				break;
@@ -39,7 +39,7 @@ character.on("cm", (m) => {
 			if (merchantBot.current_action == 'mining') break;
 			merchantBot.thinking = true
 			if (merchantBot.current_action == 'unpacking') break;
-			merchantBot.current_action = 'unpacking'
+			merchantBot.set_current_action('unpacking')
 			smart_move('potions')
 				.then(() => {
 					log('unpack2')
