@@ -1,8 +1,13 @@
 log("3 - Merchant") // display load_code() page number for debugging purposes
-load_code(1) // main
-load_code(11) // NPCS - buyFromPonty()/Goblin
-load_code(12)
-load_code(14)
+load_code('1Main') // main
+load_code('23Dicts')
+load_code('11Npcs') // NPCS - buyFromPonty()/Goblin
+load_code('12Inv')
+load_code('14Partying')
+load_code('16Relations')
+load_code('19Management')
+load_code('24Traversal')
+
 //load_code(53) // upgrade_all2 WILL ADD MORE
 //performance_trick()
 
@@ -657,12 +662,6 @@ function compound_loop() {
 	}, 1000)
 }
 
-
-let sell_dict = {
-	'merchTrash': [
-		'coat1', 'helmet1', 
-	]
-}
 
 
 function sell_extras() {

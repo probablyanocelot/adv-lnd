@@ -37,6 +37,10 @@ function sendInvites() {
 	}
 }
 
+const friendly_other_players = [
+    'Diocles', 'Mommy', 'Atlus', 'Cuts', 'Pokehontas',
+]
+
 function is_friendly(char_name) {
     //check if it's one of the accounts characters
     for (char of get_characters()) {

@@ -35,16 +35,18 @@ character.on("cm", (m) => {
 			// maybe bank first?
 			if (char.current_action == 'mining') break;
 			char.thinking = true
+			if (char.current_action == 'unpacking') break;
 			char.current_action = 'unpacking'
-			moveToThen(data.loc, send_cm(m.name, {cmd:'arrived'}))
+			smart_move(data.loc)
+				.then(send_cm(m.name, { cmd: 'arrived' }))
 			break;
 		
 		case 'arrived':
 			if (!is_in_range(get_player(m.name))) break;
 
 			for (let itemIndex in character.items) {
-
-				let item = character.slots[itemIndex]
+				if (!character.items[itemIndex]) continue;
+				let item = character.items[itemIndex]
 				if (!sell_dict['keep'].includes(item.name))send_item(m.name, item, 9999)
 			}
 			send_cm(m.name, { cmd: 'done_unpack'})
