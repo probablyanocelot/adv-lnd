@@ -29,8 +29,6 @@ setInterval(loot, 65)
 
 
 
-
-
 function valuaBank() {
 	for (let item of character.items) {
 		if (!item) continue;
@@ -81,9 +79,7 @@ function farmerBank() {
 	
 	}
 	log('farmerBank return move')
-	smart_move(myFarmDefault).then(()=>{
-		if (char.current_action != 'farming') char.set_current_action('farming');
-	})
+	char.moveToThen(myFarmDefault, char.current_action = 'farming')
 }
 
 
@@ -488,18 +484,18 @@ function death_return(location){
 
 
 function toMerch(){
-	if (!is_in_range(get_player("VendorGuy"))) return;
+	if (!is_in_range(get_player(merchant))) return;
 	for (let i = 0; i < 9; i++) {
 		let item = "egg"
 		i = i.toString()
 		let itemName=item+i
 		if(!locate_item(itemName)) return false;
 		let itemLoc = locate_item(itemName)
-		send_item("VendorGuy", itemLoc, character.items[itemLoc]['q']);
+		send_item(merchant, itemLoc, character.items[itemLoc]['q']);
 	}
 	for (let i = 5; i<42; i++) {
 		if (!character.items[i]) continue;
-		send_item("VendorGuy", i, character.items[i]['q']);
+		send_item(merchant, i, character.items[i]['q']);
 	}return;
 }
 
