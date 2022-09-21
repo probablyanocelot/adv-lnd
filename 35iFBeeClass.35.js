@@ -269,7 +269,7 @@ class Ranger {
 	manage_inv() {
 	  	if (this.dry()) this.get_pot();
 		pvpBank();
-		if (character.esize <= 5) this.farmSell();
+		if (character.esize <= 14) send_cm(merchant, {cmd:'unpack', loc:current_location()});
 	}
 	
   
