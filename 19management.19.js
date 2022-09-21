@@ -25,7 +25,7 @@ function updateBank(){
 
 //      #########SELLING#########
 
-function sell_extras() {
+function sell_extras_old() {
 	log('selling extras')
 	// index of item in inv
 	for (let itemSlot in character.items) {

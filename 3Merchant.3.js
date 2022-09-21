@@ -465,7 +465,7 @@ class Merchant extends Character {
 							smart_move(this.home)
 								.then(this.thinking = false)
 								.catch(() => {
-									smart_move('main')
+									smart_move(this.home)
 									this.thinking = false
 								})
 						}
