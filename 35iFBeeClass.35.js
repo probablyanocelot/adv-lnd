@@ -29,24 +29,27 @@ setInterval(loot, 65)
 
 
 
-function valuaBank() {
+function pvpBank() {
 	for (let item of character.items) {
 		if (!item) continue;
-		switch (item["name"]) {
-			case "suckerpunch":
-				if (is_pvp() && !server.id == "I"){
-					change_server("US","I")
-					break;
-				}
-			case "ink":
-				farmerBank()
-				break
-			case 'seashell':
-				if (item.q > 500) farmerBank()
-				break
-			case 'gem0':
-				if (item.q >= 5) farmerBank()
-				break
+		if (is_pvp()){
+			switch (item["name"]) {
+				
+				case "suckerpunch":
+					if (!server.id == "I") {
+						change_server("US", "I")
+						break;
+					}
+				case "ink":
+					farmerBank()
+					break
+				case 'seashell':
+					if (item.q > 500) farmerBank()
+					break
+				case 'gem0':
+					if (item.q >= 5) farmerBank()
+					break
+			}
 		} 
 	}
 }
@@ -265,7 +268,7 @@ class Ranger {
 	// if full, call merchant. if merchant, manage inv
 	manage_inv() {
 	  	if (this.dry()) this.get_pot();
-		valuaBank();
+		pvpBank();
 		if (character.esize <= 5) this.farmSell();
 	}
 	
