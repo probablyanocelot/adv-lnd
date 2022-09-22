@@ -207,9 +207,26 @@ class Merchant extends Character {
 
 	get_pots(pots) {
   
-		// get potions since we're out of one of them
-		if (!character.items[locate_item(pots.h[0])] || character.items[locate_item(pots.h[0])].q < pots.h[1])buy(pots.h[0], pots.h[1]);
-		if (!character.items[locate_item(pots.m[0])] || character.items[locate_item(pots.m[0])].q < pots.m[1])buy(pots.m[0], pots.m[1]);
+		if (smart.moving) return
+		let hpotSize = pots.h[0]
+		let hpotQty = pots.h[1]
+		let mpotSize = pots.m[0]
+		let mpotQty = pots.m[1]
+
+		// don't have enough potions -> go get some
+		if (!character.items[locate_item(hpotSize)] ||
+			character.items[locate_item(hpotSize)].q < hpotQty ||
+			!character.items[locate_item(mpotSize)] ||
+			character.items[locate_item(mpotSize)].q < mpotQty) {
+			smart_move('potions')
+				.then(() => {
+					// get potions since we're out of one of them
+					if (hpotQty > 0) buy(hpotSize, hpotQty);
+					if (mpotQty > 0) buy(mpotSize, mpotQty);
+				})
+		}
+
+		return;
 	}
 
 
