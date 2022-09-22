@@ -376,7 +376,7 @@ class Merchant extends Character {
 		let scrollType = "scroll0"
 		let scrollSlot = locate_item(scrollType)
 	
-		let action = "upgrade"
+		// let action = "upgrade"
 		// dont do if there's something else going on
 		if (this.current_action) return;
 
@@ -413,7 +413,7 @@ class Merchant extends Character {
 							if (character.ctype == "merchant" && !character.s.massproductionpp && character.mp > 400) use_skill("massproductionpp")
 							upgrade(itemIndex, scrollSlot)
 						}
-						this.clear_current_action();
+						// this.clear_current_action();
 						continue;
 					
 					}
@@ -431,29 +431,29 @@ class Merchant extends Character {
 					
 					if (character.items[itemIndex] && character.items[itemIndex].p && !itemName === "stinger") {
 						log("has some modifier");
-						this.clear_current_action();
+						// this.clear_current_action();
 						continue;
 					} else {
 						// upgrade if we got here
 						if (!parent.character.q.upgrade) {
 							if (itemName == "stinger" && item.level == 4 && !item.p) {
 								sell(itemIndex);
-								this.clear_current_action();
+								// this.clear_current_action();
 							} else {
-								this.set_current_action(action);
+								// this.set_current_action(action);
 								if (character.ctype == "merchant" && !character.s.massproductionpp && character.mp > 400) use_skill("massproductionpp")
 								upgrade(itemIndex, scrollSlot)
 									.then(() => {
-										if (this.current_action == action) {
+										// if (this.current_action == action) {
 											log("Upgrade success clear")
 											this.clear_current_action();
-										}
+										// }
 									})
 									.catch(() => {
-										if (this.current_action == action) {
+										// if (this.current_action == action) {
 											log("Upgrade failure clear")
-											this.clear_current_action();
-										}
+											// this.clear_current_action();
+										// }
 									}
 								)
 							}
