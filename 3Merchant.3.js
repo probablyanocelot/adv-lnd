@@ -119,7 +119,7 @@ class Merchant extends Character {
 
 
 	sell_trash() {
-		for (var itemIndex in character.items) {
+		for (let itemIndex in character.items) {
 			let item = character.items[itemIndex];
 			let itemName = item["name"];
 			if (itemName == "slimestaff" && !item.p) sell(item)
@@ -398,16 +398,16 @@ class Merchant extends Character {
 
 		//this.current_action = action
 		
-		for (var idx in itemList) {
+		for (let idx in itemList) {
 			let itemName = itemList[idx]
-			for (var level = 0; level < 8; level++) {
-				var itemSlots = locate_items(itemName, level)
+			for (let level = 0; level < 8; level++) {
+				let itemSlots = locate_items(itemName, level)
 				if (!itemSlots.length || idx.grade >= 1) {
 					continue
 				}
 				
 
-				for (var listIndex in itemSlots) {
+				for (let listIndex in itemSlots) {
 					let itemIndex = itemSlots[listIndex];
 					let item = character.items[itemIndex];
 					let itemName = character.items[itemIndex].name;
@@ -422,13 +422,13 @@ class Merchant extends Character {
 					// grade 1+ = +7
 					if (grade > 0 && grade < 2) {
 						log("grade is over 0")
-						if (item.level == 7){
-							scrollType = 'scroll1'
-							scrollSlot = locate_item(scrollType)
-							if (!character.items[scrollSlot]) buy_with_gold(scrollType, 1)
-							if (character.ctype == "merchant" && !character.s.massproductionpp && character.mp > 400) use_skill("massproductionpp")
-							upgrade(itemIndex, scrollSlot)
-						}
+						// if (item.level >= 5){
+						scrollType = 'scroll1'
+						scrollSlot = locate_item(scrollType)
+						if (!character.items[scrollSlot]) buy_with_gold(scrollType, 1)
+						if (character.ctype == "merchant" && !character.s.massproductionpp && character.mp > 400) use_skill("massproductionpp")
+						upgrade(itemIndex, scrollSlot)
+						// }
 						// this.clear_current_action();
 						continue;
 					
@@ -536,19 +536,19 @@ let compoundList = [
 ]
 
 function do_combine(item_name) {
-	var COMPOUND_SCROLL = "cscroll0"
+	let COMPOUND_SCROLL = "cscroll0"
 
-	var scrollSlot = locate_item(COMPOUND_SCROLL);
+	let scrollSlot = locate_item(COMPOUND_SCROLL);
 	// buy scroll if not in inventory
 	if (!character.items[scrollSlot]) {
 		buy_with_gold(COMPOUND_SCROLL);
 		scrollSlot = locate_item(COMPOUND_SCROLL);
 	}
 	
-	var levelArray = [0, 1, 2]
-	for (var level in levelArray) {
+	let levelArray = [0, 1, 2]
+	for (let level in levelArray) {
 		// get a list of items
-		var itemList = locate_items(item_name, level);
+		let itemList = locate_items(item_name, level);
 		if (itemList.length >= 3) {
 			if (item_name == "vitring" && level == 2) {
 				continue
@@ -566,7 +566,7 @@ function do_combine(item_name) {
 
 
 function high_upgrade_all() {
-	var TIMEOUT = 1000;
+	let TIMEOUT = 1000;
 	let itemList = [ 
 		'xmasshoes', 'xmaspants', 'xmassweater', "xmashat",'merry',
 		 "epyjamas", "eears", "pants1", "gloves1", "firestaff",
@@ -577,12 +577,12 @@ function high_upgrade_all() {
 	let scrollSlot = locate_item(scrollType)
     let maxLevel = 8;
 	
-    for (var level = 0; level < maxLevel; level++) {
-        for (var idx in itemList) {
+    for (let level = 0; level < maxLevel; level++) {
+        for (let idx in itemList) {
             let itemName = itemList[idx]
-            var itemSlots = locate_items(itemName, level)
+            let itemSlots = locate_items(itemName, level)
 
-            for (var listIndex in itemSlots) {
+            for (let listIndex in itemSlots) {
                 let itemIndex = itemSlots[listIndex];
 
                 // get item grade
@@ -629,7 +629,7 @@ function compound_loop() {
 
 	setInterval(() => {
 
-		for (var itemName of compoundList) {
+		for (let itemName of compoundList) {
 			if (character.bank) continue;
 			do_combine(itemName)
 		}
