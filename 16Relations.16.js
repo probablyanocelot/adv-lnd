@@ -33,28 +33,7 @@ character.on("cm", (m) => {
 			break;
 				
 		case 'unpack':
-			// maybe bank first?
-			log('unpack1')
-			if (character.ctype != 'merchant') break;
-			if (merchantBot.current_action == 'mining') break;
-			merchantBot.thinking = true
-			if (merchantBot.current_action == 'unpacking') break;
-			merchantBot.set_current_action('unpacking')
-			smart_move('potions')
-				.then(() => {
-					log('unpack2')
-					merchantBot.get_pots(data.pots)
-					smart_move(data.loc)
-						.then(() => {
-							log('unpack3')
-							if (is_in_range(get_player(m.name))) send_cm(m.name, { cmd: 'arrived' })
-							send_item(m.name, locate_item(data.pots.h[0]), 9999)
-							send_item(m.name, locate_item(data.pots.m[0]), 9999)
-							merchantBot.thinking = false
-							merchantBot.clear_current_action()
-							
-						})
-				})
+			doUnpack(data)
 			break;
 		
 		case 'arrived':
@@ -176,4 +155,42 @@ function current_location() {
         x: character.x,
         y: character.y
     }
+}
+
+
+function doUnpack(data) {
+	// maybe bank first?
+	log('unpack1')
+	
+	// only merch unpack
+	if (character.ctype != 'merchant' || merchantBot.current_action) return;
+	
+	// set limiters
+	merchantBot.thinking = true
+	merchantBot.set_current_action('unpacking')
+	
+	if (data.pots) merchantBot.get_pots(data.pots);
+	
+	smart_move(data.loc)
+		.then(() => {
+			log('should be there')
+			// let farmers know the truck is here
+			if (is_in_range(get_player(m.name))) send_cm(m.name, { cmd: 'arrived' })
+			if (data.pots) {
+				let hpotSize = pots.h[0]
+				let hpotQty = pots.h[1]
+				let mpotSize = pots.m[0]
+				let mpotQty = pots.m[1]
+
+				// share some drinks with the farmers
+				send_item(m.name, locate_item(hpotSize), hpotQty)
+				send_item(m.name, locate_item(mpotSize), mpotQty)
+			}
+
+			// clear limiters - maybe clear them on done_unpack instead?
+			merchantBot.thinking = false
+			merchantBot.clear_current_action()
+					
+		})
+	return;			
 }

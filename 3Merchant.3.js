@@ -225,7 +225,7 @@ class Merchant extends Character {
 					if (mpotQty > 0) buy(mpotSize, mpotQty);
 				})
 		}
-
+		log('fix git')
 		return;
 	}
 
