@@ -9,7 +9,7 @@ function group_cm(botlist, my_code) {
 }
 
 
-character.on("cm", (m) => {
+character.on("cm", async (m) => {
 	if (character.ctype != 'merchant') log(m)
 
 	// Make sure the message is from a trusted character
@@ -33,11 +33,42 @@ character.on("cm", (m) => {
 			break;
 				
 		case 'unpack':
-			doUnpack(data)
+			// maybe bank first?
+			log('unpack1')
+				
+			if (data.pots) await merchantBot.get_pots(data.pots);
+			
+			// only merch unpack
+			if (character.ctype != 'merchant' || merchantBot.current_action) return;
+			
+			// set limiters
+			// merchantBot.thinking = true
+			merchantBot.set_current_action('unpacking')
+
+
+			await smart_move(data.loc)
+
+			log('should be there')
+			// let farmers know the truck is here
+			if (is_in_range(get_player(m.name))) send_cm(m.name, { cmd: 'arrived' })
+			if (data.pots) {
+				let hpotSize = pots.h.type
+				let hpotQty = pots.h.qty
+				let mpotSize = pots.m.type
+				let mpotQty = pots.m.qty
+
+				// share some drinks with the farmers
+				send_item(m.name, locate_item(hpotSize), hpotQty)
+				send_item(m.name, locate_item(mpotSize), mpotQty)
+			}
+
+			// clear limiters - maybe clear them on done_unpack instead?
+			// merchantBot.thinking = false
+			merchantBot.clear_current_action()
 			break;
 		
 		case 'arrived':
-			// if (!is_in_range(get_player(m.name))) break;
+			if (!is_in_range(get_player(m.name))) break;
 
 			if (character.gold > farmerReserve) send_gold(merchant, character.gold - farmerReserve)
 
@@ -158,9 +189,11 @@ function current_location() {
 }
 
 
-function doUnpack(data) {
+async function doUnpack(data, name) {
 	// maybe bank first?
 	log('unpack1')
+		
+	if (data.pots) await merchantBot.get_pots(data.pots);
 	
 	// only merch unpack
 	if (character.ctype != 'merchant' || merchantBot.current_action) return;
@@ -168,19 +201,18 @@ function doUnpack(data) {
 	// set limiters
 	merchantBot.thinking = true
 	merchantBot.set_current_action('unpacking')
-	
-	if (data.pots) merchantBot.get_pots(data.pots);
-	
+
+
 	smart_move(data.loc)
 		.then(() => {
 			log('should be there')
 			// let farmers know the truck is here
-			if (is_in_range(get_player(m.name))) send_cm(m.name, { cmd: 'arrived' })
+			if (is_in_range(get_player(m.name))) send_cm(name, { cmd: 'arrived' })
 			if (data.pots) {
-				let hpotSize = pots.h[0]
-				let hpotQty = pots.h[1]
-				let mpotSize = pots.m[0]
-				let mpotQty = pots.m[1]
+				let hpotSize = pots.h.type
+				let hpotQty = pots.h.qty
+				let mpotSize = pots.m.type
+				let mpotQty = pots.m.qty
 
 				// share some drinks with the farmers
 				send_item(m.name, locate_item(hpotSize), hpotQty)

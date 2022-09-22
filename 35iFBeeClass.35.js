@@ -231,7 +231,16 @@ class Ranger {
 		// determine how many we need to buy
 		let HP_TO_BUY = desired_potion_count - quantity(desired_hp_pot);
 		let MP_TO_BUY = desired_potion_count - quantity(desired_mp_pot);	
-		let pots = { h:[desired_hp_pot, HP_TO_BUY], m:[desired_mp_pot, MP_TO_BUY] }
+		let pots = {
+			h: {
+				type: desired_hp_pot,
+				qty: HP_TO_BUY,
+			},
+			m: {
+				type: desired_mp_pot,
+				qty: MP_TO_BUY,
+			}
+		}
 		return pots
 	}
 
