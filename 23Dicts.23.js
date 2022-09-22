@@ -9,7 +9,7 @@ let cgoo = {map:'arena'}
 
 
 let bots = {
-	'3r': ['couplaGrapes','cannaMace','camelCase',]
+	'3r': ['couplaGrapes','cannaMace','camelCase','VendorGuy']
 }
 
 

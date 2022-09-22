@@ -107,7 +107,7 @@ class Merchant extends Character {
 				log(`Idle: ${this.idle_counter}`);
 				}
 
-			if (this.idle_counter > 60*15) {
+			if (this.idle_counter > 60*5) {
 				this.do_runs()
 			}
 		}

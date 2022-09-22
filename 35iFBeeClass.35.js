@@ -256,7 +256,7 @@ class Ranger {
 	manage_inv() {
 		if (this.dry()) send_cm(merchant, { cmd: 'unpack', loc:current_location(), pots: this.count_pot() });
 		pvpBank();
-		if (character.esize <= 28) send_cm(merchant, {cmd:'unpack', loc:current_location(), pots: this.count_pot()});
+		if (character.esize <= 24) send_cm(merchant, {cmd:'unpack', loc:current_location(), pots: this.count_pot()});
 	}
 	
   
