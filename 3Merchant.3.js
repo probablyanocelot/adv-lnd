@@ -146,14 +146,6 @@ class Merchant extends Character {
 		);
 	}
 
-	count_pot(itemName, qtyNeeded) {
-		let pot = locate_item(itemName)
-		// qty or 0.     update this to check stand
-		let potQty = character.items[pot].q ?? 0
-		
-		let toBuy = qtyNeeded - potQty
-		return toBuy
-	}
 
 	async get_pots(pots) {
   
@@ -166,8 +158,8 @@ class Merchant extends Character {
 		let MP_DESIRED = pots.m.qty
 
 
-		let HP_TO_BUY = this.count_pot(HP_TYPE, HP_DESIRED)
-		let MP_TO_BUY = this.count_pot(MP_TYPE, MP_DESIRED)
+		let HP_TO_BUY = HP_DESIRED - quantity(HP_TYPE)
+		let MP_TO_BUY = MP_DESIRED - quantity(MP_TYPE)
 
 
 		// don't have enough potions -> go get some
@@ -414,19 +406,19 @@ class Merchant extends Character {
 								// this.set_current_action(action);
 								if (character.ctype == "merchant" && !character.s.massproductionpp && character.mp > 400) use_skill("massproductionpp")
 								upgrade(itemIndex, scrollSlot)
-									.then(() => {
-										// if (this.current_action == action) {
-											log("Upgrade success clear")
-											this.clear_current_action();
-										// }
-									})
-									.catch(() => {
-										// if (this.current_action == action) {
-											log("Upgrade failure clear")
-											// this.clear_current_action();
-										// }
-									}
-								)
+								// 	.then(() => {
+								// 		// if (this.current_action == action) {
+								// 			log("Upgrade success clear")
+								// 			// this.clear_current_action();
+								// 		// }
+								// 	})
+								// 	.catch(() => {
+								// 		// if (this.current_action == action) {
+								// 			log("Upgrade failure clear")
+								// 			// this.clear_current_action();
+								// 		// }
+								// 	}
+								// )
 							}
 						}
 					}

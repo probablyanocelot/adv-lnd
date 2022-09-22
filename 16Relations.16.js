@@ -10,7 +10,7 @@ function group_cm(botlist, my_code) {
 
 
 character.on("cm", async (m) => {
-	if (character.ctype != 'merchant') log(m)
+	if (character.ctype != 'merchant') log(m.message)
 
 	// Make sure the message is from a trusted character
 	if (!is_friendly(m.name)) {
@@ -18,8 +18,9 @@ character.on("cm", async (m) => {
 		return
 	}	
 		let data = m.message
-	if (data.cmd != 'unpack') log(data);  // Do something with the message!
+	// if (data.cmd != 'unpack') log(data);  // Do something with the message!
 	if (!data.cmd) return;
+	log(`${m.name} requesting ${data.cmd}`)
 	switch (data.cmd) {
 		
 		case 'move':
@@ -52,10 +53,10 @@ character.on("cm", async (m) => {
 			if (is_in_range(get_player(m.name))) send_cm(m.name, { cmd: 'arrived' })
 			
 			if (data.pots) {
-				let hpotSize = pots.h.type
-				let hpotQty = pots.h.qty
-				let mpotSize = pots.m.type
-				let mpotQty = pots.m.qty
+				let hpotSize = data.pots.h.type
+				let hpotQty = data.pots.h.qty
+				let mpotSize = data.pots.m.type
+				let mpotQty = data.pots.m.qty
 
 				// share some drinks with the farmers
 				send_item(m.name, locate_item(hpotSize), hpotQty)
