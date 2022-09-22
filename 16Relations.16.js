@@ -59,8 +59,8 @@ character.on("cm", async (m) => {
 				let mpotQty = data.pots.m.qty
 
 				// share some drinks with the farmers
-				send_item(m.name, locate_item(hpotSize), hpotQty)
-				send_item(m.name, locate_item(mpotSize), mpotQty)
+				if (quantity(hpotSize) > 0) send_item(m.name, locate_item(hpotSize), hpotQty)
+				if (quantity(mpotSize) > 0) send_item(m.name, locate_item(mpotSize), mpotQty)
 			}
 
 			// clear limiters - maybe clear them on done_unpack instead?

@@ -4,7 +4,9 @@ function transcribe(fromDataStructure, toDataStructure) {
     }
 }
 
+
 let loadout = new Object;
+
 
 function updateLoadout() {
     loadout[character.id] = loadout[character.id] || {};
@@ -13,7 +15,9 @@ function updateLoadout() {
     transcribe(character.slots, loadout[character.id])
 }
 
+
 let bankDict = new Object;
+
 
 function updateBank(){
 	if (!character.bank) return
@@ -22,9 +26,40 @@ function updateBank(){
 	transcribe(character.bank, bankDict)
 }
 
+
+let dupeDict = new Object;
+
+
+function populateDupeDict() {
+	for (let container in bankDict) {
+		// console.log(bankDict[container])
+		for (let slot in bankDict[container]) {
+
+			let item = bankDict[container][slot]
+			if (!item) continue;
+			
+			console.log(item)
+
+			let itemName = item.name
+			dupeDict[itemName] = dupeDict[itemName] || []
+
+			let itemQty = item.q
+			if (itemQty) dupeDict[itemName].push({ q: itemQty, slot: slot, container: container, })
+
+			let itemLevel = item.level
+			if (itemLevel >= 0 && item.p) dupeDict[itemName].push({ level: itemLevel, slot: slot, container: container, p: item.p, })
+			if (itemLevel >= 0 && !item.p) dupeDict[itemName].push({ level: itemLevel, slot: slot, container: container, })
+			// dupeDict[bankDict[]]
+		}
+	}
+	// console.log(dupeDict)
+}
+
+
 function getKeyByValue(object, value) {
 	return Object.keys(object).find(key => object[key] === value);
 }
+
 
 function hasProp(container, propStr) {
 	for (let idx in container) {
@@ -38,6 +73,7 @@ function hasProp(container, propStr) {
 		// hasProperty('e')
 	}
 }
+
 
 function exampleFindDuplicate() {
 	let array = [{ "name": "Steven Smith", "Country": "England", "Age": 35 }, { "name": "Hannah Reed", "Country": "Scottland", "Age": 23 }, { "name": "Steven Smith", "Country": "England", "Age": 35 }, { "name": "Robert Landley", "Country": "England", "Age": 84 }, { "name": "Steven Smith", "Country": "England", "Age": 35 }, { "name": "Robert Landley", "Country": "England", "Age": 84 }]

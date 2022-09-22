@@ -17,7 +17,7 @@ function startBots(group) {
 	if (top.$("iframe")["1"]|| top.$("iframe")["2"]) return
 	for (let toon of group)
 	{
-		if (toon == character.id) continue; // || toon == "camelCase"
+		if (toon == character.id || toon == merchant) continue; // || toon == "camelCase"
 		start_character(toon, 35)
 	}
 }
@@ -74,7 +74,7 @@ function handle_party() {
 		if (Object.keys(parent.party).length < currentGroup.length) {
 			for (let player of currentGroup) {
 				// send invite to non-main characters
-				if (player != currentGroup[0]) send_party_invite(player)
+				if (player != character.id) send_party_invite(player)
 			}
 		}
 	}
