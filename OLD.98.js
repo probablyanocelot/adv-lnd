@@ -60,3 +60,63 @@
 		loot();
 	  }
 	}
+
+class SomeClass {
+	clearWrap(fn) {
+		fn && fn();
+		this.clear_current_action();
+	}
+
+	traveller(loc1, loc2, a, b, c, d) {
+		smart_move(loc1)
+			.then(() => {
+				a && this.clearWrap(a)
+				b && this.clearWrap(b)
+				c && this.clearWrap(c)
+				d && this.clearWrap(d)
+				if (loc2) loc2()
+					.then(() => {
+						this.clear_current_action();
+					})
+					.catch(() => {
+						this.idle_counter = 0;
+						this.clear_current_action();
+					}
+					);
+			})
+			.catch(() => {
+				log("FAILURE traveller");
+				this.idle_counter = 0;
+				this.clear_current_action()
+			}
+			);
+	}
+	//traveller("bank", "main", this.bank_dropoff, )
+}
+
+bank_dropoff2() {
+	for (let idx in character.items) {
+		let item = character.items[idx];
+		if (item) {
+			if (!G.items[item.name].upgrade && !G.items[item.name].compound) bank_store(idx, "items1");
+			for (let teller of Object.keys(BANK_ITEMS)) {
+				let bank = BANK_ITEMS[teller]
+				if (bank.includes(item.name)) {
+					this.set_current_action("banking");
+					smart_move("bank")
+						.then(() => {
+							log("Bank success clear")
+							this.clear_current_action();
+							bank_store(idx, teller);
+							//this.do_idle();
+						})
+						.catch(() => {
+							log("Bank fail clear")
+							this.clear_current_action()
+						}
+					)
+				}
+			}
+		}
+	}
+}

@@ -24,20 +24,19 @@ BANK_ITEMS['items2'] = [];
 class Merchant extends Character {
     constructor(){
 		super()
-		// !!! NEED LOGIC TO USE PICK, IF EXISTS
+		// !!! NEED LOGIC TO USE PICK/ROD, IF EXISTS
 		this.rod;
 		this.pick;
 		this.stand;
 		this.counter = 0;
 		this.home = {map:"main",x:-202.0783375408171, y:-50.0000001}
 
-		this.buyList = ["ink", "quiver", "hbow", "snakefang", "cryptkey", 'rednose', 'tigerhelmet', "poison", "mistletoe", "basketofeggs", "candycane", "candy0", "candy1", "leather", "troll", "candypop", "mshield", "mearring", "dexearring", "intearring", "spookyamulet", "jacko", "tracker"] //'wattire', 'wbreeches', 'wgloves',
-
 		setInterval(this.regen, 500);
 
 		setInterval(this.buff("mluck"), 1000);
 	}
 	
+	// probably redundant? should be in main.js
 	regen() {
 		if (character.max_mp !== character.mp) {
 			if (!is_on_cooldown("regen_mp"))
@@ -50,30 +49,14 @@ class Merchant extends Character {
 		}
 		setTimeout(this.regen, 500);
 	}
-
-	myBuy(){
-		if (character.in == location && is_in_range(npc) && !character.items.length >= 42 && !locate_item(item)){
-		buy_with_gold(item)
-		}
-	}
-
-	
-	Buyble(location, npc, item) {
-	
-		//maybe need sockets?
-	}
-	
 	
 	loop() {
 		this.counter += 1
 		
-				
+		// in-game status report
 		if (this.current_action && this.counter % 5 == 0) log(`Processing loop with action: ${this.current_action}`)
-		//this.sell_trash()
-
 		
 		this.stander()
-
 
 		// if we ripped, respawn and reset
 		if (character.rip) {
@@ -86,6 +69,7 @@ class Merchant extends Character {
 			loot();
 			
 			if (!this.current_action) {
+				this.incrementCounter();
 				//below, add if(this.rod/pick) fish/mine
 				this.do_action("fishing");
 				this.do_action("mining");
@@ -101,11 +85,7 @@ class Merchant extends Character {
 
 			
 			
-			// increment counter when we're doing nothing
-			if (!this.current_action && !character.moving && !this.thinking) {
-				this.idle_counter += 1
-				log(`Idle: ${this.idle_counter}`);
-				}
+
 
 			if (this.idle_counter > 60*5) {
 				this.do_runs()
@@ -117,16 +97,14 @@ class Merchant extends Character {
 		}, 1000);
 	}
 
-
-	sell_trash() {
-		for (let itemIndex in character.items) {
-			let item = character.items[itemIndex];
-			let itemName = item["name"];
-			if (itemName == "slimestaff" && !item.p) sell(item)
-
-
-		}
+	incrementCounter() {
+		// increment counter when we're doing nothing
+		if (!this.current_action && !character.moving && !this.thinking) {
+			this.idle_counter += 1
+			log(`Idle: ${this.idle_counter}`);
+			}
 	}
+
 
 	stander() {
 		if (character.moving) {
@@ -144,38 +122,6 @@ class Merchant extends Character {
 		}, 1000);
 	}
 
-	clearWrap(fn) {
-		fn && fn();
-		this.clear_current_action();
-	}
-
-	traveller(loc1, loc2, a, b, c, d) {
-		smart_move(loc1)
-			.then(() => {
-				a && this.clearWrap(a)
-				b && this.clearWrap(b)
-				c && this.clearWrap(c)
-				d && this.clearWrap(d)
-				if (loc2) loc2()
-					.then(() => {
-						this.clear_current_action();
-					})
-					.catch(() => {
-						this.idle_counter = 0;
-						this.clear_current_action();
-					}
-				);
-			})
-			.catch(() => {
-				log("FAILURE traveller");
-				this.idle_counter = 0;
-				this.clear_current_action()
-			}
-		);
-	}
-	
-	
-	//traveller("bank", "main", this.bank_dropoff, )
 
 	do_runs() {
 		if (this.current_action) return;
@@ -491,37 +437,6 @@ class Merchant extends Character {
 			} continue;
 		} return;
 	}
-
-
-
-	bank_dropoff2() {
-		for (let idx in character.items) {
-			let item = character.items[idx];
-			if (item) {
-				if (!G.items[item.name].upgrade && !G.items[item.name].compound) bank_store(idx, "items1");
-				for (let teller of Object.keys(BANK_ITEMS)) {
-					let bank = BANK_ITEMS[teller]
-					if (bank.includes(item.name)) {
-						this.set_current_action("banking");
-						smart_move("bank")
-							.then(() => {
-								log("Bank success clear")
-								this.clear_current_action();
-								bank_store(idx, teller);
-								//this.do_idle();
-							})
-							.catch(() => {
-								log("Bank fail clear")
-								this.clear_current_action()
-							}
-						)
-					}
-				}
-			}
-		}
-	}
-
-
 
 
 }
