@@ -35,7 +35,7 @@ let sell_dict = {
 		],
 	'merchTrash':
 		[
-			'coat1','helmet1', 'hpbelt','hpamulet',
+			'coat1','helmet1', 'hpbelt','hpamulet', 'whiteegg',
 		]
 }
 let mobsLow = [

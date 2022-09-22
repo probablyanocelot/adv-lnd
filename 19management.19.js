@@ -1,7 +1,3 @@
-function getKeyByValue(object, value) {
-	return Object.keys(object).find(key => object[key] === value);
-}
-
 function transcribe(fromDataStructure, toDataStructure) {
     for (child in fromDataStructure) {
         toDataStructure[child] = fromDataStructure[child]
@@ -26,31 +22,33 @@ function updateBank(){
 	transcribe(character.bank, bankDict)
 }
 
-
-//      #########SELLING#########
-
-function sell_extras_old() {
-	log('selling extras')
-	// index of item in inv
-	for (let itemSlot in character.items) {
-		
-		let item = character.items[itemSlot]
-		if (!item) continue;
-		
-		let itemName = item.name
-        // not in list or is shiny, skip
-        if (!sell_dict['low'].includes(itemName) || item.p) continue;
-        
-		sell(itemSlot)
-    }
+function getKeyByValue(object, value) {
+	return Object.keys(object).find(key => object[key] === value);
 }
 
+function hasProp(container, propStr) {
+	for (let idx in container) {
+		let item = container[idx]
+		if (!item) continue;
+		let itemName = item.name
+		let itemInfo = G.items[itemName]
 
-function sellAllByName(sellItem) {
-	log(`selling by name ${sellItem}`)
-	for (itemSlot in character.items) {
-		if (!character.items[itemSlot]) continue
-		if (character.items[itemSlot].name == sellItem)
-			sell(sellItem)
+		if (itemInfo.hasOwnProperty(propStr)) log(`${itemName} has ${propStr}`)
+		// const hasProperty = (propStr) => { if (itemInfo.hasOwnProperty(propStr)) log(`${itemName} has ${propStr}`) }
+		// hasProperty('e')
 	}
+}
+
+function exampleFindDuplicate() {
+	let array = [{ "name": "Steven Smith", "Country": "England", "Age": 35 }, { "name": "Hannah Reed", "Country": "Scottland", "Age": 23 }, { "name": "Steven Smith", "Country": "England", "Age": 35 }, { "name": "Robert Landley", "Country": "England", "Age": 84 }, { "name": "Steven Smith", "Country": "England", "Age": 35 }, { "name": "Robert Landley", "Country": "England", "Age": 84 }]
+
+	let result = Object.values(array.reduce((c, v) => {
+		let k = v.name + '-' + v.Age;
+		c[k] = c[k] || [];
+		log(c)
+		c[k].push(v);
+		return c;
+	}, {})).reduce((c, v) => v.length > 1 ? c.concat(v) : c, []);
+
+	console.log(result);
 }

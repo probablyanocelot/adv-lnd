@@ -33,24 +33,24 @@ character.on("cm", async (m) => {
 			break;
 				
 		case 'unpack':
-			// maybe bank first?
-			log('unpack1')
-				
-			if (data.pots) await merchantBot.get_pots(data.pots);
-			
+
 			// only merch unpack
-			if (character.ctype != 'merchant' || merchantBot.current_action) return;
-			
+			if (character.ctype != 'merchant' || merchantBot.current_action) break;
+
+			// get pots if we need them
+			if (data.pots) await merchantBot.get_pots(data.pots);
+						
 			// set limiters
 			// merchantBot.thinking = true
 			merchantBot.set_current_action('unpacking')
 
-
+			// go to farmer
 			await smart_move(data.loc)
-
 			log('should be there')
+
 			// let farmers know the truck is here
 			if (is_in_range(get_player(m.name))) send_cm(m.name, { cmd: 'arrived' })
+			
 			if (data.pots) {
 				let hpotSize = pots.h.type
 				let hpotQty = pots.h.qty

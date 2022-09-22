@@ -11,7 +11,7 @@ load_code('19Management')
 //performance_trick()
 
 const { webFrame } = require('electron');
-webFrame.setZoomFactor(.9);
+webFrame.setZoomFactor(1.1);
 
 
 let BANK_ITEMS = {};
@@ -82,11 +82,6 @@ class Merchant extends Character {
 				}
 			}
 
-
-			
-			
-
-
 			if (this.idle_counter > 60*5) {
 				this.do_runs()
 			}
@@ -151,30 +146,44 @@ class Merchant extends Character {
 		);
 	}
 
+	count_pot(itemName, qtyNeeded) {
+		let pot = locate_item(itemName)
+		// qty or 0.     update this to check stand
+		let potQty = character.items[pot].q ?? 0
+		
+		let toBuy = qtyNeeded - potQty
+		return toBuy
+	}
+
 	async get_pots(pots) {
   
-		// if (this.current_action) return
+		if (this.current_action == 'get_pots') return
 
 		// if (smart.moving) return
-		let hpotSize = pots.h.type
-		let hpotQty = pots.h.qty
-		let mpotSize = pots.m.type
-		let mpotQty = pots.m.qty
+		let HP_TYPE = pots.h.type
+		let HP_DESIRED = pots.h.qty
+		let MP_TYPE = pots.m.type
+		let MP_DESIRED = pots.m.qty
+
+
+		let HP_TO_BUY = this.count_pot(HP_TYPE, HP_DESIRED)
+		let MP_TO_BUY = this.count_pot(MP_TYPE, MP_DESIRED)
+
 
 		// don't have enough potions -> go get some
-		if (!character.items[locate_item(hpotSize)] || character.items[locate_item(hpotSize)].q < hpotQty || !character.items[locate_item(mpotSize)] || character.items[locate_item(mpotSize)].q < mpotQty) {
-			if (!this.current_action == 'get_pots') this.set_current_action('get_pots')
+		if (HP_TO_BUY > 0 || MP_TO_BUY > 0) {
+			if (this.current_action != 'get_pots') this.set_current_action('get_pots')
 			await smart_move('potions')
 			log('at potions')
 			// get potions since we're out of one of them
-			if (hpotQty > 0) buy(hpotSize, hpotQty);
-			if (mpotQty > 0) buy(mpotSize, mpotQty);
+			if (HP_TO_BUY > 0) buy(HP_TYPE, HP_TO_BUY);
+			if (MP_TO_BUY > 0) buy(MP_TYPE, MP_TO_BUY);
 			this.clear_current_action();
 			return;
 		}
 		}
 
-
+	
 	doBank() {
 		if (!character.bank && this.current_action == "banking" && !character.moving) {
 			smart_move("bank");
@@ -260,7 +269,7 @@ class Merchant extends Character {
 			return;
 		
 		let exchangeItems = ["basketofeggs", "goldenegg", "gem0", "weaponbox", "candy1", "candy0", "candycane",];
-		
+
 		let hasExchangeable = false;
 		for (let idx in exchangeItems) {
 			if (locate_item(exchangeItems[idx]) > -1) {

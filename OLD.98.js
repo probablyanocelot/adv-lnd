@@ -120,3 +120,32 @@ bank_dropoff2() {
 		}
 	}
 }
+
+
+//      #########SELLING#########
+
+function sell_extras_old() {
+	log('selling extras')
+	// index of item in inv
+	for (let itemSlot in character.items) {
+		
+		let item = character.items[itemSlot]
+		if (!item) continue;
+		
+		let itemName = item.name
+        // not in list or is shiny, skip
+        if (!sell_dict['low'].includes(itemName) || item.p) continue;
+        
+		sell(itemSlot)
+    }
+}
+
+
+function sellAllByName(sellItem) {
+	log(`selling by name ${sellItem}`)
+	for (itemSlot in character.items) {
+		if (!character.items[itemSlot]) continue
+		if (character.items[itemSlot].name == sellItem)
+			sell(sellItem)
+	}
+}
