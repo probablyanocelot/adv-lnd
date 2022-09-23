@@ -193,11 +193,26 @@ class Merchant extends Character {
 		}
 	}
 
+	async crumbDump() {
+		// quick, dirty solution to full character.
+		// TODO: find another place to implement this, possibly even modify dumpNonUppables()
+		if (!character.bank) await doBank()
+		for (let idx in character.items) {
 
+			let item = character.items[idx];
+			if (!item) continue;
+			
+			let itemName = item.name
+
+			// if not in keep dict, or is shiny, or is upgradable and level > 6 then store
+			if (!sell_dict['keep'].includes(itemName) || item.p || (isUpgradable(itemName) && item.level > 6 )) bank_store(idx);
+		}
+	}
 	
 	async doBank() {
 		if (!character.bank && this.current_action == "banking" && !character.moving) {
 			await smart_move("bank")
+			if (character.esize <= 5) this.crumbDump()
 			this.dumpNonUppables()
 		}
 		
