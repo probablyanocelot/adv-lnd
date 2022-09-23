@@ -1,10 +1,3 @@
-function transcribe(fromDataStructure, toDataStructure) {
-    for (child in fromDataStructure) {
-        toDataStructure[child] = fromDataStructure[child]
-    }
-}
-
-
 let loadout = new Object;
 
 
@@ -16,13 +9,20 @@ function updateLoadout() {
 }
 
 
+function transcribe(fromDataStructure, toDataStructure) {
+    for (child in fromDataStructure) {
+        toDataStructure[child] = fromDataStructure[child]
+    }
+}
+
+
 let bankDict = new Object;
 
 
 function updateBank(){
 	if (!character.bank) return
 	// must be in bank
-
+	bankDict = {}
 	transcribe(character.bank, bankDict)
 }
 
@@ -30,18 +30,45 @@ function updateBank(){
 let bankItemDict = new Object;
 
 
+// !ACCOUNT FOR ACHIEVEMENTS, OTHER MODIFIERS LATER!
 function populateBankItemDict() {
+
+
+		// "intamulet": {
+		// 	"1": [
+		// 		{
+		// 			"slot": "19",
+		// 			"container": "items0"
+		// 		},
+		// 		{
+		// 			"slot": "30",
+		// 			"container": "items7"
+		// 		}
+		// 	],
+		// 	"3": [
+		// 		{
+		// 			"slot": "0",
+		// 			"container": "items0"
+		// 		},
+		// 		{
+		// 			"slot": "1",
+		// 			"container": "items0"
+		// 		}
+		// 		]
+		// },
+	
+
+
+	bankItemDict = {}
 	for (let container in bankDict) {
-		// console.log(bankDict[container])
+
 		for (let slot in bankDict[container]) {
 
 			// { name: 'item', level: 0 }
 			let item = bankDict[container][slot]
 			if (!item) continue;
-			
-			// console.log(item)
-			
-			// 'item'
+						
+
             let itemName = item.name
             let itemQty = item.q
 			let itemLevel = item.level
@@ -51,66 +78,70 @@ function populateBankItemDict() {
                 bankItemDict[itemName] = bankItemDict[itemName] || []
                 bankItemDict[itemName].push({ q: itemQty, slot: slot, container: container, })
             }
-			if (itemLevel) {
+			if (itemLevel >= 0) {
 				
                 bankItemDict[itemName] = bankItemDict[itemName] || {}
-                bankItemDict[itemName][itemLevel] = bankItemDict[itemName][itemLevel] || []
-                // if (item.p) bankItemDict[itemName][itemLevel] += { slot: slot, container: container, p: item.p, }
-                // if (!item.p) bankItemDict[itemName][itemLevel] += { slot: slot, container: container, }
+				bankItemDict[itemName][itemLevel] = bankItemDict[itemName][itemLevel] || []
+				
+				// TODO: check for achievements, other modifiers
+				// check for shiny
                 if (item.p) bankItemDict[itemName][itemLevel].push({ slot: slot, container: container, p: item.p, })
 				if (!item.p) bankItemDict[itemName][itemLevel].push({ slot: slot, container: container, })
 				
-				// {
-				// 	"intamulet": {
-				// 		"1": [
-				// 			{
-				// 				"slot": "19",
-				// 				"container": "items0"
-				// 			},
-				// 			{
-				// 				"slot": "30",
-				// 				"container": "items7"
-				// 			}
-				// 		],
-				// 		"3": [
-				// 			{
-				// 				"slot": "0",
-				// 				"container": "items0"
-				// 			},
-				// 			{
-				// 				"slot": "1",
-				// 				"container": "items0"
-				// 			}
-				// 		]
-				// 	},
             }
-
-			// FOR dict[itemName] = [] instead of {}
-			// if (itemLevel >= 0 && item.p) bankItemDict[itemName].push({ level: itemLevel, slot: slot, container: container, p: item.p, })
-			// if (itemLevel >= 0 && !item.p) bankItemDict[itemName].push({ level: itemLevel, slot: slot, container: container, })
-			// bankItemDict[bankDict[]]
 		}
 	}
-	// console.log(bankItemDict)
 }
 
-populateBankItemDict()
-// console.log(dupeDict.cclaw)
+let bankCompoundDict = new Object;
 
 function populateBankCompoundDict() {
-    // console.log(bankItemDict)
+	
     for (let itemName in bankItemDict) {
 		if (!G.items[itemName].compound) continue; 
 
-		for (let itemLevel in bankItemDict[itemName]) {
-			//bankCompoundDict[itemName] = itemName
-			show_json(itemLevel)
-		}
+		bankCompoundDict[itemName] = bankItemDict[itemName]
 	}
 }
 
-function updateDictMaster() {
-	
+function updateMaster() {
+	// TODO: let someVar = new Date;  if it's been too long -> go to bank & refresh
+	if (character.bank) {
+		updateBank()
+		populateBankItemDict()
+		populateBankCompoundDict()
+	}
+
+}
+
+
+function checkBankCompound() {
+	for (let itemName in bankCompoundDict) {
+		
+		// if empty, can't do anything. --- maybe use this to trigger
+		// 		smart_move('bank') -> updateMaster()
+		if (!itemName) return
+		log('didnt return')
+        
+		let level0 = bankCompoundDict[itemName][0]
+        let level1 = bankCompoundDict[itemName][1]
+        let level2 = bankCompoundDict[itemName][2]
+        // let level3 = bankCompoundDict[itemName][0]
+
+		// if we have anough to upgrade, grab them
+        if (level0 && level0.length >= 3) {
+            
+			// TODO: Hanoi
+			for (let i = 0; i < Math.floor(level0.length / 3); i++) {
+
+                let item = level0[i]
+                let container = item.container
+                let slot = item.slot
+                // console.log(item.container)
+                bank_retrieve(container, slot)
+            }
+        }
+    }
 }
 
 
