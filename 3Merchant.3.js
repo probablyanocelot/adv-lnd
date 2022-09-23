@@ -11,7 +11,7 @@ load_code('19Management')
 //performance_trick()
 
 const { webFrame } = require('electron');
-webFrame.setZoomFactor(1.1);
+webFrame.setZoomFactor(0.9);
 
 
 let BANK_ITEMS = {};
@@ -150,6 +150,8 @@ class Merchant extends Character {
 	async get_pots(pots) {
   
 		if (this.current_action == 'get_pots') return
+		let lastAction = this.current_action
+
 
 		// if (smart.moving) return
 		let HP_TYPE = pots.h.type
@@ -170,8 +172,9 @@ class Merchant extends Character {
 			// get potions since we're out of one of them
 			if (HP_TO_BUY > 0) buy(HP_TYPE, HP_TO_BUY);
 			if (MP_TO_BUY > 0) buy(MP_TYPE, MP_TO_BUY);
-			this.clear_current_action();
-			return;
+			if (lastAction == 'unpacking') { this.set_current_action('unpacking') }
+			else { this.clear_current_action(); }
+			return; 
 		}
 		}
 
@@ -216,6 +219,7 @@ class Merchant extends Character {
 				}
 			)
 		}
+		this.clear_current_action();
 	}
 	
 	handleFailTravel(location) {

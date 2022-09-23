@@ -27,32 +27,75 @@ function updateBank(){
 }
 
 
-let dupeDict = new Object;
+let bankItemDict = new Object;
 
 
-function populateDupeDict() {
+function populateBankItemDict() {
 	for (let container in bankDict) {
 		// console.log(bankDict[container])
 		for (let slot in bankDict[container]) {
 
+			// { name: 'item', level: 0 }
 			let item = bankDict[container][slot]
 			if (!item) continue;
 			
-			console.log(item)
-
-			let itemName = item.name
-			dupeDict[itemName] = dupeDict[itemName] || []
-
-			let itemQty = item.q
-			if (itemQty) dupeDict[itemName].push({ q: itemQty, slot: slot, container: container, })
-
+			// console.log(item)
+			
+			// 'item'
+            let itemName = item.name
+            let itemQty = item.q
 			let itemLevel = item.level
-			if (itemLevel >= 0 && item.p) dupeDict[itemName].push({ level: itemLevel, slot: slot, container: container, p: item.p, })
-			if (itemLevel >= 0 && !item.p) dupeDict[itemName].push({ level: itemLevel, slot: slot, container: container, })
-			// dupeDict[bankDict[]]
+            
+            
+            if (itemQty) {
+                BankItemDict[itemName] = BankItemDict[itemName] || []
+                BankItemDict[itemName].push({ q: itemQty, slot: slot, container: container, })
+            }
+			if (itemLevel) {
+				
+                BankItemDict[itemName] = BankItemDict[itemName] || {}
+                BankItemDict[itemName][itemLevel] = BankItemDict[itemName][itemLevel] || []
+                // if (item.p) BankItemDict[itemName][itemLevel] += { slot: slot, container: container, p: item.p, }
+                // if (!item.p) BankItemDict[itemName][itemLevel] += { slot: slot, container: container, }
+                if (item.p) BankItemDict[itemName][itemLevel].push({ slot: slot, container: container, p: item.p, })
+				if (!item.p) BankItemDict[itemName][itemLevel].push({ slot: slot, container: container, })
+				
+				// {
+				// 	"intamulet": {
+				// 		"1": [
+				// 			{
+				// 				"slot": "19",
+				// 				"container": "items0"
+				// 			},
+				// 			{
+				// 				"slot": "30",
+				// 				"container": "items7"
+				// 			}
+				// 		],
+				// 		"3": [
+				// 			{
+				// 				"slot": "0",
+				// 				"container": "items0"
+				// 			},
+				// 			{
+				// 				"slot": "1",
+				// 				"container": "items0"
+				// 			}
+				// 		]
+				// 	},
+            }
+
+			// FOR dict[itemName] = [] instead of {}
+			// if (itemLevel >= 0 && item.p) BankItemDict[itemName].push({ level: itemLevel, slot: slot, container: container, p: item.p, })
+			// if (itemLevel >= 0 && !item.p) BankItemDict[itemName].push({ level: itemLevel, slot: slot, container: container, })
+			// BankItemDict[bankDict[]]
 		}
 	}
-	// console.log(dupeDict)
+	// console.log(BankItemDict)
+}
+
+function updateDictMaster() {
+	
 }
 
 
