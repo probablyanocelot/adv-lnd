@@ -22,14 +22,14 @@ BANK_ITEMS['items2'] = [];
 
 
 class Merchant extends Character {
-    constructor(){
+	constructor() {
 		super()
 		// !!! NEED LOGIC TO USE PICK/ROD, IF EXISTS
 		this.rod;
 		this.pick;
 		this.stand;
 		this.counter = 0;
-		this.home = {map:"main",x:-202.0783375408171, y:-50.0000001}
+		this.home = { map: "main", x: -202.0783375408171, y: -50.0000001 }
 
 		setInterval(this.regen, 500);
 
@@ -82,7 +82,7 @@ class Merchant extends Character {
 				}
 			}
 
-			if (this.idle_counter > 60*5) {
+			if (this.idle_counter > 60 * 5) {
 				this.do_runs()
 			}
 		}
@@ -97,7 +97,7 @@ class Merchant extends Character {
 		if (!this.current_action && !character.moving && !this.thinking) {
 			this.idle_counter += 1
 			log(`Idle: ${this.idle_counter}`);
-			}
+		}
 	}
 
 
@@ -136,14 +136,14 @@ class Merchant extends Character {
 						this.idle_counter = 0;
 						this.clear_current_action()
 					}
-				);
+					);
 			})
 			.catch(() => {
 				log("FAILURE: Ponty")
 				this.idle_counter = 0;
 				this.clear_current_action()
 			}
-		);
+			);
 	}
 
 
@@ -174,52 +174,29 @@ class Merchant extends Character {
 			if (MP_TO_BUY > 0) buy(MP_TYPE, MP_TO_BUY);
 			if (lastAction == 'unpacking') { this.set_current_action('unpacking') }
 			else { this.clear_current_action(); }
-			return; 
-		}
-		}
-
-	
-	doBank() {
-		if (!character.bank && this.current_action == "banking" && !character.moving) {
-			smart_move("bank");
-		}
-		if (character.bank) {
-			this.bank_dropoff();
-			}
-		
-//			for (let item in character.bank.items2) {
-//				if (!character.bank.items2[item]) continue;
-//				bank_retrieve("items2", item);
-//		}
-		this.clear_current_action();
-		if (!this.current_action) {
-			smart_move(this.home).then(() => {
-					this.idle_counter = 0;
-					this.clear_current_action();
-				})
-				.catch(() => {
-					this.handleFailTravel(this.home);
-					this.idle_counter = 0;
-					this.clear_current_action()
-				}
-			);
+			return;
 		}
 	}
 
-	bank() {
-		this.clear_current_action();
-		this.set_current_action("banking");
+	
+	async doBank() {
+		if (!character.bank && this.current_action == "banking" && !character.moving) {
+			await smart_move("bank")
+			this.dumpNonUppables()
+		}
+		
+		//			for (let item in character.bank.items2) {
+		//				if (!character.bank.items2[item]) continue;
+		//				bank_retrieve("items2", item);
+		//		}
+	}
+
+	async bank() {
+		if (this.current_action != 'banking') this.set_current_action("banking");
 
 		if (!character.bank && !smart.moving && !character.moving) {
-			smart_move("bank").then(() => {
-					this.doBank()			
-				})
-				.catch(() => {
-					this.bank()
-				}
-			)
+			await this.doBank()
 		}
-		this.clear_current_action();
 	}
 	
 	handleFailTravel(location) {
@@ -227,15 +204,15 @@ class Merchant extends Character {
 		// this.thinking = true;
 		if (smart.moving) return
 		smart_move(location).then(() => {
-				// this.thinking = false
-				this.clear_current_action()
-			})
+			// this.thinking = false
+			this.clear_current_action()
+		})
 			.catch(() => {
 				// this.thinking = false
 				this.clear_current_action()
 				xmove(location);
 			}
-		)
+			)
 	}
 
 	bank_mining() {
@@ -331,14 +308,14 @@ class Merchant extends Character {
 				log("failed to go to exchange");
 				this.thinking = false;
 			}
-		)
+			)
 	}
 	
 
 
 
 	upgrade_all() {
-		let itemList = [ 'xmasshoes', 'xmaspants', 'xmassweater', "xmashat","mushroomstaff", "stinger", "wcap", "wattire", "wbreeches", "wgloves", "wshoes", "bow", "swifty", "hbow", "sshield", "cclaw", "blade", "eslippers", "eears", "epyjamas", "quiver", 'ololipop', ]
+		let itemList = ['xmasshoes', 'xmaspants', 'xmassweater', "xmashat", "mushroomstaff", "stinger", "wcap", "wattire", "wbreeches", "wgloves", "wshoes", "bow", "swifty", "hbow", "sshield", "cclaw", "blade", "eslippers", "eears", "epyjamas", "quiver", 'ololipop',]
 
 		let scrollType = "scroll0"
 		let scrollSlot = locate_item(scrollType)
@@ -431,21 +408,21 @@ class Merchant extends Character {
 		}
 	}
 
-
-	bank_dropoff() {
+	async dumpNonUppables() {
 		for (let idx in character.items) {
 			let item = character.items[idx];
 			if (item) {
 				if (character.bank) {
-					if (!G.items[item.name].upgrade && !G.items[item.name].compound) bank_store(idx, "items1");
+					if (!G.items[item.name].upgrade && !G.items[item.name].compound) bank_store(idx);
 				}
-			} continue;
-		} return;
+
+			}
+		}
 	}
 
+	bank_dropoff() { }
 
 }
-
 
 let compoundList = [
 	'intamulet', 'intring', 'intbelt', 'intearring', 'strring',

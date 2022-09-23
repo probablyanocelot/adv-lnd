@@ -78,29 +78,29 @@ class Character {
 
 		let location = location_map[action]
 		
-
-		// MAY NEED TO BE MOVED BACK INTO THE smart_move().then() below
-
-		let item_map = {
-			fishing: "rod",
-			mining: "pickaxe"
-		}
-
-		let itemName = item_map[action]
-		let itemIndex = locate_item(itemName)
-		if (!itemIndex) return
-
 		
 		this.set_current_action(action);
 		this.thinking = true;
 		smart_move(location)
 			.then(
-				(success) => {
+				() => {
 					log("got to destination")
 					this.thinking = false;
 
 					// turn on current action
 					this.set_current_action(action);
+
+					// MAY NEED TO BE MOVED BACK INTO THE smart_move().then() below
+
+					let item_map = {
+						fishing: "rod",
+						mining: "pickaxe"
+					}
+
+					let itemName = item_map[action]
+					let itemIndex = locate_item(itemName)
+					if (!itemIndex) return
+
 				
 					if (action == "fishing" || action == "mining") {
 						if (character.slots.offhand) unequip("offhand")
@@ -131,8 +131,8 @@ class Character {
 							}
 						}
 					}, 1000)
-				},
-				(failure) => {
+				})
+				.catch(() => {
 					this.thinking = false;
 					log(`Couldn't go ${action}`)
 				}
