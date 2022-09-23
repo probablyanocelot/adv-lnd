@@ -71,8 +71,8 @@ class Merchant extends Character {
 			if (!this.current_action) {
 				this.incrementCounter();
 				//below, add if(this.rod/pick) fish/mine
-				if (locate_item('rod') >= 0) this.do_action("fishing");
-				if (locate_item('pickaxe') >= 0) this.do_action("mining");
+				if (locate_item('rod') >= 0 || character.slots.mainhand.name == 'rod') this.do_action("fishing");
+				if (locate_item('pickaxe' || character.slots.mainhand.name == 'rod') >= 0) this.do_action("mining");
 				this.bank_mining();
 				this.go_exchange();
 				this.upgrade_all();
@@ -178,6 +178,22 @@ class Merchant extends Character {
 		}
 	}
 
+
+	async dumpNonUppables() {
+		if (!character.bank)  await doBank()
+		for (let idx in character.items) {
+
+			let item = character.items[idx];
+			if (!item) continue;
+			
+			let itemName = item.name
+
+			if (!isUpgradable(itemName) && !isCompoundable(itemName) && !sell_dict['keep'].includes(itemName)) bank_store(idx);
+
+		}
+	}
+
+
 	
 	async doBank() {
 		if (!character.bank && this.current_action == "banking" && !character.moving) {
@@ -196,8 +212,11 @@ class Merchant extends Character {
 
 		if (!character.bank && !smart.moving && !character.moving) {
 			await this.doBank()
+			this.clear_current_action()
+			if (!smart.moving && !this.current_action) await smart_move(this.home)
 		}
 	}
+	
 	
 	handleFailTravel(location) {
 		log(`'${this.current_action}' fail clear`)
@@ -408,20 +427,6 @@ class Merchant extends Character {
 		}
 	}
 
-	async dumpNonUppables() {
-		for (let idx in character.items) {
-			let item = character.items[idx];
-			if (item) {
-				if (character.bank) {
-					if (!G.items[item.name].upgrade && !G.items[item.name].compound) bank_store(idx);
-				}
-
-			}
-		}
-	}
-
-	bank_dropoff() { }
-
 }
 
 let compoundList = [
@@ -550,6 +555,17 @@ function sell_extras() {
 		sell(itemSlot)
     }
 	setTimeout(sell_extras, 1440 * 1000)
+}
+
+
+function isUpgradable(itemName) {
+	if (G.items[itemName].upgrade) return true
+	return false
+}
+
+function isCompoundable(itemName) {
+	if (G.items[itemName].compound) return true
+	return false
 }
 
 
