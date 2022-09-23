@@ -21,7 +21,11 @@ let itemMobDict = {
 let sell_dict = {
 	'keep': 
 		[
-			'hpot0', 'hpot1', 'mpot0', 'mpot1', 'tracker', 'scroll0','scroll1','scroll2','primling'
+			'hpot0', 'hpot1', 'mpot0', 'mpot1',
+			'stand0', 'tracker',
+			'primling', 'offering',
+			'scroll0', 'scroll1', 'scroll2',
+			'cscroll0', 'cscroll1', 'cscroll2',
 		],
     'low':
 		[
