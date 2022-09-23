@@ -208,6 +208,9 @@ class Ranger {
 			log('stuck move')
 			smart_move(myFarmDefault)
 		}
+		if (this.current_action == 'farming' && character.x != farmDefault[character.id].x && character.y != farmDefault[character.id].y) {
+			smart_move(farmDefault[character.id]).catch(use_skill('use_town'))
+		}
 	}
   
   
@@ -413,7 +416,7 @@ class Ranger {
 		this.manage_healing()
 		//this.manage_buffs()
 		this.manage_combat()
-		// this.fixStuck();
+		this.fixStuck();
 		this.serverEvents();
 	}
 
