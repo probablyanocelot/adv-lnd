@@ -50,6 +50,7 @@ class Character {
 
 
 	do_action(action) {
+
 		// dont do if there's something else going on
 		if (this.current_action || this.thinking)
 			return;
@@ -77,6 +78,19 @@ class Character {
 
 		let location = location_map[action]
 		
+
+		// MAY NEED TO BE MOVED BACK INTO THE smart_move().then() below
+
+		let item_map = {
+			fishing: "rod",
+			mining: "pickaxe"
+		}
+
+		let itemName = item_map[action]
+		let itemIndex = locate_item(itemName)
+		if (!itemIndex) return
+
+		
 		this.set_current_action(action);
 		this.thinking = true;
 		smart_move(location)
@@ -87,14 +101,6 @@ class Character {
 
 					// turn on current action
 					this.set_current_action(action);
-
-					let item_map = {
-						fishing: "rod",
-						mining: "pickaxe"
-					}
-
-					let itemName = item_map[action]
-					let itemIndex = locate_item(itemName)
 				
 					if (action == "fishing" || action == "mining") {
 						if (character.slots.offhand) unequip("offhand")

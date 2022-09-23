@@ -71,8 +71,8 @@ class Merchant extends Character {
 			if (!this.current_action) {
 				this.incrementCounter();
 				//below, add if(this.rod/pick) fish/mine
-				this.do_action("fishing");
-				this.do_action("mining");
+				if (locate_item('rod') >= 0) this.do_action("fishing");
+				if (locate_item('pickaxe') >= 0) this.do_action("mining");
 				this.bank_mining();
 				this.go_exchange();
 				this.upgrade_all();
