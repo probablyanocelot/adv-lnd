@@ -345,7 +345,7 @@ class Merchant extends Character {
 	
 		// let action = "upgrade"
 		// dont do if there's something else going on
-		if (this.current_action) return;
+		if (this.current_action || smart.moving) return;
 
 		//this.current_action = action
 		
