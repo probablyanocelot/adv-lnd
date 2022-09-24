@@ -3,6 +3,13 @@
 // load_code(12) // utility fns; locate_items(), getPosition("charname"), savePosition()
 // load_code(14) // partying
 
+
+// where to go
+let location_map = {
+	fishing: {map: 'main', x: -1368, y: -216},
+	mining: {map:"woffice", x: -153.15, y: -177}
+}		
+			
 class Character {
 	constructor() {
 		
@@ -69,12 +76,9 @@ class Character {
 		}
 		
 		log(`Doing: ${action}`)
-
-		// where to go
-		let location_map = {
-			fishing: {map: 'main', x: -1368, y: -216},
-			mining: {map: 'tunnel', x: -279.9999999, y: -10.0000001},
-		}
+		
+		let tunnelMine = {map: 'tunnel', x: -279.9999999, y: -10.0000001}
+		
 
 		let location = location_map[action]
 		

@@ -191,6 +191,7 @@ class Merchant extends Character {
 			if (!isUpgradable(itemName) && !isCompoundable(itemName) && !sell_dict['keep'].includes(itemName)) bank_store(idx);
 
 		}
+		return
 	}
 
 	async crumbDump() {
@@ -207,13 +208,18 @@ class Merchant extends Character {
 			// if not in keep dict, or is shiny, or is upgradable and level > 6 then store
 			if (!sell_dict['keep'].includes(itemName) || item.p || (isUpgradable(itemName) && item.level > 6 )) bank_store(idx);
 		}
+		return
 	}
 	
 	async doBank() {
-		if (!character.bank && this.current_action == "banking" && !character.moving) {
+		if (!character.bank && this.current_action == "banking" && !smart.moving) {
 			await smart_move("bank")
-			if (character.esize <= 5) this.crumbDump()
-			this.dumpNonUppables()
+		}
+		if (character.bank) {
+			if (character.esize <= 5) await this.crumbDump()
+			await this.dumpNonUppables()
+			this.clear_current_action();
+			if (!smart.moving) await smart_move(this.home)
 		}
 		
 		//			for (let item in character.bank.items2) {
@@ -224,12 +230,10 @@ class Merchant extends Character {
 
 	async bank() {
 		if (this.current_action != 'banking') this.set_current_action("banking");
-
-		if (!character.bank && !smart.moving && !character.moving) {
-			await this.doBank()
-			this.clear_current_action()
-			if (!smart.moving && !this.current_action) await smart_move(this.home)
-		}
+		if (!smart.moving) await this.doBank()
+		this.clear_current_action()
+		if (character.bank && !smart.moving) await smart_move(this.home)
+		return
 	}
 	
 	
@@ -260,7 +264,7 @@ class Merchant extends Character {
 					if (character.bank) this.thinking = false
 					log("Bank success clear")
 					bank_store(locate_item("gemfragment"), "items1");
-					this.doBank();
+					this.bank();
 				})
 				.catch(() => {
 					log("Bank fail clear")
