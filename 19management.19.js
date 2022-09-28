@@ -110,8 +110,29 @@ function updateMaster() {
 		updateBank()
 		populateBankItemDict()
 		populateBankCompoundDict()
+		checkBankCompound()
 	}
 
+}
+
+
+function bankHanoi(array){
+	// if we have anough to upgrade, grab them
+	if (array && array.length >= 3) {
+         
+		// !FIX BELOW, PULLING 5x +2 vitring - SHOULD PULL 6 
+		let iterations = (array.length/3+1) +1
+		
+		 //TODO: Hanoi
+		 for (let i = 0; i < iterations; i ++) { // Math.floor(array.length / 3)
+
+			let item = array[i]
+			let container = item.container
+			let slot = item.slot
+			// console.log(item.container)
+			bank_retrieve(container, slot)
+		 }
+	}
 }
 
 
@@ -121,26 +142,19 @@ function checkBankCompound() {
 		// if empty, can't do anything. --- maybe use this to trigger
 		// 		smart_move('bank') -> updateMaster()
 		if (!itemName) return
-		log('didnt return')
+		//log('didnt return')
         
 		let level0 = bankCompoundDict[itemName][0]
         let level1 = bankCompoundDict[itemName][1]
         let level2 = bankCompoundDict[itemName][2]
         // let level3 = bankCompoundDict[itemName][0]
+		
+		arrays = [ level0, level1, level2 ]
+		
+		for (let array of arrays){
+				bankHanoi(array)
+		}
 
-		// if we have anough to upgrade, grab them
-        if (level0 && level0.length >= 3) {
-            
-			// TODO: Hanoi
-			for (let i = 0; i < Math.floor(level0.length / 3); i++) {
-
-                let item = level0[i]
-                let container = item.container
-                let slot = item.slot
-                // console.log(item.container)
-                bank_retrieve(container, slot)
-            }
-        }
     }
 }
 

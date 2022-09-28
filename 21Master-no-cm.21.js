@@ -68,7 +68,8 @@ class Character {
     this.last_use_hp_potion;
 
     // combat
-    this.mon_type;
+    this.target;
+    this.mon_type = 'cgoo';
   
   }
   
@@ -204,6 +205,7 @@ class Character {
   }
 
 
+
   manage_combat() {
     if (character.ctype == "merchant") return;
     if (this.pvp) return;
@@ -213,20 +215,21 @@ class Character {
       // until we have situational targets, define a target
       if (!this.mon_type) this.mon_type = "cgoo";
 
+	this.target = get_nearest_monster({type: this.mon_type})
+		
       // only targets without a target already
-      let target = get_nearest_monster({ type: this.mon_type });
-      if (!target || target.rip) {
+      if (!this.target || this.target.rip) {
 
-        target = get_nearest_monster({ type: this.mon_type });
+        this.target = get_nearest_monster({ type: this.mon_type });
         
-        if (!target) return;
+        if (!this.target) return;
 
-        if ((!target.target == undefined) && (!is_friendly(target.target))) {
+        if ((!this.target.target == undefined) && (!is_friendly(this.target.target))) {
           change_target(null);
           return;
         }
-        if (target) {
-          change_target(target)
+        if (this.target) {
+          change_target(this.target)
         }
 
         // if still no target, smart_move to monster
@@ -251,17 +254,17 @@ class Character {
 
       if (smart.moving || this.thinking) return;
 
-      if (distance(character, target) > character.range * 0.9) {
-        if (can_move_to(target.real_x, target.real_y)) {
-          let half_x = character.real_x + (target.real_x - character.real_x) / 2;
-          let half_y = character.real_y + (target.real_y - character.real_y) / 2;
+      if (distance(character, this.target) > character.range * 0.9) {
+        if (can_move_to(this.target.real_x, this.target.real_y)) {
+          let half_x = character.real_x + (this.target.real_x - character.real_x) / 2;
+          let half_y = character.real_y + (this.target.real_y - character.real_y) / 2;
           move(half_x, half_y);
         }
       }
-      if (can_attack(target) && !parent.is_disabled(character)) {
+      if (can_attack(this.target) && !parent.is_disabled(character)) {
         set_message('Attacking');
-        manage_combat_skills(target);
-        if (!is_on_cooldown('attack')) attack(target);
+        manage_combat_skills(this.target);
+        if (!is_on_cooldown('attack')) attack(this.target);
       }
       loot();
     }
@@ -290,5 +293,8 @@ class Character {
   };
 }
 
+
+
 char = new Character;
+char.mon_type = 'bigbird'
 char.loop();

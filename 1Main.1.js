@@ -4,10 +4,13 @@
 // load_code(14) // partying
 
 
+let tunnelMine = {map: 'tunnel', x: -279.9999999, y: -10.0000001}
+let wofficeMine = {map:"woffice", x: -153.15, y: -177}
+
 // where to go
 let location_map = {
 	fishing: {map: 'main', x: -1368, y: -216},
-	mining: {map:"woffice", x: -153.15, y: -177}
+	mining: tunnelMine
 }		
 			
 class Character {
@@ -76,8 +79,6 @@ class Character {
 		}
 		
 		log(`Doing: ${action}`)
-		
-		let tunnelMine = {map: 'tunnel', x: -279.9999999, y: -10.0000001}
 		
 
 		let location = location_map[action]

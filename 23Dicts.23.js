@@ -9,7 +9,20 @@ let cgoo = {map:'arena'}
 
 
 let bots = {
-	'3r': ['couplaGrapes','cannaMace','camelCase','VendorGuy']
+	'3ra': ['couplaGrapes','cannaMace','camelCase','VendorGuy'],
+	'2ra': ['couplaGrapes','camelCase','VendorGuy'],
+	'2ra1p': ['couplaGrapes','camelCase','SaladMan','VendorGuy'],
+	'1ra1p1ro': ['camelCase','SaladMan','Teef','VendorGuy'],
+}
+
+function makeGroups(){
+	// dict of ctypes, maybe do if {mainChar} == x, group=y	
+	switch(character.ctype){
+		case 'ranger':
+			break
+		case 'paladin':
+			break
+	}
 }
 
 

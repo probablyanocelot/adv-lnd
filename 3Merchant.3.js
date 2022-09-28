@@ -82,6 +82,10 @@ class Merchant extends Character {
 				}
 			}
 
+			if (character.bank && this.idle_counter > 30 && !smart.moving) smart_move(this.home)
+
+			if (this.idle_counter / 90 == 0 ) buyFromPonty()
+
 			if (this.idle_counter > 60 * 5) {
 				this.do_runs()
 			}
@@ -544,6 +548,22 @@ function high_upgrade_all() {
 	
 	setTimeout(high_upgrade_all, TIMEOUT);
 }
+
+
+let slots = character.slots
+let activeTraderSlots = []
+function getActiveTradeSlots(){
+	for(let slot in character.slots){ 
+		let regex = /trade/
+		let match = regex.test(slot)
+		if (!match) continue
+		
+		let mySlot = character.slots[slot]
+		if (!mySlot) continue
+		activeTraderSlots.push(slot)
+		}
+}
+
 
 
 function compound_loop() {

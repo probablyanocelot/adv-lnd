@@ -4,12 +4,13 @@ load_code('23Dicts')
 load_code('1Main')
 load_code('13Skills')	//skill3shot(), get_nearby_entitties()
 load_code('14Partying')	// PARTY, bots
+load_code('15Combat')
 load_code('16Relations')	// cm
 load_code('19management') //sell extras -- merge this and 12Inv?
 
 
 let merchant = 'VendorGuy';
-let group = '3r'
+let group = '2ra'
 let currentGroup = getGroup(group)
 let myFarmDefault = farmDefault[character.id]
 
@@ -21,7 +22,7 @@ let PACK_THRESHOLD = 28;
 
 
 //STARTUP
-startBots(currentGroup);
+if (character.name == currentGroup[0]) startBots(currentGroup);
 const keyInviteBots = map_key("9", "snippet", "sendInvites('r3')")
 const keyKillBots = map_key('8', 'snippet', "killBots(currentGroup)")
 setInterval(loot, 65)
@@ -181,6 +182,7 @@ class Ranger {
 
 	manage_idle() {
 
+		if (character.ctype == 'paladin') return
 		if (smart.moving || this.current_action || (this.current_action && !this.current_action == '')) return;
 
 		if (character.moving) {
@@ -390,6 +392,8 @@ class Ranger {
 		
 		if (character.rip || smart.moving) return;
 													
+		if (character.ctype != 'ranger' && character.ctype != 'merchant') doCombat()
+
 		skill3shot(get_nearby_entities());
 	}
 
@@ -467,6 +471,76 @@ function toMerch(){
 		if (!character.items[i]) continue;
 		send_item(merchant, i, character.items[i]['q']);
 	}return;
+}
+
+function getTarget() {
+
+	let target=get_nearest_monster()
+	let mobType = target.mtype
+
+	// if in dict: return target
+	if (mobsLow.includes(mobType) || (mobsMed.includes(mobType) &&
+		character.ctype == 'paladin')) return target;
+
+	// else, set null and return
+	target = null
+	set_message("No Monsters");
+	return target
+}
+
+function goToTarget(target) {
+	if (!target) return
+	// not in range, or we are moving - skip
+	if(is_in_range(target)) return
+	if(character.moving || smart.moving) return
+	
+	// Walk half the distance
+	xmove(
+		character.x+(target.x-character.x)/2,
+		character.y+(target.y-character.y)/2
+		);
+}
+
+function distanceToTarget(target){
+	let dist = null
+	if (target) dist = distance(character,target)
+	return dist
+}
+
+function doCombat() {
+
+	if (character.ctype == merchant) return
+	let target = get_targeted_monster()
+
+	if (!target || target.rip) target = getTarget()
+
+	change_target(target)
+	goToTarget(target)
+
+	if(can_attack(target))
+	{
+		set_message("Attacking");
+		attack(target);
+	}
+
+	// if(character.rip || smart.moving) return;
+
+	// // if we already have target, define
+	// let target=get_targeted_monster();
+
+	// // if dead, get new
+	// if(!target || target.rip) target = getTarget()
+
+	// change_target(target)
+
+	// // if not close enough, go to it
+	// if (!is_in_range(target)) goToTarget(target)
+
+	// if(can_attack(target))
+	// {
+	// 	set_message("Attacking");
+	// 	attack(target);
+	// }
 }
 
 // function toSnek(){
