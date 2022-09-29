@@ -540,7 +540,7 @@ function doCombat() { // doCombat(char)
 		let spawnBorder = getTargetSpawnBorder(myMtype)
 		let topLeft = spawnBorder[0]
 
-		xmove(topLeft[0]*.95, topLeft[1]*.95)
+		xmove(topLeft[0]*.5, topLeft[1]*.5)
 	}
 }
 
