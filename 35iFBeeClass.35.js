@@ -403,6 +403,29 @@ class Ranger {
 													
 		if (character.ctype != 'ranger' && character.ctype != 'merchant') doCombat(char)
 
+
+		if (character.ctype != 'ranger') return
+		for (let mob of mobsLow) {
+			if (get_nearest_monster({ type: mob })) {
+				let target = get_nearest_monster({ type: mob })
+				if (!target) continue
+				change_target(target)
+				if (!is_in_range(target)) {
+					if (mob == 'rgoo') {
+						xmove(
+							character.x + (target.x - character.x) / 2,
+							character.y + (target.y - character.y) / 2
+						);
+					}
+				}
+				if (character.ctype == 'ranger') {
+					if (target.max_hp > character.attack * 2 && !is_on_cooldown('huntersmark')) use_skill('huntersmark', target)
+					if (target.max_hp > character.attack * 1.5 && !is_on_cooldown('supershot')) use_skill('supershot', target)
+				}
+				attack(target)
+			}
+		}
+
 		skill3shot(mobsLow, get_nearby_entities());
 	}
 
@@ -487,6 +510,10 @@ function getTarget() {
 	let target = get_nearest_monster()
 	let mobType = null
 	if (target) mobType = target.mtype
+
+	let rgoo = get_nearest_monster({type: 'rgoo'})
+
+	if (rgoo) return rgoo
 
 	if (!mobType) return false
 
