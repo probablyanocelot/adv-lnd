@@ -72,5 +72,5 @@ function pallySkills(target) {
 	if (target.hp < 2000 && !is_on_cooldown('purify')) use_skill('purify', target)
 	// if (target.hp < character.attack * G.skills.smash.damage_multiplier && !is_on_cooldown('smash')) use_skill('smash', target)
 	// if(!is_on_cooldown('smash') && target.hp == target.max_hp) use_skill('smash', target)
-	if(!is_on_cooldown('smash')) use_skill('smash', target)
+	if(!is_on_cooldown('smash') && target.hp > character.attack) use_skill('smash', target)
 }
