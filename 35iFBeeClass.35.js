@@ -404,6 +404,7 @@ class Ranger {
 		if (character.ctype != 'ranger' && character.ctype != 'merchant') doCombat(char)
 
 
+		// TODO: make its own function
 		if (character.ctype != 'ranger') return
 		for (let mob of mobsLow) {
 			if (get_nearest_monster({ type: mob })) {
@@ -411,6 +412,7 @@ class Ranger {
 				if (!target) continue
 				change_target(target)
 				if (!is_in_range(target)) {
+					// TODO: add mobs to a chase dict?
 					if (mob == 'rgoo') {
 						xmove(
 							character.x + (target.x - character.x) / 2,
