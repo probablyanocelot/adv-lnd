@@ -452,6 +452,13 @@ class Merchant extends Character {
 
 }
 
+function buy_compound_scroll(scrollSlot, COMPOUND_SCROLL) {
+	if (!character.items[scrollSlot]) {
+		buy_with_gold(COMPOUND_SCROLL);
+	}
+}
+
+
 let compoundList = [
 	'intamulet', 'intring', 'intbelt', 'intearring', 'strring',
 	'strearring', 'stramulet', 'strbelt', 'dexamulet',
@@ -465,13 +472,19 @@ function do_combine(item_name) {
 
 	let scrollSlot = locate_item(COMPOUND_SCROLL);
 	// buy scroll if not in inventory
-	if (!character.items[scrollSlot]) {
-		buy_with_gold(COMPOUND_SCROLL);
-		scrollSlot = locate_item(COMPOUND_SCROLL);
-	}
+
 	
-	let levelArray = [0, 1, 2]
+	let levelArray = [0, 1, 2, 3,]
 	for (let level in levelArray) {
+		// check if need different scroll
+		// limited level 3 support
+		if (level == 3 && item_name != 'ringsj') continue
+		if (level == 3) {
+			COMPOUND_SCROLL = "cscroll1"
+		}
+		scrollSlot = locate_item(COMPOUND_SCROLL);
+		buy_compound_scroll(scrollSlot, COMPOUND_SCROLL)
+
 		// get a list of items
 		let itemList = locate_items(item_name, level);
 		if (itemList.length >= 3) {

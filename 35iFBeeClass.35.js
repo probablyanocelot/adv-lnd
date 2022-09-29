@@ -421,15 +421,15 @@ class Ranger {
 					}
 				}
 				if (character.ctype == 'ranger') {
-					if (target.max_hp > character.attack * 2 && !is_on_cooldown('huntersmark')) use_skill('huntersmark', target)
-					if (target.max_hp > character.attack * 1.5 && !is_on_cooldown('supershot')) use_skill('supershot', target)
-					if (target.max_hp < character.attack * 0.7 * 1.9) skill3shot(mobsLow, get_nearby_entities())
+					if (target.max_hp > character.attack * 2 && !is_on_cooldown('huntersmark') && character.mp >= 400) use_skill('huntersmark', target)
+					if (target.max_hp >= character.attack * 1.5 && !is_on_cooldown('supershot') && character.mp >= 500) use_skill('supershot', target)
+					if (target.max_hp < character.attack * 0.7 * 1.9 && !is_on_cooldown('3shot')) skill3shot(mobsLow, get_nearby_entities())
 				}
-				attack(target)
+				if (!is_on_cooldown('attack')) attack(target)
 			}
 		}
 
-		skill3shot(mobsLow, get_nearby_entities());
+		// if (!is_on_cooldown('3shot')) skill3shot(mobsLow, get_nearby_entities());
 	}
 
 	manage_item_bounty() {
