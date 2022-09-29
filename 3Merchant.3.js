@@ -84,9 +84,9 @@ class Merchant extends Character {
 
 			if (character.bank && this.idle_counter > 30 && !smart.moving) smart_move(this.home)
 
-			if (this.idle_counter / 90 == 0 ) buyFromPonty()
+			// if (this.idle_counter / 90 == 0 ) buyFromPonty()
 
-			if (this.idle_counter > 60 * 5) {
+			if (this.idle_counter > 60 * 3) {
 				this.do_runs()
 			}
 		}

@@ -20,6 +20,9 @@ let desired_mp_pot = "mpot1"
 let desired_hp_pot = "hpot1"
 let PACK_THRESHOLD = 28;
 
+let myMtype = 'cgoo'
+
+
 
 //STARTUP
 if (character.name == currentGroup[0]) startBots(currentGroup);
@@ -108,11 +111,14 @@ class Ranger {
 		this.last_use_hp_potion;
   
 		// combat
+		this.turret = true;
 		this.mon_type;
 		this.can_kill;
 		this.itemBounty;
 		this.itemBountyQty;
 		
+		if(character.ctype == 'paladin') this.turret = false
+
 	setTimeout(savePosition(), 10000)
 	
 	}
@@ -268,7 +274,10 @@ class Ranger {
 	
 	// if full, call merchant. if merchant, manage inv
 	manage_inv() {
-		if (this.dry()) send_cm(merchant, { cmd: 'unpack', loc:current_location(), pots: this.count_pot() });
+		if (this.dry()) {
+			if (this.turret == false) this.set_current_action('unpacking')
+			send_cm(merchant, { cmd: 'unpack', loc: current_location(), pots: this.count_pot() });
+		}
 		pvpBank();
 		if (character.esize <= 24) send_cm(merchant, {cmd:'unpack', loc:current_location(), pots: this.count_pot()});
 	}
@@ -392,9 +401,9 @@ class Ranger {
 		
 		if (character.rip || smart.moving) return;
 													
-		if (character.ctype != 'ranger' && character.ctype != 'merchant') doCombat()
+		if (character.ctype != 'ranger' && character.ctype != 'merchant') doCombat(char)
 
-		skill3shot(get_nearby_entities());
+		skill3shot(mobsLow, get_nearby_entities());
 	}
 
 	manage_item_bounty() {
@@ -475,8 +484,11 @@ function toMerch(){
 
 function getTarget() {
 
-	let target=get_nearest_monster()
-	let mobType = target.mtype
+	let target = get_nearest_monster()
+	let mobType = null
+	if (target) mobType = target.mtype
+
+	if (!mobType) return false
 
 	// if in dict: return target
 	if (mobsLow.includes(mobType) || (mobsMed.includes(mobType) &&
@@ -485,7 +497,7 @@ function getTarget() {
 	// else, set null and return
 	target = null
 	set_message("No Monsters");
-	return target
+	return false
 }
 
 function goToTarget(target) {
@@ -507,47 +519,54 @@ function distanceToTarget(target){
 	return dist
 }
 
-function doCombat() {
+function doCombat() { // doCombat(char)
 
 	if (character.ctype == merchant) return
+	// if (char.turret == false && char.current_action === 'unpacking') return
 	let target = get_targeted_monster()
 
 	if (!target || target.rip) target = getTarget()
-
+	if (target) myMtype = target.mtype
 	change_target(target)
 	goToTarget(target)
 
-	if(can_attack(target))
-	{
-		set_message("Attacking");
+
+	if (can_attack(target)) {
+		pallySkills(target)
 		attack(target);
 	}
 
-	// if(character.rip || smart.moving) return;
+	if (!getTarget()){
+		let spawnBorder = getTargetSpawnBorder(myMtype)
+		let topLeft = spawnBorder[0]
 
-	// // if we already have target, define
-	// let target=get_targeted_monster();
-
-	// // if dead, get new
-	// if(!target || target.rip) target = getTarget()
-
-	// change_target(target)
-
-	// // if not close enough, go to it
-	// if (!is_in_range(target)) goToTarget(target)
-
-	// if(can_attack(target))
-	// {
-	// 	set_message("Attacking");
-	// 	attack(target);
-	// }
+		xmove(topLeft[0]*.95, topLeft[1]*.95)
+	}
 }
 
-// function toSnek(){
-// 	if(is_moving(character)) return;
-// 	smart_move("halloween");
-// 	setInterval(function(){
-// 		if(is_moving(character)) return;
-// 		xmove(-495,-500);
-// 	},5000);
+
+
+
+function getTargetSpawnBorder(mtype) {
+    // get a target monster and return the spawn border
+    let map = G.maps[character.map];
+
+    // iterate through the monsters
+    for (let monster of map.monsters) {
+        // if it's of our target type
+        if (monster.type == mtype) {
+
+            let topLeft = [monster.boundary[0], monster.boundary[1]]
+            let bottomRight = [monster.boundary[2], monster.boundary[3]]
+
+            return [topLeft, bottomRight]
+        }
+    }
+}
+
+// let spawnBorder = getTargetSpawnBorder(target)
+// let topLeft = spawnBorder[0]
+
+// if ( (target.hp < target.max_hp) && character.x !== topLeft[0] ) {
+// 	xmove(topLeft[0], topLeft[1])
 // }

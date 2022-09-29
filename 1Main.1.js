@@ -28,7 +28,7 @@ class Character {
 		this.action;
 		this.state;		
 		this.support = false
-	//		TARGETTING
+		// TARGETTING
 		this.target;
 		this.target_name;
 		this.target_type;

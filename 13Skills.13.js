@@ -38,7 +38,7 @@ function focus(entities){
 
 // 3 SHOT
 let last_use_3shot = 0;
-function skill3shot(targets, manaReserve = 0.3) {
+function skill3shot(mobWhiteList=false, targets, manaReserve = 0.3) {
 	
     if(character.ctype !== "ranger") return
     if(is_on_cooldown("attack")) return 
@@ -51,8 +51,11 @@ function skill3shot(targets, manaReserve = 0.3) {
         if (get_monster(target)){
 			target = get_monster(target)
 		}
-		if(!is_in_range(target)) continue; //)||target.ctype) continue // Out of range or is character
-        inRangeTargets.push(target)
+		if (!is_in_range(target)) continue; //)||target.ctype) continue // Out of range or is character
+		
+		// !REMOVE if TO ATTACK ANY
+		if (!mobWhiteList) continue
+        if(mobWhiteList.includes(target.mtype)) inRangeTargets.push(target)
     }
     
 	if (inRangeTargets.length < 1) return // Not enough targets to 3shot
@@ -62,3 +65,10 @@ function skill3shot(targets, manaReserve = 0.3) {
     use_skill("3shot", inRangeTargets).then(last_use_3shot = Date.now())
 }
 // 3 SHOT
+
+function pallySkills(target) {
+	if (!character.s.mshield) use_skill('mshield')
+	if (!target) return
+	if (target.hp < 2000 && !is_on_cooldown('purify')) use_skill('purify', target)
+	if (target.hp < character.attack * G.skills.smash.damage_multiplier && !is_on_cooldown('smash')) use_skill('smash', target)
+}

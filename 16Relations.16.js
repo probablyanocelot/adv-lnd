@@ -50,7 +50,12 @@ character.on("cm", async (m) => {
 			log('should be there')
 
 			// let farmers know the truck is here
-			if (is_in_range(get_player(m.name))) send_cm(m.name, { cmd: 'arrived' })
+			if (is_in_range(get_player(m.name))) {
+				send_cm(m.name, { cmd: 'arrived' })
+			} else {
+				await smart_move(get_player(m.name).x, get_player(m.name).y)
+				send_cm(m.name, { cmd: 'arrived' })
+			}
 			
 			if (data.pots) {
 				let hpotSize = data.pots.h.type
@@ -69,7 +74,7 @@ character.on("cm", async (m) => {
 			break;
 		
 		case 'arrived':
-			if (!is_in_range(get_player(m.name))) break;
+			if (!is_in_range(get_player(m.name))) await smart_move(get_player(m.name).x, get_player(m.name).y);
 
 			if (character.gold > farmerReserve) send_gold(merchant, character.gold - farmerReserve)
 
@@ -78,6 +83,10 @@ character.on("cm", async (m) => {
 				let item = character.items[itemIndex]
 				if (!sell_dict['keep'].includes(item.name))send_item(m.name, itemIndex, 9999)
 			}
+			if (char) {
+				if (char.current_action == 'unpacking') char.clear_current_action()
+			}
+
 			send_cm(m.name, { cmd: 'done_unpack'})
 			break;
 		
