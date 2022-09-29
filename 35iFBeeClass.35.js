@@ -10,7 +10,7 @@ load_code('19management') //sell extras -- merge this and 12Inv?
 
 
 let merchant = 'VendorGuy';
-let group = '2ra'
+let group = '3ra'
 let currentGroup = getGroup(group)
 let myFarmDefault = farmDefault[character.id]
 
@@ -423,6 +423,7 @@ class Ranger {
 				if (character.ctype == 'ranger') {
 					if (target.max_hp > character.attack * 2 && !is_on_cooldown('huntersmark')) use_skill('huntersmark', target)
 					if (target.max_hp > character.attack * 1.5 && !is_on_cooldown('supershot')) use_skill('supershot', target)
+					if (target.max_hp < character.attack * 0.7 * 1.9) skill3shot(mobsLow, get_nearby_entities())
 				}
 				attack(target)
 			}
