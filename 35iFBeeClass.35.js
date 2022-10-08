@@ -432,26 +432,26 @@ class Ranger {
 		// TODO: make its own function
 		if (character.ctype != 'ranger') return
 		for (let mob of mobsLow) {
-			if (get_nearest_monster({ type: mob })) {
-				let target = get_nearest_monster({ type: mob })
-				if (!target) continue
-				change_target(target)
-				if (!is_in_range(target)) {
-					// TODO: add mobs to a chase dict?
-					if (mob == 'rgoo') {
-						xmove(
-							character.x + (target.x - character.x) / 2,
-							character.y + (target.y - character.y) / 2
-						);
-					}
+			let target = get_nearest_monster({ type: mob })
+			if (!target) continue
+
+			if (mobsGroup.includes(target) && !target.target) return
+			change_target(target)
+			if (!is_in_range(target)) {
+				// TODO: add mobs to a chase dict?
+				if (mob == 'rgoo') {
+					xmove(
+						character.x + (target.x - character.x) / 2,
+						character.y + (target.y - character.y) / 2
+					);
 				}
-				if (character.ctype == 'ranger') {
-					if (target.max_hp > character.attack * 3 && !is_on_cooldown('huntersmark') && character.mp >= 400) use_skill('huntersmark', target)
-					if (target.max_hp >= character.attack * 1.5 && !is_on_cooldown('supershot') && character.mp >= 500) use_skill('supershot', target)
-					if (target.max_hp < character.attack * 0.7 * 1.9 && !is_on_cooldown('3shot')) skill3shot(mobsLow, get_nearby_entities())
-				}
-				if (!is_on_cooldown('attack')) attack(target)
 			}
+			if (character.ctype == 'ranger') {
+				if (target.max_hp > character.attack * 3 && !is_on_cooldown('huntersmark') && character.mp >= 400) use_skill('huntersmark', target)
+				if (target.max_hp >= character.attack * 1.5 && !is_on_cooldown('supershot') && character.mp >= 500) use_skill('supershot', target)
+				if (target.max_hp < character.attack * 0.7 * 1.9 && !is_on_cooldown('3shot')) skill3shot(mobsLow, get_nearby_entities())
+			}
+			if (!is_on_cooldown('attack')) attack(target)
 		}
 
 		// if (!is_on_cooldown('3shot')) skill3shot(mobsLow, get_nearby_entities());

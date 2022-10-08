@@ -59,9 +59,13 @@ let mobsLow = [
 	"bee", "crab", "squigtoad", "snake", "osnake", "armadillo",
 	"croc", "squig", "goo", "tortoise", 
 	"goldenbat", "phoenix", "tinyp", "greenjr", "minimush", 'bgoo', "icegolem",
-	'rgoo', 'crabxx', 'franky', 'grinch', 'crabx', 'frog', 'cutebee',
-	'crabx', 'cutebee',
+	'rgoo', 'grinch', 'crabx', 'frog', 'cutebee',
+	// group mobs
+	'crabxx', 'franky', 'mrpumpkin','mrgreen', 
+
 ];
+
+let mobsGroup = ['crabxx', 'franky', 'mrpumpkin','mrgreen',]
 
 let mobsMed = [
 	'rat', 'bbpompom', 'cgoo', "iceroamer", 'scorpion', "bat", 'arcticbee',
