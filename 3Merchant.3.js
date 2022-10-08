@@ -514,7 +514,7 @@ function high_upgrade_all() {
 		'xmasshoes', 'xmaspants', 'xmassweater', "xmashat",'merry',
 		 "epyjamas", "eears", "pants1", "gloves1", "firestaff",
 		  "shoes1", "fireblade", "quiver", 'ecape',
-		   'pinkie','t2bow',
+		   'pinkie','t2bow', 'phelmet', 'pmaceofthedead', 
 		] //"bataxe", "oozingterror", "harbringer","basher",
 	let scrollType = "scroll1"
 	let scrollSlot = locate_item(scrollType)

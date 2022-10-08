@@ -167,16 +167,18 @@ class Ranger {
 		let bosses = ['mrpumpkin', 'mrgreen', 'snowman', 'rabbit']
 		let rareBosses = []
 
-		if (this.current_action && this.current_action != 'farming') return
+		// if (this.current_action && this.current_action != 'farming') return
 
 		for (let boss of bosses) {
 			if (parent.S[boss] && parent.S[boss].live) {
 
 				// TODO: what if current_action is more important event?
 				if (smart.moving) return
-				if ((!this.current_action || this.current_action == 'farming') && this.current_action != boss) this.set_current_action(boss)
+				// TODO: maybe just mobsFocus / mobsGroup .includes(current_action)
+				// e.g. is event mob, etc
+				if ((!this.current_action || this.current_action == 'farming') && this.current_action != boss) this.current_action = boss
 
-				if (is_in_range(get_nearest_monster({type: boss}))) return
+				if (is_in_range(get_nearest_monster({type: boss}))) break
 				if (this.current_action == boss) smart_move(boss)
 			}
 
@@ -286,20 +288,7 @@ class Ranger {
 
 
   
-  farmSell() {
 
-
-	if (smart.moving || character.ctype == 'merchant') return;
-	// if (!character.esize <= 5) return;
-	  log('farmSell move')
-	smart_move('main').then(() => {
-		sell_extras();
-		this.clear_current_action()
-		// 	// sellAllByName('ringsj');
-		// })
-	})
-
-	}
 	
 	// if full, call merchant. if merchant, manage inv
 	manage_inv() {
@@ -641,15 +630,16 @@ function doCombat() { // doCombat(char)
 
 
 
-function getTargetSpawnBorder(mtype) {
+function getTargetSpawnBorder(mtype, map = false) {
     // get a target monster and return the spawn border
-    let map = G.maps[character.map];
-
+    if (!map) map = G.maps[character.map];
+	if (map) map = G.maps[map]
     // iterate through the monsters
     for (let monster of map.monsters) {
         // if it's of our target type
         if (monster.type == mtype) {
 
+			// TODO: simple trig to find other 2 ends + some 'if unreachable' logic
             let topLeft = [monster.boundary[0], monster.boundary[1]]
             let bottomRight = [monster.boundary[2], monster.boundary[3]]
 

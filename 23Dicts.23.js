@@ -1,11 +1,35 @@
 // SET UP A MOB DICT FOR THIS
-let crab = {map:"main", x:-1175.7559333568836, y:-94.26759905415406}
+// ! USE THIS IN TRAVELLING FN TO GIVE COORDS IF NO x / y GIVEN
+// let map = G.maps[character.map];
+
+// // iterate through the monsters
+// for (let monster of map.monsters) {
+// 	// if it's of our target type
+// 	if (monster.type == mtype) {
+
+// 		let topLeft = [monster.boundary[0], monster.boundary[1]]
+let crab = { map: "main", x: -1175.7559333568836, y: -94.26759905415406 }
 let squig = { map:"main", x: -1165.6557029608748, y: 300.21328251075323 }
 let squigSouth = { map:'main', x: -1166.3100928140552, y: 478.627440332755 }
 let optimalBee = { map: "main", x: 745.0119325069998, y: 713.0353542476796 }
 let snake = { map:'main', x: -99.00430360974092, y: 1892.1728334181553}
-let osnake = {"map": "halloween","x": -585.5701569278165,"y": -350.4367234174731,}
-let cgoo = {map:'arena'}
+let osnake = {map: "halloween",x: -585.5701569278165,y: -350.4367234174731,}
+let cgoo = { map: 'arena' }
+let mrpumpkin = { map: 'halloween' }
+let mrgreen = { map: 'spookytown' }
+let snowman = { map: 'winterland' }
+
+let mobLocationDict = {
+	'crab': crab,
+	'squig': squig,
+	'squig2': squigSouth,
+	'snake': snake,
+	'osnake': osnake,
+	'cgoo': cgoo,
+	'mrpumpkin': mrpumpkin,
+	'mrgreen': mrgreen,
+	'snowman': snowman,
+}
 
 
 let bots = {
@@ -52,7 +76,7 @@ let sell_dict = {
 		],
 	'merchTrash':
 		[
-			'coat1','helmet1', 'hpbelt','hpamulet', 'whiteegg',
+			'coat1','helmet1', 'hpbelt','hpamulet', 'whiteegg', 'pmaceofthedead', 
 		]
 }
 let mobsLow = [
