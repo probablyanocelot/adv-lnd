@@ -65,7 +65,7 @@ let mobsLow = [
 
 ];
 
-let mobsGroup = ['crabxx', 'franky', 'mrpumpkin','mrgreen',]
+let mobsGroup = ['crabxx', 'franky', 'mrpumpkin','mrgreen', 'icegolem', ]
 
 let mobsMed = [
 	'rat', 'bbpompom', 'cgoo', "iceroamer", 'scorpion', "bat", 'arcticbee',
