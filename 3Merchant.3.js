@@ -362,7 +362,7 @@ class Merchant extends Character {
 
 
 	upgrade_all() {
-		let itemList = ['xmasshoes', 'xmaspants', 'xmassweater', "xmashat", "mushroomstaff", "stinger", "wcap", "wattire", "wbreeches", "wgloves", "wshoes", "bow", "swifty", "hbow", "sshield", "cclaw", "blade", "eslippers", "eears", "epyjamas", "quiver", 'ololipop',]
+		let itemList = ['xmasshoes', 'xmaspants', 'xmassweater', "xmashat", "mushroomstaff", "stinger", "wcap", "wattire", "wbreeches", "wgloves", "wshoes", "bow", "swifty", "hbow", "sshield", "cclaw", "blade", "eslippers", "eears", "epyjamas", "quiver", 'ololipop', 'throwingstars',]
 
 		let scrollType = "scroll0"
 		let scrollSlot = locate_item(scrollType)

@@ -173,17 +173,15 @@ class Ranger {
 			if (parent.S[boss] && parent.S[boss].live) {
 
 				// TODO: what if current_action is more important event?
-				if (!this.current_action || this.current_action == 'farming') this.set_current_action(boss)
-
-				if (get_nearest_monster({type: boss})) return
 				if (smart.moving) return
-				smart_move(boss)
+				if ((!this.current_action || this.current_action == 'farming') && this.current_action != boss) this.set_current_action(boss)
+
+				if (is_in_range(get_nearest_monster({type: boss}))) return
+				if (this.current_action == boss) smart_move(boss)
 			}
 
 			if (!this.current_action == boss) continue
-			if (parent.S[boss] && !parent.S[boss].live){
-				if (this.current_action == boss) this.clear_current_action()
-			}
+			if (parent.S[boss] && !parent.S[boss].live && this.current_action == boss) this.clear_current_action()
 		}
 
 	}
@@ -458,17 +456,23 @@ class Ranger {
 		
 		if (!target) return
 
+		let targetName = target.mtype
+
 		// TODO: maybe better phoenix selection
 		// 
-		if (!mobsFocus.includes(target)) {
+		if (!mobsFocus.includes(targetName)) {
 			if (get_nearest_monster({ type: 'phoenix' })) target = get_nearest_monster({ type: 'phoenix' })
 		}
 
 		// TODO: make its own function or REMOVE?
 		if (character.ctype != 'ranger') return
 
-		if (mobsGroup.includes(target) && !target.target) return
+		if (mobsGroup.includes(targetName) && !target.target) return
 		change_target(target)
+		if (target.hp > character.attack * 2 && distanceToTarget(target) <= character.range * 0.25) {
+			// TODO: poking
+			
+		}
 		if (!is_in_range(target)) {
 			// TODO: add mobs to a chase dict?
 			// if (mob == 'rgoo') {
