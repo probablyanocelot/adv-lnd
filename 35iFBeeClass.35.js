@@ -169,7 +169,7 @@ class Ranger {
 
 		if (this.current_action && this.current_action != 'farming') return
 
-		for (boss of bosses) {
+		for (let boss of bosses) {
 			if (parent.S[boss] && parent.S[boss].live) {
 
 				if (get_nearest_monster({type: boss})) return
@@ -177,6 +177,8 @@ class Ranger {
 				if (smart.moving) return
 				smart_move(boss)
 			}
+
+			if (!this.current_action == boss) return
 			if (parent.S[boss] && !parent.S[boss].live){
 				if (this.current_action == boss) this.clear_current_action()
 			}
@@ -427,34 +429,56 @@ class Ranger {
 	manage_combat() {
 		
 		if (character.rip || smart.moving) return;
-													
+		
+		let target;
+
 		if (character.ctype != 'ranger' && character.ctype != 'merchant') doCombat()
 
+		if (this.current_action && G.monsters.hasOwnProperty(this.current_action)) target = this.current_action
 
-		// TODO: make its own function
-		if (character.ctype != 'ranger') return
-		for (let mob of mobsLow) {
-			let target = get_nearest_monster({ type: mob })
-			if (!target) continue
-
-			if (mobsGroup.includes(target) && !target.target) return
-			change_target(target)
-			if (!is_in_range(target)) {
-				// TODO: add mobs to a chase dict?
-				if (mob == 'rgoo') {
-					xmove(
-						character.x + (target.x - character.x) / 2,
-						character.y + (target.y - character.y) / 2
-					);
-				}
-			}
-			if (character.ctype == 'ranger') {
-				if (target.max_hp > character.attack * 3 && !is_on_cooldown('huntersmark') && character.mp >= 400) use_skill('huntersmark', target)
-				if (target.max_hp >= character.attack * 1.5 && !is_on_cooldown('supershot') && character.mp >= 500) use_skill('supershot', target)
-				if (target.max_hp < character.attack * 0.7 * 1.9 && !is_on_cooldown('3shot')) skill3shot(mobsLow, get_nearby_entities())
-			}
-			if (!is_on_cooldown('attack')) attack(target)
+		for (let mob of mobsFocus) {
+			targetFocus = get_nearest_monster({ type: mob })
+			if (!targetFocus) continue
+			target = targetFocus
+			break
 		}
+
+		// near weak/always-attack mobs
+		for (let mob of mobsLow) {
+			if (target) break
+			target = get_nearest_monster({ type: mob })
+			if (!target) continue
+		}
+		
+		if (!target) return
+
+		// TODO: maybe better phoenix selection
+		// 
+		if (!mobsFocus.includes(target)) {
+			if (get_nearest_monster({ type: 'phoenix' })) target = get_nearest_monster({ type: 'phoenix' })
+		}
+		if (mobsFocus.includes(target))
+
+		// TODO: make its own function or REMOVE?
+		if (character.ctype != 'ranger') return
+
+		if (mobsGroup.includes(target) && !target.target) return
+		change_target(target)
+		if (!is_in_range(target)) {
+			// TODO: add mobs to a chase dict?
+			// if (mob == 'rgoo') {
+			// 	xmove(
+			// 		character.x + (target.x - character.x) / 2,
+			// 		character.y + (target.y - character.y) / 2
+			// 	);
+			// }
+		}
+		if (character.ctype == 'ranger') {
+			if (target.max_hp > character.attack * 3 && !is_on_cooldown('huntersmark') && character.mp >= 400) use_skill('huntersmark', target)
+			if (target.max_hp >= character.attack * 1.5 && !is_on_cooldown('supershot') && character.mp >= 500) use_skill('supershot', target)
+			if (target.max_hp < character.attack * 0.7 * 1.9 && !is_on_cooldown('3shot')) skill3shot(mobsLow, get_nearby_entities())
+		}
+		if (!is_on_cooldown('attack')) attack(target)
 
 		// if (!is_on_cooldown('3shot')) skill3shot(mobsLow, get_nearby_entities());
 	}

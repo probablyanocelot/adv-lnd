@@ -58,14 +58,19 @@ let sell_dict = {
 let mobsLow = [
 	"bee", "crab", "squigtoad", "snake", "osnake", "armadillo",
 	"croc", "squig", "goo", "tortoise", 
-	"goldenbat", "phoenix", "tinyp", "greenjr", "minimush", 'bgoo', "icegolem",
+	"goldenbat", "phoenix", "tinyp", "greenjr", "minimush", 'bgoo',
 	'rgoo', 'grinch', 'crabx', 'frog', 'cutebee',
 	// group mobs
-	'crabxx', 'franky', 'mrpumpkin','mrgreen', 
+	'crabxx', 'franky', 'mrpumpkin','mrgreen', "icegolem",
 
 ];
 
-let mobsGroup = ['crabxx', 'franky', 'mrpumpkin','mrgreen', 'icegolem', ]
+let mobsGroup = ['crabxx', 'franky', 'mrpumpkin', 'mrgreen', 'icegolem',]
+
+let mobsFocus = [
+	'franky', 'mrpumpkin', 'mrgreen', 'icegolem', 'grinch',
+	'cutebee', 'tinyp', 'rgoo', 'jr', 'greenjr', 'snowman',
+]
 
 let mobsMed = [
 	'rat', 'bbpompom', 'cgoo', "iceroamer", 'scorpion', "bat", 'arcticbee',
