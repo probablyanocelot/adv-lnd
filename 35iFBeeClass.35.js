@@ -172,8 +172,10 @@ class Ranger {
 		for (let boss of bosses) {
 			if (parent.S[boss] && parent.S[boss].live) {
 
+				// TODO: what if current_action is more important event?
+				if (!this.current_action || this.current_action == 'farming') this.set_current_action(boss)
+
 				if (get_nearest_monster({type: boss})) return
-				this.set_current_action(boss)
 				if (smart.moving) return
 				smart_move(boss)
 			}
@@ -443,12 +445,16 @@ class Ranger {
 			break
 		}
 
+
 		// near weak/always-attack mobs
-		for (let mob of mobsLow) {
-			if (target) break
-			target = get_nearest_monster({ type: mob })
-			if (!target) continue
+		if (!target) {
+			for (let mob of mobsLow) {
+				target = get_nearest_monster({ type: mob })
+				// ! NOT OPTIMAL; SUPERSHOT IS 3x character.range !!
+				if (target && distanceToTarget(target) <= character.range) break
+			}
 		}
+		
 		
 		if (!target) return
 
@@ -457,7 +463,6 @@ class Ranger {
 		if (!mobsFocus.includes(target)) {
 			if (get_nearest_monster({ type: 'phoenix' })) target = get_nearest_monster({ type: 'phoenix' })
 		}
-		if (mobsFocus.includes(target))
 
 		// TODO: make its own function or REMOVE?
 		if (character.ctype != 'ranger') return
@@ -476,7 +481,7 @@ class Ranger {
 		if (character.ctype == 'ranger') {
 			if (target.max_hp > character.attack * 3 && !is_on_cooldown('huntersmark') && character.mp >= 400) use_skill('huntersmark', target)
 			if (target.max_hp >= character.attack * 1.5 && !is_on_cooldown('supershot') && character.mp >= 500) use_skill('supershot', target)
-			if (target.max_hp < character.attack * 0.7 * 1.9 && !is_on_cooldown('3shot')) skill3shot(mobsLow, get_nearby_entities())
+			if (target.max_hp < character.attack * 0.7 * 2 && !is_on_cooldown('3shot')) skill3shot(mobsLow, get_nearby_entities())
 		}
 		if (!is_on_cooldown('attack')) attack(target)
 
@@ -598,7 +603,7 @@ function goToTarget(target) {
 }
 
 function distanceToTarget(target){
-	let dist = null
+	let dist;
 	if (target) dist = distance(character,target)
 	return dist
 }
