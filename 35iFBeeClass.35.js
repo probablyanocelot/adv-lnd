@@ -163,9 +163,11 @@ class Ranger {
 
 
 	serverMiniEvents() {
-		// ! UNEMPLEMENTED
-		const bosses = ['mrpumpkin','mrgreen']
-		const rareBosses = []
+
+		let bosses = ['mrpumpkin', 'mrgreen', 'snowman', 'rabbit']
+		let rareBosses = []
+
+		if (this.current_action && this.current_action != 'farming') return
 
 		for (boss of bosses) {
 			if (parent.S[boss] && parent.S[boss].live) {
@@ -470,7 +472,9 @@ class Ranger {
   
 	sequence() {
 		this.handle_death()
+
 		if (character.rip) return;
+		
 		handle_party()
 		this.manage_item_bounty
 		//this.handleMonsterHunt();
@@ -481,7 +485,8 @@ class Ranger {
 		//this.manage_buffs()
 		this.manage_combat()
 		this.fixStuck();
-		this.serverEvents();
+		this.serverEvents()
+		this.serverMiniEvents()
 	}
 
   
