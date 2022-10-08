@@ -481,7 +481,8 @@ class Ranger {
 		if (character.ctype == 'ranger') {
 			if (target.max_hp > character.attack * 3 && !is_on_cooldown('huntersmark') && character.mp >= 400) use_skill('huntersmark', target)
 			if (target.max_hp >= character.attack * 1.5 && !is_on_cooldown('supershot') && character.mp >= 500) use_skill('supershot', target)
-			if (target.max_hp < character.attack * 0.7 * 2 && !is_on_cooldown('3shot')) skill3shot(mobsLow, get_nearby_entities())
+			// ! MAYBE DO <= character.attack * 2
+			if (target.max_hp < character.attack * 0.7 * 3 * 2 && !is_on_cooldown('3shot')) skill3shot(mobsLow, get_nearby_entities())
 		}
 		if (!is_on_cooldown('attack')) attack(target)
 
