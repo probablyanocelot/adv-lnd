@@ -6,6 +6,7 @@ load_code('12Inv')
 load_code('14Partying')
 load_code('16Relations')
 load_code('19Management')
+load_code('40Gui')
 
 //load_code(53) // upgrade_all2 WILL ADD MORE
 //performance_trick()
@@ -19,7 +20,11 @@ BANK_ITEMS['items0'] = [];
 BANK_ITEMS['items1'] = ["snakefang", "frogt", "vitscroll", "gemfragment"];
 BANK_ITEMS['items2'] = [];
 
-
+map_key('F12', {
+    'name': 'pure_eval',
+    'code': 'electron_dev_tools()',
+    'keycode': 123,
+});
 
 class Merchant extends Character {
 	constructor() {
@@ -71,8 +76,8 @@ class Merchant extends Character {
 			if (!this.current_action) {
 				this.incrementCounter();
 				//below, add if(this.rod/pick) fish/mine
-				if (locate_item('rod') >= 0 || character.slots.mainhand.name == 'rod') this.do_action("fishing");
-				if (locate_item('pickaxe' || character.slots.mainhand.name == 'rod') >= 0) this.do_action("mining");
+				if (locate_item('rod') >= 0 || (character.slots.mainhand && character.slots.mainhand.name == 'rod')) this.do_action("fishing");
+				if (locate_item('pickaxe' || (character.slots.mainhand && character.slots.mainhand.name == 'pickaxe')) >= 0) this.do_action("mining");
 				this.bank_mining();
 				this.go_exchange();
 				this.upgrade_all();

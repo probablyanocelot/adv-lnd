@@ -7,7 +7,7 @@ load_code('14Partying')	// PARTY, bots
 load_code('15Combat')
 load_code('16Relations')	// cm
 load_code('19management') //sell extras -- merge this and 12Inv?
-
+load_code('40Gui')
 
 let merchant = 'VendorGuy';
 let group = '3ra'
@@ -22,7 +22,7 @@ let PACK_THRESHOLD = 28;
 
 let myMtype = 'cgoo'
 
-
+if (character.controller) log(character.controller)
 
 //STARTUP
 if (character.name == currentGroup[0]) startBots(currentGroup);
@@ -160,18 +160,40 @@ class Ranger {
 		}
 		return false;
 	}
+
+
+	serverMiniEvents() {
+		// ! UNEMPLEMENTED
+		const bosses = ['mrpumpkin','mrgreen']
+		const rareBosses = []
+
+		for (boss of bosses) {
+			if (parent.S[boss] && parent.S[boss].live) {
+
+				if (get_nearest_monster({type: boss})) return
+				this.set_current_action(boss)
+				if (smart.moving) return
+				smart_move(boss)
+			}
+			if (parent.S[boss] && !parent.S[boss].live){
+				if (this.current_action == boss) this.clear_current_action()
+			}
+		}
+
+	}
 	
-	
+
 	serverEvents() {
 		if (character.ctype == 'merchant') return;
 		for (let eventMob in G.events) {
+			if (seasonalEvents.includes(eventMob)) continue
 			eventMob = String(eventMob)
 	
 			// if (!joinEvent(eventMob)) continue;
 			if (this.joinEvent(eventMob)) this.current_action = eventMob
 	
 
-			if (this.current_action == eventMob && !parent.S[eventMob]) this.moveToThen(myFarmDefault, this.clear_current_action())
+			if (this.current_action == eventMob && !parent.S[eventMob] && !smart.moving) this.moveToThen(myFarmDefault, this.clear_current_action())
 			
 		}
 	}
@@ -216,7 +238,10 @@ class Ranger {
 			log('stuck move')
 			smart_move(myFarmDefault)
 		}
+
+		// !TODO: replace farmDefault with 'is in' dict logic. maybe .hasOwnProperty()
 		if (this.current_action == 'farming' && character.x != farmDefault[character.id].x && character.y != farmDefault[character.id].y) {
+			if (character.moving || smart.moving) return
 			smart_move(farmDefault[character.id]).catch(use_skill('use_town'))
 		}
 	}
@@ -401,7 +426,7 @@ class Ranger {
 		
 		if (character.rip || smart.moving) return;
 													
-		if (character.ctype != 'ranger' && character.ctype != 'merchant') doCombat(char)
+		if (character.ctype != 'ranger' && character.ctype != 'merchant') doCombat()
 
 
 		// TODO: make its own function

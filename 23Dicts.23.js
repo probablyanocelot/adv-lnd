@@ -99,3 +99,5 @@ let farmDefault = {
 	"camelCase": crab,
 	"couplaGrapes": squigSouth
 }
+
+let seasonalEvents = ['halloween','holidayseason','lunarnewyear','valentines']
