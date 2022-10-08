@@ -178,7 +178,7 @@ class Ranger {
 				smart_move(boss)
 			}
 
-			if (!this.current_action == boss) return
+			if (!this.current_action == boss) continue
 			if (parent.S[boss] && !parent.S[boss].live){
 				if (this.current_action == boss) this.clear_current_action()
 			}
@@ -437,7 +437,7 @@ class Ranger {
 		if (this.current_action && G.monsters.hasOwnProperty(this.current_action)) target = this.current_action
 
 		for (let mob of mobsFocus) {
-			targetFocus = get_nearest_monster({ type: mob })
+			let targetFocus = get_nearest_monster({ type: mob })
 			if (!targetFocus) continue
 			target = targetFocus
 			break
