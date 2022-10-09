@@ -75,6 +75,8 @@ class Merchant extends Character {
 			
 			if (!this.current_action) {
 				this.incrementCounter();
+				this.manage_slots()
+
 				//below, add if(this.rod/pick) fish/mine
 				if (locate_item('rod') >= 0 || (character.slots.mainhand && character.slots.mainhand.name == 'rod')) this.do_action("fishing");
 				if (locate_item('pickaxe' || (character.slots.mainhand && character.slots.mainhand.name == 'pickaxe')) >= 0) this.do_action("mining");
@@ -109,6 +111,51 @@ class Merchant extends Character {
 		}
 	}
 
+	getItemAndSlot(itemName) {
+		let invSlot = locate_item(itemName)
+		if (!invSlot) return false
+		let item = character.items[invSlot]
+		if (!item) return false
+		
+		return { item: item, slot: invSlot }
+		// {
+		// 		item: {name: 'broom', level: 2},
+		//	 	slot: 2
+		// }
+	}
+
+	equipItem(itemName, eqSlot) {
+		let itemAndSlot = this.getItemAndSlot(itemName)
+		if (!itemAndSlot) return
+		
+		// access object's item & slot
+		let {item: item, slot: invSlot} = itemAndSlot
+		
+		// declarations
+		let invName = item.name
+		let invlevel = item.level
+		let eqItem = character.slots[eqSlot]
+		
+		// nothing equipped, equip item
+		if (!eqItem) {
+			equip(invSlot)
+			return
+		}
+
+		// access equipped's name & level
+		let { 'name': eqName, 'level': eqLevel } = eqItem
+
+		// don't EQ if ours is better
+		if (eqName == invName && eqLevel > invlevel) return
+		// do EQ if wearing different item
+		equip(invSlot)
+	}
+
+	manage_slots() {
+		let broom = 'broom'
+		// broom when no action, or not mining/fishing
+		if (!this.current_action || (this.current_action != 'fishing' && this.current_action != 'mining')) this.equipItem(broom)
+	}
 
 	stander() {
 		if (character.moving) {
@@ -227,9 +274,9 @@ class Merchant extends Character {
 		if (character.bank) {
 			if (character.esize <= 5) await this.crumbDump()
 			await this.dumpNonUppables()
-			this.clear_current_action();
-			if (!smart.moving) await smart_move(this.home)
+			await smart_move(this.home)
 		}
+		this.clear_current_action();
 		
 		//			for (let item in character.bank.items2) {
 		//				if (!character.bank.items2[item]) continue;
