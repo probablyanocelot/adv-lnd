@@ -1,10 +1,22 @@
 log("16 - cm.16.js")
 load_code('24Traversal')
 
+// TODO better memo-ize
+let last_cm;
+
+function doCm(botName, message) {
+      if (last_cm == null || new Date() - last_cm >= 5000) {
+        send_cm(botName, message)
+        last_cm = new Date();
+    }
+}
+
+
+
 function group_cm(botlist, my_code) {
     for (let bot in botlist) {
 		if (bot == character.id) continue;
-        send_cm(botlist[bot], my_code)
+        doCm(botlist[bot], my_code)
     }
 }
 
@@ -163,7 +175,7 @@ function sendToMerchant() {
 }
 
 function request_merchant() {
-	send_cm(MERCHANT_NAME, {cmd:'call',loc:current_location()})
+	doCm(MERCHANT_NAME, {cmd:'call',loc:current_location()})
 }
 
 function send_to_merchant(start, end) {

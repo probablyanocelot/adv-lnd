@@ -164,7 +164,8 @@ class Ranger {
 
 	serverMiniEvents() {
 
-		let bosses = ['mrpumpkin', 'mrgreen', 'snowman', 'rabbit']
+		// TODO: snowman, rabbit support -- smart_move('snowman') gives 'Unrecognized Location'
+		let bosses = ['mrpumpkin', 'mrgreen', ]		//'snowman', 'rabbit'
 		let rareBosses = []
 
 		// if (this.current_action && this.current_action != 'farming') return
@@ -294,10 +295,10 @@ class Ranger {
 	manage_inv() {
 		if (this.dry()) {
 			if (this.turret == false) this.set_current_action('unpacking')
-			send_cm(merchant, { cmd: 'unpack', loc: current_location(), pots: this.count_pot() });
+			doCm(merchant, { cmd: 'unpack', loc: current_location(), pots: this.count_pot() });
 		}
+		if (character.esize <= 24) doCm(merchant, {cmd:'unpack', loc:current_location(), pots: this.count_pot()});
 		pvpBank();
-		if (character.esize <= 24) send_cm(merchant, {cmd:'unpack', loc:current_location(), pots: this.count_pot()});
 	}
 	
   

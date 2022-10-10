@@ -72,6 +72,8 @@ class Merchant extends Character {
 		} else {
 			
 			loot();
+			sell_extras();
+			this.upgrade_all();
 			
 			if (!this.current_action) {
 				this.incrementCounter();
@@ -82,8 +84,6 @@ class Merchant extends Character {
 				if (locate_item('pickaxe' || (character.slots.mainhand && character.slots.mainhand.name == 'pickaxe')) >= 0) this.do_action("mining");
 				this.bank_mining();
 				this.go_exchange();
-				this.upgrade_all();
-				sell_extras();
 				if (character.moving) {
 					this.idle_counter = 0;
 				}
@@ -145,6 +145,7 @@ class Merchant extends Character {
 		// access equipped's name & level
 		let { 'name': eqName, 'level': eqLevel } = eqItem
 
+
 		// don't EQ if ours is better
 		if (eqName == invName && eqLevel > invlevel) return
 		// do EQ if wearing different item
@@ -154,7 +155,7 @@ class Merchant extends Character {
 	manage_slots() {
 		let broom = 'broom'
 		// broom when no action, or not mining/fishing
-		if (!this.current_action || (this.current_action != 'fishing' && this.current_action != 'mining')) this.equipItem(broom)
+		if (!this.current_action || (this.current_action != 'fishing' && this.current_action != 'mining')) this.equipItem(broom, 'mainhand')
 	}
 
 	stander() {
@@ -416,7 +417,7 @@ class Merchant extends Character {
 	
 		// let action = "upgrade"
 		// dont do if there's something else going on
-		if (this.current_action || smart.moving) return;
+		if (smart.moving) return;
 
 		//this.current_action = action
 		
@@ -456,7 +457,7 @@ class Merchant extends Character {
 					
 					}
 					if (character.real_x != this.home.x && character.real_y != this.home.y) {
-						if (!this.thinking) {
+						if (!this.thinking && !this.current_action) {
 							this.thinking = true;
 							smart_move(this.home)
 								.then(this.thinking = false)
@@ -516,7 +517,7 @@ let compoundList = [
 	'strearring', 'stramulet', 'strbelt', 'dexamulet',
 	'dexring', 'dexbelt', 'dexearring', 'skullamulet',
 	'book0', 'hpamulet', 'hpbelt', 'ringsj', 'wbook0',
-	'vitring',
+	'vitring', 'jacko',
 ]
 
 function do_combine(item_name) {
@@ -561,8 +562,10 @@ function high_upgrade_all() {
 		'xmasshoes', 'xmaspants', 'xmassweater', "xmashat",'merry',
 		 "epyjamas", "eears", "pants1", "gloves1", "firestaff",
 		  "shoes1", "fireblade", "quiver", 'ecape',
-		   'pinkie','t2bow', 'phelmet', 'pmaceofthedead', 
-		] //"bataxe", "oozingterror", "harbringer","basher",
+		'pinkie', 't2bow', 'phelmet', 'pmaceofthedead', 
+		'staffofthedead', 'oozingterror', "harbringer", "basher",
+		"bataxe",
+		]
 	let scrollType = "scroll1"
 	let scrollSlot = locate_item(scrollType)
     let maxLevel = 8;
@@ -656,6 +659,10 @@ function sell_extras() {
         if (!sell_dict['merchTrash'].includes(itemName) || item.p) continue;
 		
 		log(`selling ${itemName}`)
+		if (item.q) {
+			sell(itemSlot, item.q)
+			continue
+		}
 		sell(itemSlot)
     }
 	setTimeout(sell_extras, 1440 * 1000)
