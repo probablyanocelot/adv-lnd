@@ -426,6 +426,7 @@ class Ranger {
 
 		if (this.current_action && G.monsters.hasOwnProperty(this.current_action)) target = this.current_action
 
+		// GROUP MOBS / HARDER MOBS GET PRIORITY
 		for (let mob of mobsFocus) {
 			let targetFocus = get_nearest_monster({ type: mob })
 			if (!targetFocus) continue
@@ -444,7 +445,7 @@ class Ranger {
 		}
 		
 		
-		if (!target) return
+		if (!target) return 	// must have target beyond here
 
 		let targetName = target.mtype
 
@@ -454,10 +455,15 @@ class Ranger {
 			if (get_nearest_monster({ type: 'phoenix' })) target = get_nearest_monster({ type: 'phoenix' })
 		}
 
+
 		// TODO: make its own function or REMOVE?
 		if (character.ctype != 'ranger') return
 
-		if (mobsGroup.includes(targetName) && !target.target) return
+		// GROUP MOBS
+		if (mobsGroup.includes(targetName)) {
+			avoid(target)
+			if(!target.target) return
+		}
 		change_target(target)
 		if (target.hp > character.attack * 2 && distanceToTarget(target) <= character.range * 0.25) {
 			// TODO: poking
@@ -526,6 +532,18 @@ class Ranger {
   
 let char = new Ranger;
 char.loop();
+
+
+
+function avoid(target) {
+	let mtype = target.mtype
+	let nearest = get_nearest_monster({type: mtype})
+	if (character.moving||smart.moving) return
+	if (distance(character, nearest) <= character.range / 4) {
+		moveInCircle(nearest, 90)
+		return
+	}
+}
 
 
 
@@ -640,7 +658,7 @@ function getTargetSpawnBorder(mtype, map = false) {
         // if it's of our target type
         if (monster.type == mtype) {
 
-			// TODO: simple trig to find other 2 ends + some 'if unreachable' logic
+			// TODO: simple? trig to find other 2 ends + some 'if unreachable' logic
             let topLeft = [monster.boundary[0], monster.boundary[1]]
             let bottomRight = [monster.boundary[2], monster.boundary[3]]
 

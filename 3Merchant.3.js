@@ -11,8 +11,8 @@ load_code('40Gui')
 //load_code(53) // upgrade_all2 WILL ADD MORE
 //performance_trick()
 
-const { webFrame } = require('electron');
-webFrame.setZoomFactor(0.9);
+//const { webFrame } = require('electron');
+//webFrame.setZoomFactor(0.9);
 
 
 let BANK_ITEMS = {};
