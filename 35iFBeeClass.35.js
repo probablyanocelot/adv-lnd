@@ -180,7 +180,7 @@ class Ranger {
 				if ((!this.current_action || this.current_action == 'farming') && this.current_action != boss) this.current_action = boss
 
 				if (is_in_range(get_nearest_monster({type: boss}))) break
-				if (this.current_action == boss) smart_move(boss)
+				if (this.current_action == boss && !get_nearest_monster({type: boss})) smart_move(boss)
 			}
 
 			if (!this.current_action == boss) continue
@@ -506,6 +506,7 @@ class Ranger {
 		if (character.rip) return;
 		
 		handle_party()
+		getLuck()
 		this.manage_item_bounty
 		//this.handleMonsterHunt();
 		this.manage_idle()
@@ -665,6 +666,10 @@ function getTargetSpawnBorder(mtype, map = false) {
             return [topLeft, bottomRight]
         }
     }
+}
+
+function getLuck(){
+	if (!character.s.mluck || character.s.mluck.f != merchant) doCm(merchant, {cmd:'unpack', loc:	current_location()})
 }
 
 // let spawnBorder = getTargetSpawnBorder(target)

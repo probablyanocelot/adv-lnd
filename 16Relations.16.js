@@ -37,14 +37,29 @@ character.on("cm", async (m) => {
 		
 		case 'move':
 			if (character.ctype != 'merchant') char.clear_current_action()
-			if (character.ctype == 'merchant') merchantBot.clear_current_action()
+			// if (character.ctype == 'merchant') merchantBot.clear_current_action()
 			if (!data.loc) {
 				if (character.ctype != 'merchant') smart_move(myFarmDefault)
 				break;
 			}
 			smart_move(data.loc)
 			break;
+		
+		case 'clear':
+			switch (character.ctype) {
+				case 'merchant':
+					merchantBot.clear_current_action()
+					break
+				default:
+					char.clear_current_action()
+					break
+			}
 				
+		case 'get_loc':
+			savePosition()
+			let myLoc = getPosition(character.name)
+			doCm(m.name, {cmd:'move', loc:myLoc})
+		
 		case 'unpack':
 
 			// only merch unpack
@@ -60,6 +75,14 @@ character.on("cm", async (m) => {
 			// go to farmer
 			await smart_move(data.loc)
 			log('should be there')
+
+			// TODO: own function
+
+			if (!smart.moving) {
+				if (!character.x == data.loc.x && !character.y == data.loc.y) {
+					if (!get_player(m.name)) doCm({ cmd: 'get_loc' })
+				}
+			}
 
 			// let farmers know the truck is here
 			if (is_in_range(get_player(m.name))) {
