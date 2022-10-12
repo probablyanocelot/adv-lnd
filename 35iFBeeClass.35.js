@@ -148,18 +148,6 @@ class Ranger {
 		}
 	  }
 	}
-  
-	joinEvent(eventMob) {
-		if (eventMob == 'franky') return;
-		// eventMob = 'icegolem', etc
-		if (this.current_action != eventMob && parent.S[eventMob] && !get_monster({ type: eventMob })) {
-		// Event is on and can't find mob?
-			join(eventMob)
-			return true;
-			// Go there, then!
-		}
-		return false;
-	}
 
 
 	serverMiniEvents() {
@@ -179,8 +167,16 @@ class Ranger {
 				// e.g. is event mob, etc
 				if ((!this.current_action || this.current_action == 'farming') && this.current_action != boss) this.current_action = boss
 
-				if (is_in_range(get_nearest_monster({type: boss}))) break
-				if (this.current_action == boss && !get_nearest_monster({type: boss})) smart_move(boss)
+				if (is_in_range(get_nearest_monster({ type: boss }))) break
+				
+				
+				let bossLocation = mobLocationDict[boss].loc // imported data set
+				if (!bossLocation) {
+					log('no boss location defined!!')
+					smart_move(boss)
+					return
+				}
+				if (this.current_action == boss && !get_nearest_monster({ type: boss })) smart_move(bossLocation)
 			}
 
 			if (!this.current_action == boss) continue
@@ -189,18 +185,33 @@ class Ranger {
 
 	}
 	
+	joinEvent(event) {
+		// event = 'icegolem', etc
+		if (!parent.S[event]) return// no event 
+		if (event == 'franky') return;
+		if (event == 'crabxx' && parent.S.halloween) return // nobody farming in season
+
+		if (this.current_action == event) return // we set this true once we get there
+
+		// if event is a mob name and we don't see the mob, join
+		if (G.monsters[event] && get_nearest_monster({ type: event })) return
+		
+		join(event)
+		return true;
+	}
 
 	serverEvents() {
 		if (character.ctype == 'merchant') return;
-		for (let eventMob in G.events) {
-			if (seasonalEvents.includes(eventMob)) continue
-			eventMob = String(eventMob)
+		for (let event in G.events) {
+			// seasonal events are global, not joinable
+			if (seasonalEvents.includes(event)) continue
+			event = String(event)
 	
-			// if (!joinEvent(eventMob)) continue;
-			if (this.joinEvent(eventMob)) this.current_action = eventMob
+			// if checks return true, set action to event
+			if (this.joinEvent(event)) this.current_action = event
 	
 
-			if (this.current_action == eventMob && !parent.S[eventMob] && !smart.moving) this.moveToThen(myFarmDefault, this.clear_current_action())
+			if (this.current_action == event && !parent.S[event] && !smart.moving) this.moveToThen(myFarmDefault, this.clear_current_action())
 			
 		}
 	}
@@ -293,12 +304,15 @@ class Ranger {
 	
 	// if full, call merchant. if merchant, manage inv
 	manage_inv() {
+		pvpBank();
+		
+		// don't call the truck if we're in a very temporary place (event bosses)
+		if (this.current_action && mobsGroup.includes(this.current_action)) return
 		if (this.dry()) {
 			if (this.turret == false) this.set_current_action('unpacking')
 			doCm(merchant, { cmd: 'unpack', loc: current_location(), pots: this.count_pot() });
 		}
 		if (character.esize <= 24) doCm(merchant, {cmd:'unpack', loc:current_location(), pots: this.count_pot()});
-		pvpBank();
 	}
 	
   

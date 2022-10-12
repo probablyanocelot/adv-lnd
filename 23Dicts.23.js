@@ -14,21 +14,52 @@ let squigSouth = { map:'main', x: -1166.3100928140552, y: 478.627440332755 }
 let optimalBee = { map: "main", x: 745.0119325069998, y: 713.0353542476796 }
 let snake = { map:'main', x: -99.00430360974092, y: 1892.1728334181553}
 let osnake = {map: "halloween",x: -585.5701569278165,y: -350.4367234174731,}
-let cgoo = { map: 'arena' }
-let mrpumpkin = { map: 'halloween' }
-let mrgreen = { map: 'spookytown' }
-let snowman = { map: 'winterland' }
+let cgoo = { map: 'arena', x:933, y:-178 }
+let mrpumpkin = { map: 'halloween', x:-309, y:786 }
+let mrgreen = { map: 'spookytown', x: 480, y:1070 }
+let snowman = { map: 'winterland', x:1150, y:-850 }
 
 let mobLocationDict = {
-	'crab': crab,
-	'squig': squig,
-	'squig2': squigSouth,
-	'snake': snake,
-	'osnake': osnake,
-	'cgoo': cgoo,
-	'mrpumpkin': mrpumpkin,
-	'mrgreen': mrgreen,
-	'snowman': snowman,
+	'crab': {
+		loc: crab,
+		turret: true,
+	},
+	'squig': {
+		loc: squig,
+		turret: true,
+	},
+	'squig2': {
+		loc: squigSouth,
+		turret: true,
+	},
+	'bee': {
+		loc: optimalBee,
+		turret: true,
+	},
+	'snake': {
+		loc: snake,
+		turret: true,
+	},
+	'osnake': {
+		loc: osnake,
+		turret: true,
+	},
+	'cgoo': {
+		loc: cgoo,
+		turret: false,
+	},
+	'mrpumpkin': {
+		loc: mrpumpkin,
+		turret: false,
+	},
+	'mrgreen': {
+		loc: mrgreen,
+		turret: false,
+	},
+	'snowman': {
+		loc: snowman,
+		turret: false,
+	}
 }
 
 
@@ -77,7 +108,11 @@ let sell_dict = {
 	'merchTrash':
 		[
 			'coat1', 'helmet1', 'hpbelt', 'hpamulet', 'whiteegg', 'pmaceofthedead', 
-			'smoke', 
+			'smoke',
+		],
+	'merchSell':
+		[
+			'throwingstars',
 		]
 }
 let mobsLow = [
@@ -106,26 +141,6 @@ let mobsHard = {
 
 }
 
-let mobDict = {
-	'crab': {
-		loc: crab,
-		// REPLACE 'ranger' WITH BETTER TARGETING FN
-		// ex: if mob.distance > 1.1x char.range, xmove
-		turret: true,
-	},
-	'squig': {
-		loc: squig,
-		turret: true,
-	},
-	'squig2': {
-		loc: squigSouth,
-		turret: true,
-	},
-	'bee1': {
-		loc: optimalBee,
-		turret: true,
-	},
-}
 
 
 let farmDefault = {

@@ -59,6 +59,7 @@ character.on("cm", async (m) => {
 			savePosition()
 			let myLoc = getPosition(character.name)
 			doCm(m.name, {cmd:'move', loc:myLoc})
+			break
 		
 		case 'unpack':
 

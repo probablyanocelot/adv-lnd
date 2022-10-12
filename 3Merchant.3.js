@@ -11,8 +11,8 @@ load_code('40Gui')
 //load_code(53) // upgrade_all2 WILL ADD MORE
 //performance_trick()
 
-//const { webFrame } = require('electron');
-//webFrame.setZoomFactor(0.9);
+const { webFrame } = require('electron');
+webFrame.setZoomFactor(0.8);
 
 
 let BANK_ITEMS = {};
@@ -40,7 +40,7 @@ class Merchant extends Character {
 
 		setInterval(this.buff("mluck"), 1000);
 	}
-	
+
 	// probably redundant? should be in main.js
 	regen() {
 		if (character.max_mp !== character.mp) {
@@ -54,13 +54,13 @@ class Merchant extends Character {
 		}
 		setTimeout(this.regen, 500);
 	}
-	
+
 	loop() {
 		this.counter += 1
-		
+
 		// in-game status report
 		if (this.current_action && this.counter % 5 == 0) log(`Processing loop with action: ${this.current_action}`)
-		
+
 		this.stander()
 
 		// if we ripped, respawn and reset
@@ -70,11 +70,11 @@ class Merchant extends Character {
 			this.clear_current_action();
 			this.thinking = false;
 		} else {
-			
+
 			loot();
 			sell_extras();
 			this.upgrade_all();
-			
+
 			if (!this.current_action) {
 				this.incrementCounter();
 				this.manage_slots()
@@ -97,7 +97,7 @@ class Merchant extends Character {
 				this.do_runs()
 			}
 		}
-		
+
 		setTimeout(() => {
 			this.loop()
 		}, 1000);
@@ -116,7 +116,7 @@ class Merchant extends Character {
 		if (!invSlot) return false
 		let item = character.items[invSlot]
 		if (!item) return false
-		
+
 		return { item: item, slot: invSlot }
 		// {
 		// 		item: {name: 'broom', level: 2},
@@ -127,15 +127,15 @@ class Merchant extends Character {
 	equipItem(itemName, eqSlot) {
 		let itemAndSlot = this.getItemAndSlot(itemName)
 		if (!itemAndSlot) return
-		
+
 		// access object's item & slot
 		let {item: item, slot: invSlot} = itemAndSlot
-		
+
 		// declarations
 		let invName = item.name
 		let invlevel = item.level
 		let eqItem = character.slots[eqSlot]
-		
+
 		// nothing equipped, equip item
 		if (!eqItem) {
 			equip(invSlot)
@@ -205,7 +205,7 @@ class Merchant extends Character {
 
 
 	async get_pots(pots) {
-  
+
 		if (this.current_action == 'get_pots') return
 		let lastAction = this.current_action
 
@@ -242,7 +242,7 @@ class Merchant extends Character {
 
 			let item = character.items[idx];
 			if (!item) continue;
-			
+
 			let itemName = item.name
 
 			if (!isUpgradable(itemName) && !isCompoundable(itemName) && !sell_dict['keep'].includes(itemName)) bank_store(idx);
@@ -259,7 +259,7 @@ class Merchant extends Character {
 
 			let item = character.items[idx];
 			if (!item) continue;
-			
+
 			let itemName = item.name
 
 			// if not in keep dict, or is shiny, or is upgradable and level > 6 then store
@@ -267,7 +267,7 @@ class Merchant extends Character {
 		}
 		return
 	}
-	
+
 	async doBank() {
 		if (!character.bank && this.current_action == "banking" && !smart.moving) {
 			await smart_move("bank")
@@ -278,7 +278,7 @@ class Merchant extends Character {
 			await smart_move(this.home)
 		}
 		this.clear_current_action();
-		
+
 		//			for (let item in character.bank.items2) {
 		//				if (!character.bank.items2[item]) continue;
 		//				bank_retrieve("items2", item);
@@ -292,8 +292,8 @@ class Merchant extends Character {
 		if (character.bank && !smart.moving) await smart_move(this.home)
 		return
 	}
-	
-	
+
+
 	handleFailTravel(location) {
 		log(`'${this.current_action}' fail clear`)
 		// this.thinking = true;
@@ -315,7 +315,7 @@ class Merchant extends Character {
 			this.set_current_action("banking");
 
 			if (smart.moving) return
-			
+
 			smart_move("bank")
 				.then(() => {
 					if (character.bank) this.thinking = false
@@ -335,7 +335,7 @@ class Merchant extends Character {
 		// dont do if there's something else going on
 		if (this.current_action || this.thinking)
 			return;
-		
+
 		let exchangeItems = ["basketofeggs", "goldenegg", "gem0", "weaponbox", "candy1", "candy0", "candycane",];
 
 		let hasExchangeable = false;
@@ -344,20 +344,20 @@ class Merchant extends Character {
 				hasExchangeable = true;
 			}
 		}
-		
+
 		if (!hasExchangeable) return
 
 		log("Going to exchange")
 		this.thinking = true;
-		
+
 		let exchangeCoordinates = { map: 'main', x: -204, y: -344 }
 		smart_move(exchangeCoordinates)
 			.then(() => {
 				this.set_current_action("exchange");
 				this.thinking = false;
-				
+
 				let exchangeInterval = setInterval(() => {
-					
+
 					let sellItems = []
 					for (let idx in sellItems) {
 						let item = locate_item(sellItems[idx])
@@ -372,7 +372,7 @@ class Merchant extends Character {
 							}
 						}
 					}
-					
+
 					if (character.esize == 0) {
 						log("No Space");
 						this.upgrade_all();
@@ -390,8 +390,8 @@ class Merchant extends Character {
 							}
 						}
 					}
-					
-					
+
+
 					if (!hasExchangeable) {
 						log("Exchangeable clear")
 						this.clear_current_action();
@@ -405,22 +405,22 @@ class Merchant extends Character {
 			}
 			)
 	}
-	
+
 
 
 
 	upgrade_all() {
-		let itemList = ['xmasshoes', 'xmaspants', 'xmassweater', "xmashat", "mushroomstaff", "stinger", "wcap", "wattire", "wbreeches", "wgloves", "wshoes", "bow", "swifty", "hbow", "sshield", "cclaw", "blade", "eslippers", "eears", "epyjamas", "quiver", 'ololipop', 'throwingstars',]
+		let itemList = ['xmasshoes', 'xmaspants', 'xmassweater', "xmashat", "mushroomstaff", "stinger", "wcap", "wattire", "wbreeches", "wgloves", "wshoes", "bow", "swifty", "hbow", "sshield", "cclaw", "blade", "eslippers", "eears", "epyjamas", "quiver", 'ololipop',]
 
 		let scrollType = "scroll0"
 		let scrollSlot = locate_item(scrollType)
-	
+
 		// let action = "upgrade"
 		// dont do if there's something else going on
 		if (smart.moving) return;
 
 		//this.current_action = action
-		
+
 		for (let idx in itemList) {
 			let itemName = itemList[idx]
 			for (let level = 0; level < 8; level++) {
@@ -428,7 +428,7 @@ class Merchant extends Character {
 				if (!itemSlots.length || idx.grade >= 1) {
 					continue
 				}
-				
+
 
 				for (let listIndex in itemSlots) {
 					let itemIndex = itemSlots[listIndex];
@@ -439,9 +439,9 @@ class Merchant extends Character {
 
 					// get item grade
 					let grade = item_grade(character.items[itemIndex]);
-						
+
 					//this.current_action = action;
-					
+
 					// grade 1+ = +7
 					if (grade > 0 && grade < 2) {
 						log("grade is over 0")
@@ -454,7 +454,7 @@ class Merchant extends Character {
 						// }
 						// this.clear_current_action();
 						continue;
-					
+
 					}
 					if (character.real_x != this.home.x && character.real_y != this.home.y) {
 						if (!this.thinking && !this.current_action) {
@@ -467,7 +467,7 @@ class Merchant extends Character {
 								})
 						}
 					}
-					
+
 					if (character.items[itemIndex] && character.items[itemIndex].p && !itemName === "stinger") {
 						log("has some modifier");
 						// this.clear_current_action();
@@ -518,6 +518,7 @@ let compoundList = [
 	'dexring', 'dexbelt', 'dexearring', 'skullamulet',
 	'book0', 'hpamulet', 'hpbelt', 'ringsj', 'wbook0',
 	'vitring', 'jacko',
+	//'lantern',
 ]
 
 function do_combine(item_name) {
@@ -526,7 +527,7 @@ function do_combine(item_name) {
 	let scrollSlot = locate_item(COMPOUND_SCROLL);
 	// buy scroll if not in inventory
 
-	
+
 	let levelArray = [0, 1, 2, 3,]
 	for (let level in levelArray) {
 		// check if need different scroll
@@ -544,7 +545,7 @@ function do_combine(item_name) {
 			if (item_name == "vitring" && level == 2) {
 				continue
 			}
-			
+
 			// do the compound
 			if (!parent.character.q.compound) {
 				if (character.ctype == "merchant" && character.mp > 400 && !character.s.massproductionpp) use_skill("massproductionpp")
@@ -565,11 +566,12 @@ function high_upgrade_all() {
 		'pinkie', 't2bow', 'phelmet', 'pmaceofthedead',
 		'staffofthedead', 'oozingterror', "harbringer", "basher",
 		"bataxe", 'daggerofthedead', 'bowofthedead',
+		'swordofthedead', 'hpants', 'hgloves', 'maceofthedead',
 		]
 	let scrollType = "scroll1"
 	let scrollSlot = locate_item(scrollType)
     let maxLevel = 8;
-	
+
     for (let level = 0; level < maxLevel; level++) {
         for (let idx in itemList) {
             let itemName = itemList[idx]
@@ -580,10 +582,10 @@ function high_upgrade_all() {
 
                 // get item grade
                 let grade = item_grade(character.items[itemIndex]);
-                
+
 				// buy scroll if not in slot 3
                 if (!character.items[scrollSlot]) buy_with_gold(scrollType, 1)
-				
+
 				if (character.items[itemIndex].level == 7){
 					scrollType = "scroll2";
 					scrollSlot = locate_item(scrollType)
@@ -594,7 +596,7 @@ function high_upgrade_all() {
                         break;
 					}
 				}
-								
+
                 // grade 1+ = +7
                 if (grade > 1 || grade == 0) { //|| itemName == "shoes1" && level >= 5
                     log("grade is over/under 1")
@@ -613,7 +615,7 @@ function high_upgrade_all() {
             }
         }
     }
-	
+
 	setTimeout(high_upgrade_all, TIMEOUT);
 }
 
@@ -621,11 +623,11 @@ function high_upgrade_all() {
 let slots = character.slots
 let activeTraderSlots = []
 function getActiveTradeSlots(){
-	for(let slot in character.slots){ 
+	for(let slot in character.slots){
 		let regex = /trade/
 		let match = regex.test(slot)
 		if (!match) continue
-		
+
 		let mySlot = character.slots[slot]
 		if (!mySlot) continue
 		activeTraderSlots.push(slot)
@@ -653,11 +655,11 @@ function sell_extras() {
 		// idx, 0-41
 		let item = character.items[itemSlot]
 		if (!item) continue;
-		
+
 		let itemName = item.name
         // don't sell if not in list or is shiny
         if (!sell_dict['merchTrash'].includes(itemName) || item.p) continue;
-		
+
 		log(`selling ${itemName}`)
 		if (item.q) {
 			sell(itemSlot, item.q)
@@ -693,20 +695,37 @@ function drawLine(xOne, yOne, xTwo, yTwo, direction){
 
 	log([xThree, yThree])
 	return [xThree, yThree]
-	// 
+	//
 
 	switch(direction){
 		case 'right':
-			x = Math.max(xOne, xTwo) + 5 // TODO: abstract the 5 
+			x = Math.max(xOne, xTwo) + 5 // TODO: abstract the 5
 		case 'left':
-			x = Math.min(xOne, xTwo) - 5 // TODO: abstract the 5 
+			x = Math.min(xOne, xTwo) - 5 // TODO: abstract the 5
 	}
 
 	// y-yOne == (yTwo - yOne / xTwo - xOne) * (x - xOne)
 	let y = ( (yTwo - yOne / xTwo - xOne) * (x - xOne) ) + yOne
-	
+
 	log([x, y])
 	return [x,y]
+}
+
+function sellToMerch() {
+	for (itemSlot in character.items) {
+		if (!itemSlot) continue
+
+		let item = character.items[itemSlot]
+		if (!item) continue
+
+		let itemName = item.name
+		if (!itemName) continue
+
+
+		if (sell_dict['merchSell'].includes(itemName)) {
+		log(item)
+		}
+	}
 }
 
 
