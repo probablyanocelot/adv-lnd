@@ -520,7 +520,7 @@ class Ranger {
 		if (character.rip) return;
 		
 		handle_party()
-		getLuck()
+		if (!this.current_action || this.current_action && !mobsGroup.includes(this.current_action)) getLuck()
 		this.manage_item_bounty
 		//this.handleMonsterHunt();
 		this.manage_idle()

@@ -115,6 +115,16 @@ let sell_dict = {
 			'throwingstars',
 		]
 }
+let upgradeDict = {
+	upgrade_all: [
+		'xmasshoes', 'xmaspants', 'xmassweater', "xmashat",
+		"mushroomstaff", "stinger", "wcap", "wattire",
+		"wbreeches", "wgloves", "wshoes", "bow",
+		"swifty", "hbow", "sshield", "cclaw", "blade",
+		"eslippers", "eears", "epyjamas", "quiver",
+		'ololipop','broom',]
+
+}
 let mobsLow = [
 	"bee", "crab", "squigtoad", "snake", "osnake", "armadillo",
 	"croc", "squig", "goo", "tortoise", 

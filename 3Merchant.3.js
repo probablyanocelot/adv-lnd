@@ -410,8 +410,7 @@ class Merchant extends Character {
 
 
 	upgrade_all() {
-		let itemList = ['xmasshoes', 'xmaspants', 'xmassweater', "xmashat", "mushroomstaff", "stinger", "wcap", "wattire", "wbreeches", "wgloves", "wshoes", "bow", "swifty", "hbow", "sshield", "cclaw", "blade", "eslippers", "eears", "epyjamas", "quiver", 'ololipop',]
-
+		let itemList = upgradeDict.upgrade_all
 		let scrollType = "scroll0"
 		let scrollSlot = locate_item(scrollType)
 
@@ -442,11 +441,24 @@ class Merchant extends Character {
 
 					//this.current_action = action;
 
-					// grade 1+ = +7
-					if (grade > 0 && grade < 2) {
+					// grade 1 or ( 0 & level 3-6 )
+					if (grade == 1 && item.level < 7 || (grade == 0 && item.level >= 3 && item.level < 7)) {
 						log("grade is over 0")
 						// if (item.level >= 5){
 						scrollType = 'scroll1'
+						scrollSlot = locate_item(scrollType)
+						if (!character.items[scrollSlot]) buy_with_gold(scrollType, 1)
+						if (character.ctype == "merchant" && !character.s.massproductionpp && character.mp > 400) use_skill("massproductionpp")
+						upgrade(itemIndex, scrollSlot)
+						// }
+						// this.clear_current_action();
+						continue;
+
+					}
+					if (item.level == 7 && itemName != 'ololipop') {
+						log(`${itemName} 7 -> 8`)
+						// if (item.level >= 5){
+						scrollType = 'scroll2'
 						scrollSlot = locate_item(scrollType)
 						if (!character.items[scrollSlot]) buy_with_gold(scrollType, 1)
 						if (character.ctype == "merchant" && !character.s.massproductionpp && character.mp > 400) use_skill("massproductionpp")
@@ -667,7 +679,7 @@ function sell_extras() {
 		}
 		sell(itemSlot)
     }
-	setTimeout(sell_extras, 1440 * 1000)
+	setTimeout(sell_extras, 3000) //1440 * 1000
 }
 
 
