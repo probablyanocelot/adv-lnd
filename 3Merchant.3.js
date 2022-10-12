@@ -1,3 +1,4 @@
+// ! TODO: MOVE this.upgrade_all() to an outside loop
 log("3 - Merchant") // display load_code() page number for debugging purposes
 load_code('1Main') // main
 load_code('23Dicts')
@@ -12,7 +13,7 @@ load_code('40Gui')
 //performance_trick()
 
 const { webFrame } = require('electron');
-webFrame.setZoomFactor(0.8);
+webFrame.setZoomFactor(1);
 
 
 let BANK_ITEMS = {};
@@ -72,8 +73,7 @@ class Merchant extends Character {
 		} else {
 
 			loot();
-			sell_extras();
-			this.upgrade_all();
+			this.upgrade_all()
 
 			if (!this.current_action) {
 				this.incrementCounter();
@@ -563,7 +563,7 @@ function high_upgrade_all() {
 		'xmasshoes', 'xmaspants', 'xmassweater', "xmashat", 'merry',
 		"epyjamas", "eears", "pants1", "gloves1", "firestaff",
 		"shoes1", "fireblade", "quiver", 'ecape',
-		'pinkie', 't2bow', 'phelmet', 'pmaceofthedead',
+		'pinkie', 't2bow', 'pmaceofthedead',
 		'staffofthedead', 'oozingterror', "harbringer", "basher",
 		"bataxe", 'daggerofthedead', 'bowofthedead',
 		'swordofthedead', 'hpants', 'hgloves', 'maceofthedead',
@@ -658,7 +658,7 @@ function sell_extras() {
 
 		let itemName = item.name
         // don't sell if not in list or is shiny
-        if (!sell_dict['merchTrash'].includes(itemName) || item.p) continue;
+        if (!sell_dict['merchSell'].includes(itemName) || item.p) continue;
 
 		log(`selling ${itemName}`)
 		if (item.q) {
@@ -734,6 +734,8 @@ function initMerch() {
 	if (character.ctype != 'merchant') return;
 	merchantBot.loop();
 	setInterval(hanoi, 30000)
+	sell_extras();
+	// setInterval(merchantBot.upgrade_all(), 1000);
 	compound_loop();
 	high_upgrade_all();
 	//upgrade_all2();

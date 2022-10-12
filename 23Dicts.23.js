@@ -105,12 +105,12 @@ let sell_dict = {
 		[
 			'ringsj', 'gem0', 'gem1', 'seashell',
 		],
-	'merchTrash':
+	'merchSell':
 		[
 			'coat1', 'helmet1', 'hpbelt', 'hpamulet', 'whiteegg', 'pmaceofthedead', 
-			'smoke',
+			'smoke', 'phelmet', 'gphelmet',
 		],
-	'merchSell':
+	'merchTradeSell':
 		[
 			'throwingstars',
 		]
