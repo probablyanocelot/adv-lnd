@@ -115,6 +115,7 @@ let sell_dict = {
 			'throwingstars',
 		]
 }
+
 let upgradeDict = {
 	upgrade_all: [
 		'xmasshoes', 'xmaspants', 'xmassweater', "xmashat",
@@ -122,9 +123,27 @@ let upgradeDict = {
 		"wbreeches", "wgloves", "wshoes", "bow",
 		"swifty", "hbow", "sshield", "cclaw", "blade",
 		"eslippers", "eears", "epyjamas", "quiver",
-		'ololipop','broom',]
-
+		'ololipop', 'broom',
+	],
+	high_upgrade_all: [
+		'xmasshoes', 'xmaspants', 'xmassweater', "xmashat", 'merry',
+		"epyjamas", "eears", "pants1", "gloves1", "firestaff",
+		"shoes1", "fireblade", "quiver", 'ecape',
+		'pinkie', 't2bow', 'pmaceofthedead',
+		'staffofthedead', 'oozingterror', "harbringer", "basher",
+		"bataxe", 'daggerofthedead', 'bowofthedead',
+		'swordofthedead', 'hpants', 'hgloves', 'maceofthedead',
+	],
+	compound: [
+		'intamulet', 'intring', 'intbelt', 'intearring', 'strring',
+		'strearring', 'stramulet', 'strbelt', 'dexamulet',
+		'dexring', 'dexbelt', 'dexearring', 'skullamulet',
+		'book0', 'hpamulet', 'hpbelt', 'ringsj', 'wbook0',
+		'vitring', 'jacko',
+		//'lantern',
+	],
 }
+
 let mobsLow = [
 	"bee", "crab", "squigtoad", "snake", "osnake", "armadillo",
 	"croc", "squig", "goo", "tortoise", 

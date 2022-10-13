@@ -16,16 +16,12 @@ const { webFrame } = require('electron');
 webFrame.setZoomFactor(1);
 
 
-let BANK_ITEMS = {};
-BANK_ITEMS['items0'] = [];
-BANK_ITEMS['items1'] = ["snakefang", "frogt", "vitscroll", "gemfragment"];
-BANK_ITEMS['items2'] = [];
-
 map_key('F12', {
     'name': 'pure_eval',
     'code': 'electron_dev_tools()',
     'keycode': 123,
 });
+
 
 class Merchant extends Character {
 	constructor() {
@@ -37,18 +33,26 @@ class Merchant extends Character {
 		this.counter = 0;
 		this.home = { map: "main", x: -202.0783375408171, y: -50.0000001 }
 
+		// loops on init
 		setInterval(this.regen, 500);
-
 		setInterval(this.buff("mluck"), 1000);
 	}
 
 	// probably redundant? should be in main.js
 	regen() {
+		// not full mp or hp, fix
 		if (character.max_mp !== character.mp) {
-			if (!is_on_cooldown("regen_mp"))
-				use_skill("regen_mp");
+			if (!is_on_cooldown("regen_mp")) {
+				let missingMp = character.max_mp - character.mp
+				
+				// either use regen or potion
+				if (missingMp <= 300) use_skill("regen_mp");
+				let mPot = locate_item('mpot1')
+				if (missingMp > 300 && mPot) use(mPot)
+			}
 		}
 
+		// regen, need potion?
 		if (character.max_hp !== character.hp) {
 			if (!is_on_cooldown("regen_hp"))
 				use_skill("regen_hp");
@@ -57,23 +61,24 @@ class Merchant extends Character {
 	}
 
 	loop() {
-		this.counter += 1
+		this.counter += 1 // increment counter
 
 		// in-game status report
 		if (this.current_action && this.counter % 5 == 0) log(`Processing loop with action: ${this.current_action}`)
 
-		this.stander()
+		this.stander() // close stand if moving
 
 		// if we ripped, respawn and reset
 		if (character.rip) {
 			respawn();
 			log("Rip! Respawn clear")
 			this.clear_current_action();
-			this.thinking = false;
+			this.thinking = false; // most blocking state
 		} else {
 
 			loot();
-			this.upgrade_all()
+
+			this.upgrade_all() // TODO: move out of character class!
 
 			if (!this.current_action) {
 				this.incrementCounter();
@@ -129,7 +134,7 @@ class Merchant extends Character {
 		if (!itemAndSlot) return
 
 		// access object's item & slot
-		let {item: item, slot: invSlot} = itemAndSlot
+		let { item: item, slot: invSlot } = itemAndSlot
 
 		// declarations
 		let invName = item.name
@@ -237,7 +242,7 @@ class Merchant extends Character {
 
 
 	async dumpNonUppables() {
-		if (!character.bank)  await doBank()
+		if (!character.bank) await doBank()
 		for (let idx in character.items) {
 
 			let item = character.items[idx];
@@ -263,7 +268,7 @@ class Merchant extends Character {
 			let itemName = item.name
 
 			// if not in keep dict, or is shiny, or is upgradable and level > 6 then store
-			if (!sell_dict['keep'].includes(itemName) || item.p || (isUpgradable(itemName) && item.level > 6 )) bank_store(idx);
+			if (!sell_dict['keep'].includes(itemName) || item.p || (isUpgradable(itemName) && item.level > 6)) bank_store(idx);
 		}
 		return
 	}
@@ -406,116 +411,22 @@ class Merchant extends Character {
 			)
 	}
 
-
-
-
-	upgrade_all() {
-		let itemList = upgradeDict.upgrade_all
-		let scrollType = "scroll0"
-		let scrollSlot = locate_item(scrollType)
-
-		// let action = "upgrade"
-		// dont do if there's something else going on
-		if (smart.moving) return;
-
-		//this.current_action = action
-
-		for (let idx in itemList) {
-			let itemName = itemList[idx]
-			for (let level = 0; level < 8; level++) {
-				let itemSlots = locate_items(itemName, level)
-				if (!itemSlots.length || idx.grade >= 1) {
-					continue
-				}
-
-
-				for (let listIndex in itemSlots) {
-					let itemIndex = itemSlots[listIndex];
-					let item = character.items[itemIndex];
-					let itemName = character.items[itemIndex].name;
-					// buy scroll if not in slot 3
-					if (!character.items[scrollSlot]) buy_with_gold(scrollType, 1)
-
-					// get item grade
-					let grade = item_grade(character.items[itemIndex]);
-
-					//this.current_action = action;
-
-					// grade 1 or ( 0 & level 3-6 )
-					if (grade == 1 && item.level < 7 || (grade == 0 && item.level >= 3 && item.level < 7)) {
-						log("grade is over 0")
-						// if (item.level >= 5){
-						scrollType = 'scroll1'
-						scrollSlot = locate_item(scrollType)
-						if (!character.items[scrollSlot]) buy_with_gold(scrollType, 1)
-						if (character.ctype == "merchant" && !character.s.massproductionpp && character.mp > 400) use_skill("massproductionpp")
-						upgrade(itemIndex, scrollSlot)
-						// }
-						// this.clear_current_action();
-						continue;
-
-					}
-					if (item.level == 7 && itemName != 'ololipop') {
-						log(`${itemName} 7 -> 8`)
-						// if (item.level >= 5){
-						scrollType = 'scroll2'
-						scrollSlot = locate_item(scrollType)
-						if (!character.items[scrollSlot]) buy_with_gold(scrollType, 1)
-						if (character.ctype == "merchant" && !character.s.massproductionpp && character.mp > 400) use_skill("massproductionpp")
-						upgrade(itemIndex, scrollSlot)
-						// }
-						// this.clear_current_action();
-						continue;
-
-					}
-					if (character.real_x != this.home.x && character.real_y != this.home.y) {
-						if (!this.thinking && !this.current_action) {
-							this.thinking = true;
-							smart_move(this.home)
-								.then(this.thinking = false)
-								.catch(() => {
-									smart_move(this.home)
-									this.thinking = false
-								})
-						}
-					}
-
-					if (character.items[itemIndex] && character.items[itemIndex].p && !itemName === "stinger") {
-						log("has some modifier");
-						// this.clear_current_action();
-						continue;
-					} else {
-						// upgrade if we got here
-						if (!parent.character.q.upgrade) {
-							if (itemName == "stinger" && item.level == 4 && !item.p) {
-								sell(itemIndex);
-								// this.clear_current_action();
-							} else {
-								// this.set_current_action(action);
-								if (character.ctype == "merchant" && !character.s.massproductionpp && character.mp > 400) use_skill("massproductionpp")
-								upgrade(itemIndex, scrollSlot)
-								// 	.then(() => {
-								// 		// if (this.current_action == action) {
-								// 			log("Upgrade success clear")
-								// 			// this.clear_current_action();
-								// 		// }
-								// 	})
-								// 	.catch(() => {
-								// 		// if (this.current_action == action) {
-								// 			log("Upgrade failure clear")
-								// 			// this.clear_current_action();
-								// 		// }
-								// 	}
-								// )
-							}
-						}
-					}
-				}
+	goHomeIfIdle() {
+		if (!this.thinking && !this.current_action) {
+						
+			if (character.real_x != this.home.x && character.real_y != this.home.y) {
+				this.thinking = true;
+				smart_move(this.home)
+					.then(this.thinking = false)
+					.catch(() => {
+						smart_move(this.home)
+						this.thinking = false
+					})
 			}
 		}
 	}
-
 }
+
 
 function buy_compound_scroll(scrollSlot, COMPOUND_SCROLL) {
 	if (!character.items[scrollSlot]) {
@@ -523,15 +434,6 @@ function buy_compound_scroll(scrollSlot, COMPOUND_SCROLL) {
 	}
 }
 
-
-let compoundList = [
-	'intamulet', 'intring', 'intbelt', 'intearring', 'strring',
-	'strearring', 'stramulet', 'strbelt', 'dexamulet',
-	'dexring', 'dexbelt', 'dexearring', 'skullamulet',
-	'book0', 'hpamulet', 'hpbelt', 'ringsj', 'wbook0',
-	'vitring', 'jacko',
-	//'lantern',
-]
 
 function do_combine(item_name) {
 	let COMPOUND_SCROLL = "cscroll0"
@@ -568,18 +470,112 @@ function do_combine(item_name) {
 }
 
 
+
+function canUpgrade() {
+	if (parent.character.q.upgrade) return // currently upgrading							
+	return true
+}
+
+function doUpgrade(scrollType, itemIndex) {
+	scrollSlot = locate_item(scrollType)
+	if (!character.items[scrollSlot]) buy_with_gold(scrollType, 1)
+
+	if (character.ctype == "merchant" && !character.s.massproductionpp && character.mp > 400) use_skill("massproductionpp")
+	if (canUpgrade) upgrade(itemIndex, scrollSlot)
+}
+
+function upgrade_all() {
+
+	let TIMEOUT = 1000
+
+	let itemList = upgradeDict.upgrade_all // array
+
+	let scrollType = "scroll0"
+	let scrollSlot = locate_item(scrollType)
+
+
+	for (let idx in itemList) {
+		let itemName = itemList[idx]
+		for (let level = 0; level < 8; level++) {
+
+			// get idx of each matching item
+			// [...3, 19, 23]
+			let itemSlots = locate_items(itemName, level)
+
+			for (let listIndex in itemSlots) {
+
+				merchantBot.goHomeIfIdle()
+
+
+				let itemIndex = itemSlots[listIndex];
+				
+				let item = character.items[itemIndex];
+				if (!item) continue
+				let itemName = item.name;
+				
+				// buy scroll if not in character.items
+				if (!character.items[scrollSlot]) buy_with_gold(scrollType, 1)
+
+				// get item grade
+				let grade = item_grade(item);
+
+				if (item.p || item.acc) {
+					log(`${itemName} has some modifier`)
+					continue
+				} 
+
+				// shiny / achievement / rare / level 8   :   skip
+				if (grade == 2 || item.level >= 8) continue
+
+				// grade 1 or ( 0 & level 3-6 )
+				if (grade == 1 && item.level < 7 || (grade == 0 && item.level >= 3 && item.level < 7)) {
+
+					log(`${itemName} grade: ${grade} level: ${item.level} -> ${item.level + 1}`)
+
+					scrollType = 'scroll1'
+					doUpgrade(scrollType, itemIndex)
+
+					continue;
+
+				}
+				if (item.level == 7 && itemName != 'ololipop') {
+
+					log(`${itemName} 7 -> 8`)
+
+					scrollType = 'scroll2'
+					doUpgrade(scrollType, itemIndex)
+
+					continue;
+
+				}
+
+				// ! CAN PROBABLY DELETE BELOW HERED
+
+				if (item && item.p && !itemName === "stinger") {
+
+					log("has some modifier");
+					continue;
+				}
+				
+				// upgrade if we got here
+					
+				if (itemName == "stinger" && item.level == 4 && !item.p) sell(itemIndex);
+				if (character.ctype == "merchant" && !character.s.massproductionpp && character.mp > 400) use_skill("massproductionpp")
+				
+				if (canUpgrade) upgrade(itemIndex, scrollSlot)
+						
+			}
+		}
+	}
+	setTimeout(upgrade_all, TIMEOUT);
+}
+
+
 // TODO: replace whitelists with if(upgradable && !blackList)?
 function high_upgrade_all() {
 	let TIMEOUT = 1000;
-	let itemList = [
-		'xmasshoes', 'xmaspants', 'xmassweater', "xmashat", 'merry',
-		"epyjamas", "eears", "pants1", "gloves1", "firestaff",
-		"shoes1", "fireblade", "quiver", 'ecape',
-		'pinkie', 't2bow', 'pmaceofthedead',
-		'staffofthedead', 'oozingterror', "harbringer", "basher",
-		"bataxe", 'daggerofthedead', 'bowofthedead',
-		'swordofthedead', 'hpants', 'hgloves', 'maceofthedead',
-		]
+	let itemList = upgradeDict.high_upgrade_all
+	
 	let scrollType = "scroll1"
 	let scrollSlot = locate_item(scrollType)
     let maxLevel = 8;
@@ -652,7 +648,7 @@ function compound_loop() {
 
 	setInterval(() => {
 
-		for (let itemName of compoundList) {
+		for (let itemName of upgradeDict.compound) {
 			if (character.bank) continue;
 			do_combine(itemName)
 		}
@@ -707,7 +703,7 @@ function drawLine(xOne, yOne, xTwo, yTwo, direction){
 
 	log([xThree, yThree])
 	return [xThree, yThree]
-	//
+	
 
 	switch(direction){
 		case 'right':
@@ -747,8 +743,8 @@ function initMerch() {
 	merchantBot.loop();
 	setInterval(hanoi, 30000)
 	sell_extras();
-	// setInterval(merchantBot.upgrade_all(), 1000);
 	compound_loop();
+	upgrade_all();
 	high_upgrade_all();
 	//upgrade_all2();
 }
