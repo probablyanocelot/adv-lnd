@@ -189,7 +189,7 @@ class Ranger {
 		// event = 'icegolem', etc
 		if (!parent.S[event]) return// no event 
 		if (event == 'franky') return;
-		if (event == 'crabxx' && parent.S.halloween) return // nobody farming in season
+		if (parent.S.halloween) return // nobody farming in season
 
 		if (this.current_action == event) return // we set this true once we get there
 
