@@ -119,10 +119,13 @@ let sell_dict = {
 let upgradeDict = {
 	upgrade_all: [
 		'xmasshoes', 'xmaspants', 'xmassweater', "xmashat",
-		"mushroomstaff", "stinger", "wcap", "wattire",
-		"wbreeches", "wgloves", "wshoes", "bow",
-		"swifty", "hbow", "sshield", "cclaw", "blade",
-		"eslippers", "eears", "epyjamas", "quiver",
+		'mittens', "eslippers", "eears", "epyjamas",
+		
+		"stinger", "wcap", "wattire",
+		"wbreeches", "wgloves", "wshoes",
+		"swifty", "hbow", "sshield", "blade",
+		"quiver", "cclaw",
+		 
 		'ololipop', 'broom',
 	],
 	high_upgrade_all: [
@@ -145,11 +148,14 @@ let upgradeDict = {
 }
 
 let mobsLow = [
-	"bee", "crab", "squigtoad", "snake", "osnake", "armadillo",
+	"bee", "crab", "squigtoad", "snake", "osnake",
 	"croc", "squig", "goo", "tortoise", 
-	"goldenbat", "phoenix", "tinyp", "greenjr", "minimush", 'bgoo',
-	'rgoo', 'grinch', 'crabx', 'frog', 'cutebee',
-	// group mobs
+	"minimush", 'frog', "armadillo",
+
+	// 2nd priority
+	'snowman', 'cutebee', 'grinch', 'rgoo', 'bgoo',
+	"goldenbat", "tinyp", "greenjr", "phoenix", 
+	// 1st priority - group mobs
 	'crabxx', 'franky', 'mrpumpkin','mrgreen', "icegolem",
 
 ];

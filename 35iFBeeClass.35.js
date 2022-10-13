@@ -30,7 +30,18 @@ const keyInviteBots = map_key("9", "snippet", "sendInvites('r3')")
 const keyKillBots = map_key('8', 'snippet', "killBots(currentGroup)")
 setInterval(loot, 65)
 
+let lastScare;
 
+character.on('hit', function(data) {
+	let orb = character.slots.orb
+	if (!orb || !orb.name == 'jacko') return
+	if (lastScare == null || new Date() - lastScare >= 1000) {
+		if (character.mp >= 50 && !is_on_cooldown('scare')) {
+			use_skill('scare', data.actor)
+			lastScare = new Date()
+		}
+	}
+})
 
 function pvpBank() {
 	for (let item of character.items) {
@@ -153,13 +164,15 @@ class Ranger {
 	serverMiniEvents() {
 
 		// TODO: snowman, rabbit support -- smart_move('snowman') gives 'Unrecognized Location'
-		let bosses = ['mrpumpkin', 'mrgreen', ]		//'snowman', 'rabbit'
+		let bosses = ['mrpumpkin', 'mrgreen', 'snowman',]		//'snowman', 'rabbit'
 		let rareBosses = []
 
 		// if (this.current_action && this.current_action != 'farming') return
 
 		for (let boss of bosses) {
 			if (parent.S[boss] && parent.S[boss].live) {
+
+				if (boss == 'snowman' && (parent.S.mrgreen.live || parent.S.mrpumpkin.live)) return
 
 				// TODO: what if current_action is more important event?
 				if (smart.moving) return
@@ -180,7 +193,7 @@ class Ranger {
 			}
 
 			if (!this.current_action == boss) continue
-			if (parent.S[boss] && !parent.S[boss].live && this.current_action == boss) this.clear_current_action()
+			if (parent.S[boss] && !parent.S[boss].live && this.current_action == boss && !smart.moving) this.moveToThen('main', this.clear_current_action())
 		}
 
 	}
@@ -307,7 +320,11 @@ class Ranger {
 		pvpBank();
 		
 		// don't call the truck if we're in a very temporary place (event bosses)
+		if (smart.moving) return
 		if (this.current_action && mobsGroup.includes(this.current_action)) return
+		for (let event in parent.S) {
+			if (parent.S[event].live && mobsGroup.includes(String(event))) return
+		}
 		if (this.dry()) {
 			if (this.turret == false) this.set_current_action('unpacking')
 			doCm(merchant, { cmd: 'unpack', loc: current_location(), pots: this.count_pot() });
@@ -462,6 +479,14 @@ class Ranger {
 		if (!target) return 	// must have target beyond here
 
 		let targetName = target.mtype
+
+		// character.on('hit', function(data) {
+		// 	if (data.actor != targetName) {
+		// 		let orb = character.slots.orb
+		// 		if (!orb || !orb.name == 'jacko') return
+		// 		if (character.mp >= 50 && !is_on_cooldown('scare')) use_skill('scare', data.actor)
+		// 	}
+		// })
 
 		// TODO: maybe better phoenix selection
 		// 

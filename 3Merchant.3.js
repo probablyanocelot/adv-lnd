@@ -1,4 +1,3 @@
-// ! TODO: MOVE this.upgrade_all() to an outside loop
 log("3 - Merchant") // display load_code() page number for debugging purposes
 load_code('1Main') // main
 load_code('23Dicts')
@@ -15,12 +14,24 @@ load_code('40Gui')
 const { webFrame } = require('electron');
 webFrame.setZoomFactor(1);
 
+let lastScare;
 
 map_key('F12', {
     'name': 'pure_eval',
     'code': 'electron_dev_tools()',
     'keycode': 123,
 });
+
+character.on('hit', function(data) {
+	let orb = character.slots.orb
+	if (!orb || !orb.name == 'jacko') return
+	if (lastScare == null || new Date() - lastScare >= 1000) {
+		if (character.mp >= 50 && !is_on_cooldown('scare')) {
+			use_skill('scare', data.actor)
+			lastScare = new Date()
+		}
+	}
+})
 
 
 class Merchant extends Character {
@@ -44,10 +55,15 @@ class Merchant extends Character {
 		if (character.max_mp !== character.mp) {
 			if (!is_on_cooldown("regen_mp")) {
 				let missingMp = character.max_mp - character.mp
+				let mPot = locate_item('mpot1')
+				
+				if (mPot <= 0) {
+					use_skill('regen_mp')
+					return
+				}
 				
 				// either use regen or potion
 				if (missingMp <= 300) use_skill("regen_mp");
-				let mPot = locate_item('mpot1')
 				if (missingMp > 300 && mPot) use(mPot)
 			}
 		}
@@ -78,7 +94,7 @@ class Merchant extends Character {
 
 			loot();
 
-			this.upgrade_all() // TODO: move out of character class!
+			this.go_exchange();
 
 			if (!this.current_action) {
 				this.incrementCounter();
@@ -88,7 +104,6 @@ class Merchant extends Character {
 				if (locate_item('rod') >= 0 || (character.slots.mainhand && character.slots.mainhand.name == 'rod')) this.do_action("fishing");
 				if (locate_item('pickaxe' || (character.slots.mainhand && character.slots.mainhand.name == 'pickaxe')) >= 0) this.do_action("mining");
 				this.bank_mining();
-				this.go_exchange();
 				if (character.moving) {
 					this.idle_counter = 0;
 				}
@@ -234,8 +249,9 @@ class Merchant extends Character {
 			// get potions since we're out of one of them
 			if (HP_TO_BUY > 0) buy(HP_TYPE, HP_TO_BUY);
 			if (MP_TO_BUY > 0) buy(MP_TYPE, MP_TO_BUY);
-			if (lastAction == 'unpacking') { this.set_current_action('unpacking') }
-			else { this.clear_current_action(); }
+			if (lastAction == 'unpacking') {
+				this.set_current_action('unpacking')
+			} else { this.clear_current_action(); }
 			return;
 		}
 	}
@@ -338,8 +354,7 @@ class Merchant extends Character {
 
 	go_exchange() {
 		// dont do if there's something else going on
-		if (this.current_action || this.thinking)
-			return;
+		if (this.current_action && this.current_action != 'exchange' || this.thinking) return;
 
 		let exchangeItems = ["basketofeggs", "goldenegg", "gem0", "weaponbox", "candy1", "candy0", "candycane",];
 
@@ -352,64 +367,53 @@ class Merchant extends Character {
 
 		if (!hasExchangeable) return
 
-		log("Going to exchange")
-		this.thinking = true;
+		if (smart.moving) log("Going to exchange")
 
 		let exchangeCoordinates = { map: 'main', x: -204, y: -344 }
-		smart_move(exchangeCoordinates)
-			.then(() => {
-				this.set_current_action("exchange");
-				this.thinking = false;
+		if (!smart.moving && character.x != exchangeCoordinates.x && character.y != exchangeCoordinates.y) smart_move(exchangeCoordinates)		
+		if (this.current_action != "exchange") this.set_current_action("exchange");
 
-				let exchangeInterval = setInterval(() => {
+		// if( character.x != exchangeCoordinates.x && character.y != exchangeCoordinates.y) return
 
-					let sellItems = []
-					for (let idx in sellItems) {
-						let item = locate_item(sellItems[idx])
-						if (item > -1) {
-							// doesn't have a modifier
-							if (character.items[item].p) {
-								log("item has modifier")
-							} else if (character.items[item].level) {
-								log("item has level")
-							} else {
-								sell(item)
-							}
-						}
-					}
-
-					if (character.esize == 0) {
-						log("No Space");
-						this.upgrade_all();
-						this.clear_current_action();
-						clearInterval(exchangeInterval);
-					}
-
-					let hasExchangeable = false;
-					for (let idx in exchangeItems) {
-						let item = locate_item(exchangeItems[idx]);
-						if (item > -1) {
-							hasExchangeable = true;
-							if (!parent.character.q.exchange) {
-								exchange(item)
-							}
-						}
-					}
-
-
-					if (!hasExchangeable) {
-						log("Exchangeable clear")
-						this.clear_current_action();
-						clearInterval(exchangeInterval);
-					}
-				}, 1000)
-			})
-			.catch(() => {
-				log("failed to go to exchange");
-				this.thinking = false;
+		let sellItems = []
+		for (let idx in sellItems) {
+			let item = locate_item(sellItems[idx])
+			if (item > -1) {
+				// doesn't have a modifier
+				if (character.items[item].p) {
+					log("item has modifier")
+				} else if (character.items[item].level) {
+					log("item has level")
+				} else {
+					sell(item)
+				}
 			}
-			)
+		}
+
+		if (character.esize == 0) {
+			log("No Space");
+			this.clear_current_action();
+			// clearInterval(exchangeInterval);
+		}
+
+		for (let idx in exchangeItems) {
+			let item = locate_item(exchangeItems[idx]);
+			if (item > -1) {
+				hasExchangeable = true;
+				if (!parent.character.q.exchange) {
+					exchange(item)
+				}
+			}
+		}
+
+
+		if (!hasExchangeable) {
+			log("Exchangeable clear")
+			this.clear_current_action();
+			// clearInterval(exchangeInterval);
+		}
 	}
+
 
 	goHomeIfIdle() {
 		if (!this.thinking && !this.current_action) {
@@ -594,16 +598,16 @@ function high_upgrade_all() {
 				// buy scroll if not in slot 3
                 if (!character.items[scrollSlot]) buy_with_gold(scrollType, 1)
 
-				if (character.items[itemIndex].level == 7){
-					scrollType = "scroll2";
-					scrollSlot = locate_item(scrollType)
-					if (!character.items[scrollSlot]) buy_with_gold(scrollType, 1)
-					if (!parent.character.q.upgrade) {
-						if (character.ctype == "merchant" && !character.s.massproductionpp && character.mp > 400) use_skill("massproductionpp")
-                        upgrade(itemIndex, scrollSlot)
-                        break;
-					}
-				}
+				// if (character.items[itemIndex].level == 7){
+				// 	scrollType = "scroll2";
+				// 	scrollSlot = locate_item(scrollType)
+				// 	if (!character.items[scrollSlot]) buy_with_gold(scrollType, 1)
+				// 	if (!parent.character.q.upgrade) {
+				// 		if (character.ctype == "merchant" && !character.s.massproductionpp && character.mp > 400) use_skill("massproductionpp")
+                //         upgrade(itemIndex, scrollSlot)
+                //         break;
+				// 	}
+				// }
 
                 // grade 1+ = +7
                 if (grade > 1 || grade == 0) { //|| itemName == "shoes1" && level >= 5
