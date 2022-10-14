@@ -91,6 +91,7 @@ let sell_dict = {
 		[
 			'hpot0', 'hpot1', 'mpot0', 'mpot1',
 			'stand0', 'tracker',
+			'rod', 'pickaxe',
 			'primling', 'offering',
 			'scroll0', 'scroll1', 'scroll2',
 			'cscroll0', 'cscroll1', 'cscroll2',
@@ -108,7 +109,7 @@ let sell_dict = {
 	'merchSell':
 		[
 			'coat1', 'helmet1', 'hpbelt', 'hpamulet', 'whiteegg', 'pmaceofthedead', 
-			'smoke', 'phelmet', 'gphelmet',
+			'smoke', 'phelmet', 'gphelmet', 'pants1', 'gloves1', 'shoes1',
 		],
 	'merchTradeSell':
 		[
@@ -118,8 +119,8 @@ let sell_dict = {
 
 let upgradeDict = {
 	upgrade_all: [
-		'xmasshoes', 'xmaspants', 'xmassweater', "xmashat",
-		'mittens', "eslippers", "eears", "epyjamas",
+		'xmasshoes', 'xmaspants', 'xmassweater', "xmashat", 'mittens', 
+		"eslippers", "eears", "epyjamas",
 		
 		"stinger", "wcap", "wattire",
 		"wbreeches", "wgloves", "wshoes",
@@ -129,13 +130,15 @@ let upgradeDict = {
 		'ololipop', 'broom',
 	],
 	high_upgrade_all: [
-		'xmasshoes', 'xmaspants', 'xmassweater', "xmashat", 'merry',
-		"epyjamas", "eears", "pants1", "gloves1", "firestaff",
-		"shoes1", "fireblade", "quiver", 'ecape',
+		// 'xmasshoes', 'xmaspants', 'xmassweater', "xmashat", "epyjamas", "eears",
+		// "quiver",
+		'merry', "firestaff",
+		"fireblade", 'ecape',
 		'pinkie', 't2bow', 'pmaceofthedead',
 		'staffofthedead', 'oozingterror', "harbringer", "basher",
 		"bataxe", 'daggerofthedead', 'bowofthedead',
 		'swordofthedead', 'hpants', 'hgloves', 'maceofthedead',
+		'sword','dagger',
 	],
 	compound: [
 		'intamulet', 'intring', 'intbelt', 'intearring', 'strring',

@@ -64,14 +64,16 @@ character.on("cm", async (m) => {
 		case 'unpack':
 
 			// only merch unpack
-			if (character.ctype != 'merchant' || merchantBot.current_action) break;
+			if (character.ctype != 'merchant' || merchantBot.current_action && merchantBot.current_action != 'exchange') break;
+
+			merchantBot.set_current_action('unpacking')
 
 			// get pots if we need them
 			if (data.pots) await merchantBot.get_pots(data.pots);
 						
 			// set limiters
 			// merchantBot.thinking = true
-			merchantBot.set_current_action('unpacking')
+			if (merchantBot.current_action != 'unpacking') merchantBot.set_current_action('unpacking')
 
 			// go to farmer
 			await smart_move(data.loc)

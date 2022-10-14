@@ -1,3 +1,5 @@
+// ! TODO: MAKE BLOCKABLE ACTIONS DICT (for 'exchange', 'craft', etc)
+// ! TODO: REPLACE 'exchange' current_actions WITH this.exchange = true
 log("3 - Merchant") // display load_code() page number for debugging purposes
 load_code('1Main') // main
 load_code('23Dicts')
@@ -42,6 +44,7 @@ class Merchant extends Character {
 		this.pick;
 		this.stand;
 		this.counter = 0;
+		this.exchange;
 		this.home = { map: "main", x: -202.0783375408171, y: -50.0000001 }
 
 		// loops on init
@@ -354,7 +357,9 @@ class Merchant extends Character {
 
 	go_exchange() {
 		// dont do if there's something else going on
-		if (this.current_action && this.current_action != 'exchange' || this.thinking) return;
+		if (this.current_action || this.thinking) return; // && this.current_action != 'exchange' || 
+
+		if (!parent.character.q.exchange) this.exchange = false
 
 		let exchangeItems = ["basketofeggs", "goldenegg", "gem0", "weaponbox", "candy1", "candy0", "candycane",];
 
@@ -365,15 +370,19 @@ class Merchant extends Character {
 			}
 		}
 
-		if (!hasExchangeable) return
+		if (!hasExchangeable) {
+			this.exchange = false // if (this.current_action == 'exchange')  this.clear_current_action()
+			return
+		}
 
 		if (smart.moving) log("Going to exchange")
 
 		let exchangeCoordinates = { map: 'main', x: -204, y: -344 }
 		if (!smart.moving && character.x != exchangeCoordinates.x && character.y != exchangeCoordinates.y) smart_move(exchangeCoordinates)		
-		if (this.current_action != "exchange") this.set_current_action("exchange");
+		// if (this.current_action != "exchange") this.set_current_action("exchange");
 
 		// if( character.x != exchangeCoordinates.x && character.y != exchangeCoordinates.y) return
+		if (!hasExchangeable) return // || !this.exchange
 
 		let sellItems = []
 		for (let idx in sellItems) {
@@ -392,7 +401,8 @@ class Merchant extends Character {
 
 		if (character.esize == 0) {
 			log("No Space");
-			this.clear_current_action();
+			// this.clear_current_action();
+			this.exchange = false
 			// clearInterval(exchangeInterval);
 		}
 
@@ -402,6 +412,7 @@ class Merchant extends Character {
 				hasExchangeable = true;
 				if (!parent.character.q.exchange) {
 					exchange(item)
+					this.exchange = true
 				}
 			}
 		}
@@ -409,8 +420,9 @@ class Merchant extends Character {
 
 		if (!hasExchangeable) {
 			log("Exchangeable clear")
-			this.clear_current_action();
+			// this.clear_current_action();
 			// clearInterval(exchangeInterval);
+			this.exchange = false
 		}
 	}
 
@@ -500,7 +512,7 @@ function upgrade_all() {
 
 	for (let idx in itemList) {
 		let itemName = itemList[idx]
-		for (let level = 0; level < 8; level++) {
+		for (let level = 0; level < 7; level++) {
 
 			// get idx of each matching item
 			// [...3, 19, 23]
@@ -542,7 +554,8 @@ function upgrade_all() {
 					continue;
 
 				}
-				if (item.level == 7 && itemName != 'ololipop') {
+				let conservativeUpList = ['ololipop','broom',]
+				if (item.level == 7 && !conservativeUpList.includes(itemName)) {
 
 					log(`${itemName} 7 -> 8`)
 
@@ -553,7 +566,6 @@ function upgrade_all() {
 
 				}
 
-				// ! CAN PROBABLY DELETE BELOW HERED
 
 				if (item && item.p && !itemName === "stinger") {
 
