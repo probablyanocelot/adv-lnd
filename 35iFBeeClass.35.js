@@ -290,10 +290,10 @@ class Ranger {
 		}
 
 		// !TODO: replace farmDefault with 'is in' dict logic. maybe .hasOwnProperty()
-		if (this.current_action == 'farming' && character.x != farmDefault[character.id].x && character.y != farmDefault[character.id].y) {
-			if (character.moving || smart.moving) return
-			smart_move(farmDefault[character.id]).catch(use_skill('use_town'))
-		}
+		// if (this.current_action == 'farming' && character.x != farmDefault[character.id].x && character.y != farmDefault[character.id].y) {
+			// if (character.moving || smart.moving) return
+			// smart_move(farmDefault[character.id]).catch(use_skill('use_town'))
+		// }
 	}
   
   
@@ -481,13 +481,6 @@ class Ranger {
 			let targetFocus = get_nearest_monster({ type: mob })
 			if (!targetFocus) continue
 			target = targetFocus
-			if(!is_in_range(target)) {
-				move(
-					character.x+(target.x-character.x)/4,
-					character.y+(target.y-character.y)/4
-				);
-				// Walk 1/4 the distance
-			}
 			break
 		}
 
@@ -495,21 +488,39 @@ class Ranger {
 		// near weak/always-attack mobs
 		if (!target) {
 			this.target = false
-			for (let mob of mobsLow) {
-				target = get_nearest_monster({ type: mob })
-				// ! NOT OPTIMAL; SUPERSHOT IS 3x character.range !!
-				if (target && distanceToTarget(target) <= character.range) break
+			
+			let isActionMonster = G.monsters[this.current_action]
+				
+			if (isActionMonster) {
+				target = get_nearest_monster({ type: this.current_action })
 			}
+
+			if (!isActionMonster) {
+
+				for (let mob of mobsLow) {
+					target = get_nearest_monster({ type: mob })
+					// ! NOT OPTIMAL; SUPERSHOT IS 3x character.range !!
+					if (target) break
+				}
+			}
+				
 		}
 		
 		
 		if (!target) return 	// must have target beyond here
-
-		let targetName = target.mtype
-
 		this.target = target
 
-		combatDistancing(target)
+		if(!is_in_range(target) && can_move_to(target.x, target.y)) {
+			move(
+				character.x+(target.x-character.x)/4,
+				character.y+(target.y-character.y)/4
+			);
+			// Walk 1/4 the distance
+		}
+		let targetName = target.mtype
+
+
+		// combatDistancing(target)
 
 		// TODO: maybe better phoenix selection
 		// 
@@ -727,7 +738,8 @@ function goToTarget(target) {
 	function combatDistancing(target){
 		if (this.target) {
 			// if turret, don't poke
-			if (mobLocationDict.target && mobLocationDict.target.turret) return
+			// ! TODO: fix having to list each ctype below
+			if (mobLocationDict.target && (character.ctype == 'ranger' && mobLocationDict.target.turret)) return
 			
 			// can't kill in 2 hits, 1/4 range or closer -> move away
 			if (target.hp > character.attack * 2 && distanceToTarget(target) <= character.range * 0.25) {
@@ -742,8 +754,8 @@ function goToTarget(target) {
 			if (!is_in_range(target)) {
 				// TODO: move into 3/4 character.range
 				xmove(
-					character.x + (target.x - character.x) / 2,
-					character.y + (target.y - character.y) / 2
+					character.x + (target.x - character.x) / 4,
+					character.y + (target.y - character.y) / 4
 				);
 			}
 

@@ -17,7 +17,9 @@ let snake = { map:'main', x: -99.00430360974092, y: 1892.1728334181553}
 let osnake = {map: "halloween",x: -585.5701569278165,y: -350.4367234174731,}
 let cgoo = { map: 'arena', x:933, y:-178 }
 let mrpumpkin = { map: 'halloween', x:-177, y: 776.2616171730763 }
-let rat = { map: 'mansion', x: 165.33474873906044,y: -261.7979385004271 }
+let rat = { map: 'mansion', x: 165.33474873906044, y: -261.7979385004271 }
+let spider = {}
+let armadillo = 'armadillo'
 
 	
 
@@ -85,9 +87,10 @@ let mobLocationDict = {
 let bots = {
 	'3ra': ['couplaGrapes','cannaMace','camelCase','VendorGuy'],
 	'2ra': ['couplaGrapes','camelCase','VendorGuy'],
-	'2ra1p': ['couplaGrapes','camelCase','SaladMan','VendorGuy'],
-	'1ra1p1ro': ['camelCase','SaladMan','Teef','VendorGuy'],
-	'2ra1ma': ['Hoodlamb', 'couplaGrapes', 'camelCase', 'VendorGuy']
+	'2ra1pa': ['couplaGrapes','camelCase','SaladMan','VendorGuy'],
+	'1ra1pa1ro': ['camelCase','SaladMan','Teef','VendorGuy'],
+	'2ra1ma': ['Hoodlamb', 'couplaGrapes', 'camelCase', 'VendorGuy'],
+	'1ra1pr1ro': ['prayerBeads', 'Teef', 'camelCase', 'VendorGuy'],
 }
 
 function makeGroups(){
@@ -211,6 +214,8 @@ let farmDefault = {
 	"camelCase": crab,
 	"couplaGrapes": squigSouth,
 	"Hoodlamb": crab,
+	'prayerBeads': optimalBee,
+	'Teef': optimalBee,
 }
 
 let seasonalEvents = ['halloween','holidayseason','lunarnewyear','valentines']
