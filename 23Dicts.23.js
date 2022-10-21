@@ -9,13 +9,18 @@
 
 // 		let topLeft = [monster.boundary[0], monster.boundary[1]]
 let crab = { map: "main", x: -1175.7559333568836, y: -94.26759905415406 }
+let frog = { map:'main', x: -1166.3100928140552, y: 1225 }
 let squig = { map:"main", x: -1165.6557029608748, y: 300.21328251075323 }
 let squigSouth = { map:'main', x: -1166.3100928140552, y: 478.627440332755 }
 let optimalBee = { map: "main", x: 745.0119325069998, y: 713.0353542476796 }
 let snake = { map:'main', x: -99.00430360974092, y: 1892.1728334181553}
 let osnake = {map: "halloween",x: -585.5701569278165,y: -350.4367234174731,}
 let cgoo = { map: 'arena', x:933, y:-178 }
-let mrpumpkin = { map: 'halloween', x:-309, y:786 }
+let mrpumpkin = { map: 'halloween', x:-177, y: 776.2616171730763 }
+let rat = { map: 'mansion', x: 165.33474873906044,y: -261.7979385004271 }
+
+	
+
 let mrgreen = { map: 'spookytown', x: 480, y:1070 }
 let snowman = { map: 'winterland', x:1150, y:-850 }
 
@@ -31,6 +36,9 @@ let mobLocationDict = {
 	'squig2': {
 		loc: squigSouth,
 		turret: true,
+	},
+	'squigtoad': {
+		turret: true
 	},
 	'bee': {
 		loc: optimalBee,
@@ -48,6 +56,10 @@ let mobLocationDict = {
 		loc: cgoo,
 		turret: false,
 	},
+	'rat': {
+		loc: rat,
+		turret: true,
+	},
 	'mrpumpkin': {
 		loc: mrpumpkin,
 		turret: false,
@@ -59,6 +71,13 @@ let mobLocationDict = {
 	'snowman': {
 		loc: snowman,
 		turret: false,
+	},
+	// below maybe redundant/unnecessary?
+	'crabxx': {
+		turret: false
+	},
+	'franky': {
+		turret: false
 	}
 }
 
@@ -68,6 +87,7 @@ let bots = {
 	'2ra': ['couplaGrapes','camelCase','VendorGuy'],
 	'2ra1p': ['couplaGrapes','camelCase','SaladMan','VendorGuy'],
 	'1ra1p1ro': ['camelCase','SaladMan','Teef','VendorGuy'],
+	'2ra1ma': ['Hoodlamb', 'couplaGrapes', 'camelCase', 'VendorGuy']
 }
 
 function makeGroups(){
@@ -95,6 +115,8 @@ let sell_dict = {
 			'primling', 'offering',
 			'scroll0', 'scroll1', 'scroll2',
 			'cscroll0', 'cscroll1', 'cscroll2',
+			'candy1', 'candy0', 'luckbooster',
+			'elixirluck',
 		],
     'low':
 		[
@@ -108,12 +130,13 @@ let sell_dict = {
 		],
 	'merchSell':
 		[
-			'coat1', 'helmet1', 'hpbelt', 'hpamulet', 'whiteegg', 'pmaceofthedead', 
-			'smoke', 'phelmet', 'gphelmet', 'pants1', 'gloves1', 'shoes1',
+			'coat1', 'helmet1', 'hpbelt', 'hpamulet', 'whiteegg', 
+			'smoke', 'phelmet', 'gphelmet', 'pants1', 'gloves1', 'shoes1', 'throwingstars',
+			'pmaceofthedead',
 		],
 	'merchTradeSell':
 		[
-			'throwingstars',
+
 		]
 }
 
@@ -130,22 +153,24 @@ let upgradeDict = {
 		'ololipop', 'broom',
 	],
 	high_upgrade_all: [
-		// 'xmasshoes', 'xmaspants', 'xmassweater', "xmashat", "epyjamas", "eears",
-		// "quiver",
-		'merry', "firestaff",
-		"fireblade", 'ecape',
-		'pinkie', 't2bow', 'pmaceofthedead',
-		'staffofthedead', 'oozingterror', "harbringer", "basher",
-		"bataxe", 'daggerofthedead', 'bowofthedead',
-		'swordofthedead', 'hpants', 'hgloves', 'maceofthedead',
-		'sword','dagger',
-	],
+		// 'xmasshoes', 'xmaspants', 'xmassweater',
+		// "quiver", "xmashat", "epyjamas", "eears",
+
+		'ecape',
+		'staffofthedead', 'swordofthedead', // 'pmaceofthedead',
+		'daggerofthedead', 'bowofthedead', 'maceofthedead',
+
+		'oozingterror', "harbringer", "basher", 'pinkie', 't2bow',
+		'merry', "firestaff", "fireblade", "bataxe", 'sword','dagger',
+
+		'hpants', 'hgloves', 
+	], 
 	compound: [
 		'intamulet', 'intring', 'intbelt', 'intearring', 'strring',
 		'strearring', 'stramulet', 'strbelt', 'dexamulet',
 		'dexring', 'dexbelt', 'dexearring', 'skullamulet',
 		'book0', 'hpamulet', 'hpbelt', 'ringsj', 'wbook0',
-		'vitring', 'jacko',
+		'vitring', 'jacko', 'talkingskull',
 		//'lantern',
 	],
 }
@@ -184,7 +209,8 @@ let mobsHard = {
 let farmDefault = {
 	"cannaMace": squig,
 	"camelCase": crab,
-	"couplaGrapes": squigSouth
+	"couplaGrapes": squigSouth,
+	"Hoodlamb": crab,
 }
 
 let seasonalEvents = ['halloween','holidayseason','lunarnewyear','valentines']

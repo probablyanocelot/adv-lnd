@@ -1,20 +1,19 @@
 // ! TODO: MAKE BLOCKABLE ACTIONS DICT (for 'exchange', 'craft', etc)
 // ! TODO: REPLACE 'exchange' current_actions WITH this.exchange = true
 log("3 - Merchant") // display load_code() page number for debugging purposes
+load_code('16Relations')
 load_code('1Main') // main
-load_code('23Dicts')
 load_code('11Npcs') // NPCS - buyFromPonty()/Goblin
 load_code('12Inv')
 load_code('14Partying')
-load_code('16Relations')
 load_code('19Management')
 load_code('40Gui')
 
 //load_code(53) // upgrade_all2 WILL ADD MORE
 //performance_trick()
 
-const { webFrame } = require('electron');
-webFrame.setZoomFactor(1);
+// const { webFrame } = require('electron');
+// webFrame.setZoomFactor(1);
 
 let lastScare;
 
@@ -32,6 +31,26 @@ character.on('hit', function(data) {
 			use_skill('scare', data.actor)
 			lastScare = new Date()
 		}
+	}
+})
+
+character.on("cm", async (m) => {
+	if (!is_friendly(m.name)) return
+	let data = m.message
+
+	if (!data.cmd) return;
+
+	switch (data.cmd) {
+		case 'clear':
+			switch (character.ctype) {
+				case 'merchant':
+					merchantBot.clear_current_action()
+					break
+				default:
+					char.clear_current_action()
+					break
+			}
+			break
 	}
 })
 
@@ -96,6 +115,8 @@ class Merchant extends Character {
 		} else {
 
 			loot();
+			
+			this.merch_pots()
 
 			this.go_exchange();
 
@@ -130,7 +151,8 @@ class Merchant extends Character {
 		// increment counter when we're doing nothing
 		if (!this.current_action && !character.moving && !this.thinking) {
 			this.idle_counter += 1
-			log(`Idle: ${this.idle_counter}`);
+			// log(`Idle: ${this.idle_counter}`);
+			set_message(`Idle: ${this.idle_counter}`);
 		}
 	}
 
@@ -226,7 +248,16 @@ class Merchant extends Character {
 			);
 	}
 
-
+	
+	merch_pots(){
+		if (parent.character.q.upgrade || parent.character.q.compound){
+				if (locate_item('mpot1') > 0) return
+				buy('mpot1', 9999)
+				return
+		}
+	}
+	
+	
 	async get_pots(pots) {
 
 		if (this.current_action == 'get_pots') return
@@ -361,7 +392,11 @@ class Merchant extends Character {
 
 		if (!parent.character.q.exchange) this.exchange = false
 
-		let exchangeItems = ["basketofeggs", "goldenegg", "gem0", "weaponbox", "candy1", "candy0", "candycane",];
+		let exchangeItems = [
+			"basketofeggs", "goldenegg", "gem0", 
+			"weaponbox", 'armorbox', "candy0", "candy1", 
+			"candycane",
+		];
 
 		let hasExchangeable = false;
 		for (let idx in exchangeItems) {
@@ -377,7 +412,7 @@ class Merchant extends Character {
 
 		if (smart.moving) log("Going to exchange")
 
-		let exchangeCoordinates = { map: 'main', x: -204, y: -344 }
+		let exchangeCoordinates = { map: 'main', x: -165.70087581199823, y: -179.8048822284356 }
 		if (!smart.moving && character.x != exchangeCoordinates.x && character.y != exchangeCoordinates.y) smart_move(exchangeCoordinates)		
 		// if (this.current_action != "exchange") this.set_current_action("exchange");
 
@@ -428,17 +463,16 @@ class Merchant extends Character {
 
 
 	goHomeIfIdle() {
-		if (!this.thinking && !this.current_action) {
+		if (smart.moving || this.thinking || this.current_action || this.exchange) return
 						
-			if (character.real_x != this.home.x && character.real_y != this.home.y) {
-				this.thinking = true;
+		if (character.real_x != this.home.x && character.real_y != this.home.y) {
+			this.thinking = true;
+			smart_move(this.home)
+				.then(this.thinking = false)
+				.catch(() => {
 				smart_move(this.home)
-					.then(this.thinking = false)
-					.catch(() => {
-						smart_move(this.home)
-						this.thinking = false
-					})
-			}
+				this.thinking = false
+			})
 		}
 	}
 }
@@ -512,7 +546,7 @@ function upgrade_all() {
 
 	for (let idx in itemList) {
 		let itemName = itemList[idx]
-		for (let level = 0; level < 7; level++) {
+		for (let level = 0; level < 8; level++) {
 
 			// get idx of each matching item
 			// [...3, 19, 23]
@@ -544,7 +578,7 @@ function upgrade_all() {
 				if (grade == 2 || item.level >= 8) continue
 
 				// grade 1 or ( 0 & level 3-6 )
-				if (grade == 1 && item.level < 7 || (grade == 0 && item.level >= 3 && item.level < 7)) {
+				if (grade == 1 && item.level < 6 || (grade == 0 && item.level >= 3 && item.level < 7)) {
 
 					log(`${itemName} grade: ${grade} level: ${item.level} -> ${item.level + 1}`)
 
@@ -555,7 +589,7 @@ function upgrade_all() {
 
 				}
 				let conservativeUpList = ['ololipop','broom',]
-				if (item.level == 7 && !conservativeUpList.includes(itemName)) {
+				if (item.level > 5 && item.level < 8 && !conservativeUpList.includes(itemName)) {
 
 					log(`${itemName} 7 -> 8`)
 
@@ -593,7 +627,6 @@ function high_upgrade_all() {
 	let itemList = upgradeDict.high_upgrade_all
 	
 	let scrollType = "scroll1"
-	let scrollSlot = locate_item(scrollType)
     let maxLevel = 8;
 
     for (let level = 0; level < maxLevel; level++) {
@@ -604,11 +637,11 @@ function high_upgrade_all() {
             for (let listIndex in itemSlots) {
                 let itemIndex = itemSlots[listIndex];
 
+				//let item = character.items[itemIndex]
+				//let itemLevel = item.level
+				
                 // get item grade
                 let grade = item_grade(character.items[itemIndex]);
-
-				// buy scroll if not in slot 3
-                if (!character.items[scrollSlot]) buy_with_gold(scrollType, 1)
 
 				// if (character.items[itemIndex].level == 7){
 				// 	scrollType = "scroll2";
@@ -622,19 +655,33 @@ function high_upgrade_all() {
 				// }
 
                 // grade 1+ = +7
-                if (grade > 1 || grade == 0) { //|| itemName == "shoes1" && level >= 5
-                    log("grade is over/under 1")
+                if (grade == 0) { //|| itemName == "shoes1" && level >= 5
+                    log("grade is under 1")
                     continue;
-                } else if (character.items[itemIndex] && character.items[itemIndex].p) {
+                } 
+				if (character.items[itemIndex] && character.items[itemIndex].p) {
                  	log("has some modifier");
 					continue;
-                } else {
-                    // upgrade if we got here
-					if (!parent.character.q.upgrade) {
-						if (character.ctype == "merchant" && !character.s.massproductionpp && character.mp > 400) use_skill("massproductionpp")
+                }
+
+				// if (grade == 2) {
+				if (level >= 5){ 
+					scrollType = 'scroll2'					
+				}
+				if (grade == 2 && level >=6) continue
+			
+				let scrollSlot = locate_item(scrollType)
+				
+				// buy scroll if not in inv
+                if (!character.items[scrollSlot]) buy_with_gold(scrollType, 1)
+				
+				
+				// upgrade if we got here
+				if (!parent.character.q.upgrade) {
+				
+					if (character.ctype == "merchant" && !character.s.massproductionpp && character.mp > 400) use_skill("massproductionpp")
                         upgrade(itemIndex, scrollSlot)
                         break;
-                    }
                 }
             }
         }
@@ -680,9 +727,11 @@ function sell_extras() {
 		let item = character.items[itemSlot]
 		if (!item) continue;
 
+		if (item.level && item.level > 3) continue
+
 		let itemName = item.name
         // don't sell if not in list or is shiny
-        if (!sell_dict['merchSell'].includes(itemName) || item.p) continue;
+        if (!sell_dict['merchSell'].includes(itemName) || item.p || item.acc) continue;
 
 		log(`selling ${itemName}`)
 		if (item.q) {

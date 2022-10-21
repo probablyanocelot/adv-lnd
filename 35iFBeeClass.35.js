@@ -1,16 +1,15 @@
 log("31")
 performance_trick()
-load_code('23Dicts')
 load_code('1Main')
+load_code('16Relations')	// cm
 load_code('13Skills')	//skill3shot(), get_nearby_entitties()
 load_code('14Partying')	// PARTY, bots
 load_code('15Combat')
-load_code('16Relations')	// cm
 load_code('19management') //sell extras -- merge this and 12Inv?
 load_code('40Gui')
 
 let merchant = 'VendorGuy';
-let group = '3ra'
+let group = '1ra1pr1ro'
 let currentGroup = getGroup(group)
 let myFarmDefault = farmDefault[character.id]
 
@@ -66,6 +65,13 @@ function pvpBank() {
 			}
 		} 
 	}
+}
+
+
+function get_luck_elixir() {
+	if (!character.slots.elixir) return
+	let timeToExpire = new Date - character.slots.elixir.expires
+	log(timeToExpire)
 }
 
 
@@ -161,6 +167,19 @@ class Ranger {
 	}
 
 
+	drink(){
+		let elixir = locate_item('elixirluck')
+		
+		// Don't have any elixirs; TODO: if -1, ask merch for more
+		if (elixir == -1) return
+		
+		// Already drinking elixir
+		if (character.slots['elixir']) return
+		
+		if (!character.slots['elixir'] && elixir > -1) use(elixir)
+	}
+	
+	
 	serverMiniEvents() {
 
 		// TODO: snowman, rabbit support -- smart_move('snowman') gives 'Unrecognized Location'
@@ -453,7 +472,7 @@ class Ranger {
 		
 		let target;
 
-		if (character.ctype != 'ranger' && character.ctype != 'merchant') doCombat()
+		// if (character.ctype != 'ranger' && character.ctype != 'merchant') doCombat()
 
 		if (this.current_action && G.monsters.hasOwnProperty(this.current_action)) target = this.current_action
 
@@ -462,12 +481,20 @@ class Ranger {
 			let targetFocus = get_nearest_monster({ type: mob })
 			if (!targetFocus) continue
 			target = targetFocus
+			if(!is_in_range(target)) {
+				move(
+					character.x+(target.x-character.x)/4,
+					character.y+(target.y-character.y)/4
+				);
+				// Walk 1/4 the distance
+			}
 			break
 		}
 
 
 		// near weak/always-attack mobs
 		if (!target) {
+			this.target = false
 			for (let mob of mobsLow) {
 				target = get_nearest_monster({ type: mob })
 				// ! NOT OPTIMAL; SUPERSHOT IS 3x character.range !!
@@ -480,13 +507,9 @@ class Ranger {
 
 		let targetName = target.mtype
 
-		// character.on('hit', function(data) {
-		// 	if (data.actor != targetName) {
-		// 		let orb = character.slots.orb
-		// 		if (!orb || !orb.name == 'jacko') return
-		// 		if (character.mp >= 50 && !is_on_cooldown('scare')) use_skill('scare', data.actor)
-		// 	}
-		// })
+		this.target = target
+
+		combatDistancing(target)
 
 		// TODO: maybe better phoenix selection
 		// 
@@ -495,34 +518,40 @@ class Ranger {
 		}
 
 
-		// TODO: make its own function or REMOVE?
-		if (character.ctype != 'ranger') return
-
 		// GROUP MOBS
 		if (mobsGroup.includes(targetName)) {
 			avoid(target)
 			if(!target.target) return
 		}
+
+
 		change_target(target)
-		if (target.hp > character.attack * 2 && distanceToTarget(target) <= character.range * 0.25) {
-			// TODO: poking
+		
+		switch(character.ctype) {
+				
+			case 'mage':
+				if (!member.s.energize && !is_on_cooldown('energize')) use_skill('energize')
+				break
 			
-		}
-		if (!is_in_range(target)) {
-			// TODO: add mobs to a chase dict?
-			// if (mob == 'rgoo') {
-			// 	xmove(
-			// 		character.x + (target.x - character.x) / 2,
-			// 		character.y + (target.y - character.y) / 2
-			// 	);
-			// }
-		}
-		if (character.ctype == 'ranger') {
-			if (target.max_hp > character.attack * 3 && !is_on_cooldown('huntersmark') && character.mp >= 400) use_skill('huntersmark', target)
+			case 'ranger':
+				if (target.max_hp > character.attack * 3 && !is_on_cooldown('huntersmark') && character.mp >= 400) use_skill('huntersmark', target)
 			if (target.max_hp >= character.attack * 1.5 && !is_on_cooldown('supershot') && character.mp >= 500) use_skill('supershot', target)
 			// ! MAYBE DO <= character.attack * 2
 			if (target.max_hp < character.attack * 0.7 * 3 * 2 && !is_on_cooldown('3shot')) skill3shot(mobsLow, get_nearby_entities())
+				break
+				
+			case 'priest':
+				if (character.hp <= character.max_hp - G.skills.partyheal.output && !is_on_cooldown('partyheal') && character.mp > G.skills.partyheal.mp) use_skill('partyheal')
+				break
+			
+			case 'rogue':
+				
+				
+				break
+				
 		}
+
+
 		if (!is_on_cooldown('attack')) attack(target)
 
 		// if (!is_on_cooldown('3shot')) skill3shot(mobsLow, get_nearby_entities());
@@ -537,7 +566,17 @@ class Ranger {
 		}
 	}
 
-	
+	party_buff(skill, currentGroup){
+		let party = currentGroup ?? parent.party
+			for (let member of party) {
+				if (!get_player(member)) continue
+				member = get_player(member)
+				// TODO: if (G.skills?.mp) have enough, do skill
+				// TODO: or something that checks for G.skills.mp
+				if (!member.s[skill] && !is_on_cooldown(skill)) use_skill(skill, member.id)
+			}
+		}
+		//}
   
 	sequence() {
 		this.handle_death()
@@ -546,6 +585,7 @@ class Ranger {
 		
 		handle_party()
 		if (!this.current_action || this.current_action && !mobsGroup.includes(this.current_action)) getLuck()
+		this.drink()
 		this.manage_item_bounty
 		//this.handleMonsterHunt();
 		this.manage_idle()
@@ -573,6 +613,36 @@ class Ranger {
 let char = new Ranger;
 char.loop();
 
+character.on("cm", async (m) => {
+	if (!is_friendly(m.name)) return
+	let data = m.message
+
+	if (!data.cmd) return;
+
+	switch (data.cmd) {
+		case 'clear':
+			switch (character.ctype) {
+				case 'merchant':
+					merchantBot.clear_current_action()
+					break
+				default:
+					char.clear_current_action()
+					break
+			}
+			break
+		
+		case 'farm':
+			if (character.ctype == merchant) break
+			if (char.current_action && mobsGroup.includes(char.current_action)) break
+			if (!data.mob) break
+			let mobLoc = mobLocationDict[data.mob].loc ?? data.mob
+			char.clear_current_action()
+			char.set_current_action(data.mob)
+			log(data.mob)
+			await smart_move(mobLoc)
+			break
+	}
+})
 
 
 function avoid(target) {
@@ -654,6 +724,31 @@ function goToTarget(target) {
 		character.y+(target.y-character.y)/2
 		);
 }
+	function combatDistancing(target){
+		if (this.target) {
+			// if turret, don't poke
+			if (mobLocationDict.target && mobLocationDict.target.turret) return
+			
+			// can't kill in 2 hits, 1/4 range or closer -> move away
+			if (target.hp > character.attack * 2 && distanceToTarget(target) <= character.range * 0.25) {
+				// TODO: poking ( CREATE LINE AND MOVE 1/4 character.range DOWN LINE )
+				// xmove(
+				// 	character.x + (target.x - character.x) * 1.05,
+				// 	character.y + (target.y - character.y) * 1.05
+				// );
+				return
+			}
+			
+			if (!is_in_range(target)) {
+				// TODO: move into 3/4 character.range
+				xmove(
+					character.x + (target.x - character.x) / 2,
+					character.y + (target.y - character.y) / 2
+				);
+			}
+
+		}
+	}
 
 function distanceToTarget(target){
 	let dist;

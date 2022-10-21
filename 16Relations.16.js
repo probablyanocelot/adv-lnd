@@ -1,4 +1,5 @@
 log("16 - cm.16.js")
+load_code('23Dicts')
 load_code('24Traversal')
 
 // TODO better memo-ize
@@ -12,14 +13,35 @@ function doCm(botName, message) {
 }
 
 
+function group_cm(botlist, my_code, excludeArray) {
+	if (excludeArray) {
+		// filters array1 vs array2, returns uniques in array1
+		let includeArray = botlist.filter(function (e) {
+			return excludeArray.indexOf(e) == -1;
+		});
+		botlist = includeArray
+	}
 
-function group_cm(botlist, my_code) {
     for (let bot in botlist) {
 		if (bot == character.id) continue;
-        doCm(botlist[bot], my_code)
+        send_cm(botlist[bot], my_code)
     }
 }
 
+
+function get_item(fromChar, itemName, qty) {
+	send_cm(fromChar, { cmd: 'get_item', item: itemName, qty: qty ?? 1 })	
+}
+
+function set_farm(mob, excludeArray) {
+	// TODO: have better party storage?
+	if (!character.party) return
+
+	// current party
+	let botlist = Object.keys(parent.party)
+	
+	group_cm(botlist, {cmd: 'farm', mob: mob}, excludeArray)
+}
 
 character.on("cm", async (m) => {
 	if (character.ctype != 'merchant') log(m.message)
@@ -29,7 +51,9 @@ character.on("cm", async (m) => {
 		log(`UNAUTHORIZED CM ATTEMPT: ${m.name}`)
 		return
 	}	
-		let data = m.message
+	
+	let data = m.message
+	
 	// if (data.cmd != 'unpack') log(data);  // Do something with the message!
 	if (!data.cmd) return;
 	log(`${m.name} requesting ${data.cmd}`)
@@ -44,17 +68,13 @@ character.on("cm", async (m) => {
 			}
 			smart_move(data.loc)
 			break;
-		
-		case 'clear':
-			switch (character.ctype) {
-				case 'merchant':
-					merchantBot.clear_current_action()
-					break
-				default:
-					char.clear_current_action()
-					break
-			}
 				
+		case 'get_item':
+			let itemToSend = locate_item(data.item)
+			if (itemToSend < 0) break
+			send_item(m.name, itemToSend, data.qty ?? 1)
+			break
+
 		case 'get_loc':
 			savePosition()
 			let myLoc = getPosition(character.name)
@@ -93,6 +113,7 @@ character.on("cm", async (m) => {
 			} else {
 				await smart_move(get_player(m.name).x, get_player(m.name).y)
 				send_cm(m.name, { cmd: 'arrived' })
+				merchantBot.clear_current_action()
 			}
 			
 			if (data.pots) {
@@ -113,6 +134,8 @@ character.on("cm", async (m) => {
 		
 		case 'arrived':
 			if (!is_in_range(get_player(m.name))) await smart_move(get_player(m.name).x, get_player(m.name).y);
+
+			if (!character.slots.elixir) get_item(merchant, 'elixirluck')
 
 			if (character.gold > farmerReserve) send_gold(merchant, character.gold - farmerReserve)
 
