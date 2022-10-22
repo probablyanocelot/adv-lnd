@@ -33,6 +33,7 @@ setInterval(loot, 65)
 let lastScare;
 
 character.on('hit', function(data) {
+	if (data.heal > 0) return
 	let orb = character.slots.orb
 	if (!orb || !orb.name == 'jacko') return
 	if (lastScare == null || new Date() - lastScare >= 1000) {
@@ -203,7 +204,7 @@ class Ranger {
 				if (smart.moving) return
 				// TODO: maybe just mobsFocus / mobsGroup .includes(current_action)
 				// e.g. is event mob, etc
-				if ((!this.current_action || this.current_action == 'farming') && this.current_action != boss) this.current_action = boss
+				if (!this.current_action || (this.current_action && !mobsGroup.includes(this.current_action))) this.current_action = boss
 
 				if (is_in_range(get_nearest_monster({ type: boss }))) break
 				
@@ -218,7 +219,7 @@ class Ranger {
 			}
 
 			if (!this.current_action == boss) continue
-			if (parent.S[boss] && !parent.S[boss].live && this.current_action == boss && !smart.moving) this.moveToThen('main', this.clear_current_action())
+			if (parent.S[boss] && !parent.S[boss].live && this.current_action == boss && !smart.moving) this.clear_current_action()
 		}
 
 	}
@@ -352,8 +353,9 @@ class Ranger {
 		for (let event in parent.S) {
 			if (parent.S[event].live && mobsGroup.includes(String(event))) return
 		}
+		if(!this.current_action) return
 		if (this.dry()) {
-			if (this.turret == false) this.set_current_action('unpacking')
+			// if (this.turret == false) this.set_current_action('unpacking')
 			doCm(merchant, { cmd: 'unpack', loc: current_location(), pots: this.count_pot() });
 		}
 		if (character.esize <= 24) doCm(merchant, {cmd:'unpack', loc:current_location(), pots: this.count_pot()});
@@ -377,8 +379,8 @@ class Ranger {
 		  if (!is_on_cooldown("regen_mp") && character.mp < character.max_mp) use_skill("regen_mp").then(s => {return}, f=>{return});
 		  return;
 	  } else {
-		if (!is_on_cooldown("regen_hp") && character.hp <= character.max_hp - 400) use(locate_item(desired_hp_pot));
 		if (!is_on_cooldown("regen_mp") && character.mp < character.max_mp - 500) use(locate_item(desired_mp_pot));
+		if (!is_on_cooldown("regen_hp") && character.hp <= character.max_hp - 400) use(locate_item(desired_hp_pot));
 	  }
 	  if (!is_on_cooldown("regen_mp") && character.mp < character.max_mp) use_skill("regen_mp");
 	  if (!is_on_cooldown("regen_hp") && character.hp < character.max_hp) use_skill("regen_hp");
@@ -484,12 +486,19 @@ class Ranger {
 
 		if (this.current_action && G.monsters.hasOwnProperty(this.current_action)) target = get_nearest_monster({ type: this.current_action })
 
+		if (this.target) {
+			if (this.target.dead || this.target.rip) this.target = false
+			if (this.target) target = this.target
+		}
+
 		// GROUP MOBS / HARDER MOBS GET PRIORITY
-		for (let mob of mobsFocus) {
-			let targetFocus = get_nearest_monster({ type: mob })
-			if (!targetFocus) continue
-			target = targetFocus
-			break
+		if (!target) {
+			for (let mob of mobsFocus) {
+				let targetFocus = get_nearest_monster({ type: mob })
+				if (!targetFocus) continue
+				target = targetFocus
+				break
+			}
 		}
 
 
@@ -532,7 +541,8 @@ class Ranger {
 
 		if (character.ctype == 'rogue') {
 			let priest = get_player('prayerBeads')
-			if (priest.target) {
+			if (priest && (!priest.target || priest.target.rip)) return
+			if (priest && priest.target) {
 				if(get_monster(priest.target)) target = get_monster(priest.target) 
 			}
 		}
@@ -564,12 +574,14 @@ class Ranger {
 				break
 				
 			case 'priest':
-				if (character.hp <= character.max_hp - G.skills.partyheal.output && !is_on_cooldown('partyheal') && character.mp > G.skills.partyheal.mp) use_skill('partyheal')
+				if (!is_on_cooldown('partyheal') && character.mp > G.skills.partyheal.mp) this.priestHeal()
+				if (is_friendly(target.target))
 				break
 			
 			case 'rogue':
-				this.party_buff('rspeed')
-				
+				this.party_buff('rspeed', currentGroup)
+				if (!is_on_cooldown('quickstab') && character.mp > G.skills.quickstab.mp) use_skill('quickstab', target)
+
 				break
 				
 		}
@@ -578,6 +590,15 @@ class Ranger {
 		if (!is_on_cooldown('attack')) attack(target)
 
 		// if (!is_on_cooldown('3shot')) skill3shot(mobsLow, get_nearby_entities());
+	}
+
+	priestHeal() {
+		if (character.ctype != 'priest') return
+		for (let member in parent.party) {
+			let toon = get_player(member)
+			if (!toon) continue
+			if (toon.max_hp - toon.hp >= G.skills.partyheal.output) use_skill('partyheal')
+		}
 	}
 
 	manage_item_bounty() {
@@ -597,7 +618,7 @@ class Ranger {
 				// TODO: if (G.skills?.mp) have enough, do skill
 				// TODO: or something that checks for G.skills.mp
 				let mpCost = G.skills[skill].mp
-				if (mpCost && character.mp < mpCost) return
+				if (mpCost && character.mp < mpCost) continue
 				if (!member.s[skill] && !is_on_cooldown(skill)) use_skill(skill, member.id)
 			}
 		}

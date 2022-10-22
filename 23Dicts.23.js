@@ -18,8 +18,10 @@ let osnake = {map: "halloween",x: -585.5701569278165,y: -350.4367234174731,}
 let cgoo = { map: 'arena', x:933, y:-178 }
 let mrpumpkin = { map: 'halloween', x:-177, y: 776.2616171730763 }
 let rat = { map: 'mansion', x: 165.33474873906044, y: -261.7979385004271 }
-let spider = {}
-let armadillo = { map: 'main', x:526, y:1821 }
+let spider = { map: 'main', x: 925, y: -155}
+let armadillo = { map: 'main', x: 526, y: 1821 }
+let boar = { map: 'winterland', x: 17, y: -840 }
+let porcupine = { map: 'desertland', x: -824, y: 146}
 
 	
 
@@ -60,6 +62,10 @@ let mobLocationDict = {
 	},
 	'rat': {
 		loc: rat,
+		turret: true,
+	},
+	'boar': {
+		loc: boar,
 		turret: true,
 	},
 
@@ -129,7 +135,7 @@ let sell_dict = {
 			'scroll0', 'scroll1', 'scroll2',
 			'cscroll0', 'cscroll1', 'cscroll2',
 			'candy1', 'candy0', 'luckbooster',
-			'elixirluck',
+			'elixirluck', 'jacko',
 		],
     'low':
 		[
@@ -193,6 +199,9 @@ let mobsLow = [
 	"croc", "squig", "goo", "tortoise", 
 	"minimush", 'frog', "armadillo",
 
+
+	// harder
+	'boar', 'spider', 'porcupine',
 	// 2nd priority
 	'snowman', 'cutebee', 'grinch', 'rgoo', 'bgoo',
 	"goldenbat", "tinyp", "greenjr", "phoenix", 
@@ -224,8 +233,8 @@ let farmDefault = {
 	"camelCase": 'crab',
 	"couplaGrapes": 'squig2',
 	"Hoodlamb": 'crab',
-	'prayerBeads': 'armadillo',
-	'Teef': 'armadillo',
+	'prayerBeads': 'boar',
+	'Teef': 'boar',
 }
 
 let seasonalEvents = ['halloween','holidayseason','lunarnewyear','valentines']

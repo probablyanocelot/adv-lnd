@@ -129,7 +129,7 @@ character.on("cm", async (m) => {
 
 			// clear limiters - maybe clear them on done_unpack instead?
 			// merchantBot.thinking = false
-			merchantBot.clear_current_action()
+			merchantBot.current_action = false
 			break;
 		
 		case 'arrived':

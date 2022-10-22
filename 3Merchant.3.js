@@ -23,7 +23,8 @@ map_key('F12', {
     'keycode': 123,
 });
 
-character.on('hit', function(data) {
+character.on('hit', function (data) {
+	if (data.heal > 0) return
 	let orb = character.slots.orb
 	if (!orb || !orb.name == 'jacko') return
 	if (lastScare == null || new Date() - lastScare >= 1000) {
@@ -99,7 +100,6 @@ class Merchant extends Character {
 	}
 
 	loop() {
-		this.counter += 1 // increment counter
 
 		// in-game status report
 		if (this.current_action && this.counter % 5 == 0) log(`Processing loop with action: ${this.current_action}`)
@@ -113,6 +113,7 @@ class Merchant extends Character {
 			this.clear_current_action();
 			this.thinking = false; // most blocking state
 		} else {
+			this.incrementCounter();
 
 			loot();
 			
@@ -121,7 +122,6 @@ class Merchant extends Character {
 			this.go_exchange();
 
 			if (!this.current_action) {
-				this.incrementCounter();
 				this.manage_slots()
 
 				//below, add if(this.rod/pick) fish/mine
@@ -149,7 +149,7 @@ class Merchant extends Character {
 
 	incrementCounter() {
 		// increment counter when we're doing nothing
-		if (!this.current_action && !character.moving && !this.thinking) {
+		if ((!this.current_action || this.current_action && this.current_action == 'unpacking') && !character.moving && !this.thinking) {
 			this.idle_counter += 1
 			// log(`Idle: ${this.idle_counter}`);
 			set_message(`Idle: ${this.idle_counter}`);
@@ -318,7 +318,7 @@ class Merchant extends Character {
 			let itemName = item.name
 
 			// if not in keep dict, or is shiny, or is upgradable and level > 6 then store
-			if (!sell_dict['keep'].includes(itemName) || item.p || (isUpgradable(itemName) && item.level > 6)) bank_store(idx);
+			if (itemName == 'jacko' || !sell_dict['keep'].includes(itemName) || item.p || (isUpgradable(itemName) && item.level > 6)) bank_store(idx);
 		}
 		return
 	}
