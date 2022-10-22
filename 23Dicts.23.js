@@ -100,7 +100,7 @@ let bots = {
 	'2ra1pa': ['couplaGrapes','camelCase','SaladMan','VendorGuy'],
 	'1ra1pa1ro': ['camelCase','SaladMan','Teef','VendorGuy'],
 	'2ra1ma': ['Hoodlamb', 'couplaGrapes', 'camelCase', 'VendorGuy'],
-	'1ra1pr1ro': ['prayerBeads', 'Teef', 'camelCase', 'VendorGuy'],
+	'1ra1pr1ro': ['Teef', 'prayerBeads', 'camelCase', 'VendorGuy'],
 }
 
 function makeGroups(){

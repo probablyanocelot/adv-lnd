@@ -191,3 +191,10 @@ function exampleFindDuplicate() {
 
 	console.log(result);
 }
+
+function orbSwap() {
+	let jacko = locate_item('jacko') 
+	if (jacko > -1 && smart.moving) {
+		if (!character.slots.orb || !character.slots.orb.name == 'jacko') equip(jacko)
+	}
+}

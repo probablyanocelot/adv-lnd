@@ -158,7 +158,7 @@ class Ranger {
 	}
 
 	isActionMonster() {
-		if (G.monsters[this.current_action]) return true
+		if (G.monsters.hasOwnProperty(this.current_action)) return true
 		return false
 	}
   
@@ -264,14 +264,15 @@ class Ranger {
 
 	}
 
+
 	async manage_idle() {
 
-		if (character.moving) {
+		if (smart.moving) {
 			this.idle_counter = 0;
 		}
 
 		// if (character.ctype == 'paladin') return
-		if (smart.moving || this.current_action || (this.current_action && !this.current_action == '')) return;
+		if (smart.moving || this.isActionMonster() || (this.current_action && !this.current_action === '')) return;
 
 		// only increment counter when we're doing nothing
 		if (!this.current_action && !character.moving && !this.thinking) {
@@ -279,7 +280,7 @@ class Ranger {
 			if (this.idle_counter % 1 == 0) log(`Idle: ${this.idle_counter}`);
 		}
 		
-		if (this.idle_counter > 10 && !smart.moving) {
+		if (this.idle_counter > 5 && !smart.moving) {
 			log('idle move')
 			await smart_move(myFarmLocation)
 			this.set_current_action(myFarmMob)
@@ -500,7 +501,7 @@ class Ranger {
 				target = get_nearest_monster({ type: this.current_action })
 			}
 
-			if (!this.isActionMonster()) {
+			if (this.current_action && !this.isActionMonster()) {
 
 				for (let mob of mobsLow) {
 					target = get_nearest_monster({ type: mob })
@@ -524,14 +525,20 @@ class Ranger {
 		// }
 		let targetName = target.mtype
 
-
-		combatDistancing(target)
-
 		// TODO: maybe better phoenix selection
-		// 
 		if (!mobsFocus.includes(targetName)) {
 			if (get_nearest_monster({ type: 'phoenix' })) target = get_nearest_monster({ type: 'phoenix' })
 		}
+
+		if (character.ctype == 'rogue') {
+			let priest = get_player('prayerBeads')
+			if (priest.target) {
+				if(get_monster(priest.target)) target = get_monster(priest.target) 
+			}
+		}
+
+
+		combatDistancing(target)
 
 
 		// GROUP MOBS
@@ -561,7 +568,7 @@ class Ranger {
 				break
 			
 			case 'rogue':
-				
+				this.party_buff('rspeed')
 				
 				break
 				
@@ -589,6 +596,8 @@ class Ranger {
 				member = get_player(member)
 				// TODO: if (G.skills?.mp) have enough, do skill
 				// TODO: or something that checks for G.skills.mp
+				let mpCost = G.skills[skill].mp
+				if (mpCost && character.mp < mpCost) return
 				if (!member.s[skill] && !is_on_cooldown(skill)) use_skill(skill, member.id)
 			}
 		}
@@ -600,6 +609,7 @@ class Ranger {
 		if (character.rip) return;
 		
 		handle_party()
+		orbSwap()
 		if (!this.current_action || this.current_action && !mobsGroup.includes(this.current_action)) getLuck()
 		this.drink()
 		this.manage_item_bounty
@@ -753,14 +763,13 @@ function goToTarget(target) {
 				// 	character.x + (target.x - character.x) * 1.05,
 				// 	character.y + (target.y - character.y) * 1.05
 				// );
-				return
 			}
 			
 			if (!is_in_range(target)) {
 				// TODO: move into 3/4 character.range
 				xmove(
-					character.x + (target.x - character.x) / 4,
-					character.y + (target.y - character.y) / 4
+					character.x + (target.x - character.x) / 2,
+					character.y + (target.y - character.y) / 2
 				);
 			}
 
