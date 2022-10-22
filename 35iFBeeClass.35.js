@@ -11,7 +11,8 @@ load_code('40Gui')
 let merchant = 'VendorGuy';
 let group = '1ra1pr1ro'
 let currentGroup = getGroup(group)
-let myFarmDefault = farmDefault[character.id]
+let myFarmMob = farmDefault[character.id]
+let myFarmLocation = mobLocationDict[myFarmMob].loc
 
 let farmerReserve = 2500000;
 let desired_potion_count = 9999;
@@ -102,7 +103,7 @@ function farmerBank() {
 	
 	}
 	log('farmerBank return move')
-	char.moveToThen(myFarmDefault, char.current_action = 'farming')
+	char.moveToThen(myFarmLocation, char.current_action = myFarmMob)
 }
 
 
@@ -154,6 +155,11 @@ class Ranger {
 			this.current_action = ""
 			this.idle_counter = 0;
 		}
+	}
+
+	isActionMonster() {
+		if (G.monsters[this.current_action]) return true
+		return false
 	}
   
 	handle_death() {
@@ -243,7 +249,7 @@ class Ranger {
 			if (this.joinEvent(event)) this.current_action = event
 	
 
-			if (this.current_action == event && !parent.S[event] && !smart.moving) this.moveToThen(myFarmDefault, this.clear_current_action())
+			if (this.current_action == event && !parent.S[event] && !smart.moving) this.moveToThen(myFarmLocation, this.clear_current_action())
 			
 		}
 	}
@@ -258,14 +264,14 @@ class Ranger {
 
 	}
 
-	manage_idle() {
-
-		if (character.ctype == 'paladin') return
-		if (smart.moving || this.current_action || (this.current_action && !this.current_action == '')) return;
+	async manage_idle() {
 
 		if (character.moving) {
 			this.idle_counter = 0;
 		}
+
+		// if (character.ctype == 'paladin') return
+		if (smart.moving || this.current_action || (this.current_action && !this.current_action == '')) return;
 
 		// only increment counter when we're doing nothing
 		if (!this.current_action && !character.moving && !this.thinking) {
@@ -275,7 +281,8 @@ class Ranger {
 		
 		if (this.idle_counter > 10 && !smart.moving) {
 			log('idle move')
-			this.moveToThen(myFarmDefault, this.set_current_action('farming'))
+			await smart_move(myFarmLocation)
+			this.set_current_action(myFarmMob)
 		}
 	}
 
@@ -286,7 +293,7 @@ class Ranger {
 		if (character.x == 0 && character.y == 0) {
 			this.clear_current_action();
 			log('stuck move')
-			smart_move(myFarmDefault)
+			smart_move(myFarmLocation)
 		}
 
 		// !TODO: replace farmDefault with 'is in' dict logic. maybe .hasOwnProperty()
@@ -474,7 +481,7 @@ class Ranger {
 
 		// if (character.ctype != 'ranger' && character.ctype != 'merchant') doCombat()
 
-		if (this.current_action && G.monsters.hasOwnProperty(this.current_action)) target = this.current_action
+		if (this.current_action && G.monsters.hasOwnProperty(this.current_action)) target = get_nearest_monster({ type: this.current_action })
 
 		// GROUP MOBS / HARDER MOBS GET PRIORITY
 		for (let mob of mobsFocus) {
@@ -488,14 +495,12 @@ class Ranger {
 		// near weak/always-attack mobs
 		if (!target) {
 			this.target = false
-			
-			let isActionMonster = G.monsters[this.current_action]
-				
-			if (isActionMonster) {
+							
+			if (this.isActionMonster()) {
 				target = get_nearest_monster({ type: this.current_action })
 			}
 
-			if (!isActionMonster) {
+			if (!this.isActionMonster()) {
 
 				for (let mob of mobsLow) {
 					target = get_nearest_monster({ type: mob })
@@ -510,17 +515,17 @@ class Ranger {
 		if (!target) return 	// must have target beyond here
 		this.target = target
 
-		if(!is_in_range(target) && can_move_to(target.x, target.y)) {
-			move(
-				character.x+(target.x-character.x)/4,
-				character.y+(target.y-character.y)/4
-			);
-			// Walk 1/4 the distance
-		}
+		// if(!is_in_range(target) && can_move_to(target.x, target.y)) {
+		// 	move(
+		// 		character.x+(target.x-character.x)/4,
+		// 		character.y+(target.y-character.y)/4
+		// 	);
+		// 	// Walk 1/4 the distance
+		// }
 		let targetName = target.mtype
 
 
-		// combatDistancing(target)
+		combatDistancing(target)
 
 		// TODO: maybe better phoenix selection
 		// 
@@ -736,10 +741,10 @@ function goToTarget(target) {
 		);
 }
 	function combatDistancing(target){
-		if (this.target) {
+		if (target) {
 			// if turret, don't poke
 			// ! TODO: fix having to list each ctype below
-			if (mobLocationDict.target && (character.ctype == 'ranger' && mobLocationDict.target.turret)) return
+			if (mobLocationDict.hasOwnProperty(target.name) && (character.ctype == 'ranger' && mobLocationDict[target].turret)) return
 			
 			// can't kill in 2 hits, 1/4 range or closer -> move away
 			if (target.hp > character.attack * 2 && distanceToTarget(target) <= character.range * 0.25) {

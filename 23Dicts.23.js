@@ -19,7 +19,7 @@ let cgoo = { map: 'arena', x:933, y:-178 }
 let mrpumpkin = { map: 'halloween', x:-177, y: 776.2616171730763 }
 let rat = { map: 'mansion', x: 165.33474873906044, y: -261.7979385004271 }
 let spider = {}
-let armadillo = 'armadillo'
+let armadillo = { map: 'main', x:526, y:1821 }
 
 	
 
@@ -54,13 +54,23 @@ let mobLocationDict = {
 		loc: osnake,
 		turret: true,
 	},
-	'cgoo': {
-		loc: cgoo,
-		turret: false,
+	'armadillo': {
+		loc: armadillo,
+		turret: true,
 	},
 	'rat': {
 		loc: rat,
 		turret: true,
+	},
+
+
+	'spider': {
+		loc: spider,
+		turret: false,
+	},
+	'cgoo': {
+		loc: cgoo,
+		turret: false,
 	},
 	'mrpumpkin': {
 		loc: mrpumpkin,
@@ -210,12 +220,12 @@ let mobsHard = {
 
 
 let farmDefault = {
-	"cannaMace": squig,
-	"camelCase": crab,
-	"couplaGrapes": squigSouth,
-	"Hoodlamb": crab,
-	'prayerBeads': optimalBee,
-	'Teef': optimalBee,
+	"cannaMace": 'squig',
+	"camelCase": 'crab',
+	"couplaGrapes": 'squig2',
+	"Hoodlamb": 'crab',
+	'prayerBeads': 'armadillo',
+	'Teef': 'armadillo',
 }
 
 let seasonalEvents = ['halloween','holidayseason','lunarnewyear','valentines']
