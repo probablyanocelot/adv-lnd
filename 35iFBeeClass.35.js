@@ -28,7 +28,7 @@ if (character.controller) log(character.controller)
 if (character.name == currentGroup[0]) startBots(currentGroup);
 const keyInviteBots = map_key("9", "snippet", "sendInvites('r3')")
 const keyKillBots = map_key('8', 'snippet', "killBots(currentGroup)")
-setInterval(loot, 65)
+setInterval(loot, 50)
 
 let lastScare;
 
@@ -348,17 +348,17 @@ class Ranger {
 		pvpBank();
 		
 		// don't call the truck if we're in a very temporary place (event bosses)
-		if (smart.moving) return
+		if (smart.moving || character.moving) return
 		if (this.current_action && mobsGroup.includes(this.current_action)) return
 		for (let event in parent.S) {
 			if (parent.S[event].live && mobsGroup.includes(String(event))) return
 		}
-		if(!this.current_action) return
+		if (!this.current_action) return
 		if (this.dry()) {
 			// if (this.turret == false) this.set_current_action('unpacking')
 			doCm(merchant, { cmd: 'unpack', loc: current_location(), pots: this.count_pot() });
 		}
-		if (character.esize <= 24) doCm(merchant, {cmd:'unpack', loc:current_location(), pots: this.count_pot()});
+		if (character.esize <= 14) doCm(merchant, {cmd:'unpack', loc:current_location(), pots: this.count_pot()});
 	}
 	
   
@@ -541,7 +541,7 @@ class Ranger {
 
 		if (character.ctype == 'rogue') {
 			let priest = get_player('prayerBeads')
-			if (priest && (!priest.target || priest.target.rip)) return
+			if (priest && (!priest.target || priest.target.rip || priest.target.dead)) return
 			if (priest && priest.target) {
 				if(get_monster(priest.target)) target = get_monster(priest.target) 
 			}
@@ -574,11 +574,16 @@ class Ranger {
 				break
 				
 			case 'priest':
+				if (target.target == character.id && target.hp >= 8000 && target.max_hp >= 10000) gearSwap(priTank)
+				if (target.hp < 2500 && target.max_hp >= 10000) gearSwap(priLuck)
+				if (is_friendly(target.target) && !mobsGroup.includes(target.name) && !is_on_cooldown('absorb') && character.mp > G.skills.absorb.mp) use_skill('absorb', target.target)
+				if (!is_on_cooldown('curse') && character.mp > G.skills.curse.mp) use_skill('curse', target)
 				if (!is_on_cooldown('partyheal') && character.mp > G.skills.partyheal.mp) this.priestHeal()
-				if (is_friendly(target.target))
 				break
 			
 			case 'rogue':
+				if (!is_on_cooldown('invis')) use_skill('invis')
+				if (!is_on_cooldown('attack')) attack(target)
 				this.party_buff('rspeed', currentGroup)
 				if (!is_on_cooldown('quickstab') && character.mp > G.skills.quickstab.mp) use_skill('quickstab', target)
 
@@ -828,6 +833,99 @@ function doCombat() { // doCombat(char)
 	}
 }
 
+
+
+// returns bool for locate_item('name'), > -1 == true
+function isInItems(itemSlot) {
+	if (itemSlot > -1) return true
+	return false
+}
+
+// equip if passes checks
+function equipFromItems(itemName, invSlot, gearSlotName) {
+	let equippedItem = character.slots[gearSlotName]
+	if ( isInItems( invSlot ) && ( !equippedItem || equippedItem.name != itemName ) ) equip(invSlot)
+}
+
+let gearDict = {}
+
+let priTank = ['phelmet', 'harmor', 'hpants', 'xboots', 'hgloves', 'lantern', 'hpamulet',]
+let priLuck = ['wcap', 'wattire', 'wbreeches', 'wshoes', 'wgloves', 'mshield', 'spookyamulet',]
+
+// get eq gear type/slot from item name
+function getGearType(itemName) {
+	if (!G.items[itemName]) return false
+	return G.items[itemName].type
+}
+
+// type: name,		e.g. {'helmet': 'phelmet', etc}
+function populateGearDict(loadout) {
+	gearDict = {}
+	for (let itemName of loadout) {
+		let slotType = getGearType(itemName)
+		if (!slotType) continue
+		gearDict[slotType] = itemName
+	}
+	return gearDict
+}
+
+function gearSwap(loadout) {
+
+	gearDict = populateGearDict(loadout)
+
+	// const { 'helmet':helmet, 'chest':chest, 'pants': pants, 'shoes':shoes, 'gloves':gloves, 'orb': orb } = gearDict
+	// TODO: from dict to 'helmet' == 'phelmet'
+
+
+	// let slotHelmet = locate_item(helmet)
+	// let slotChest = locate_item(chest)
+	// let slotPants = locate_item(pants)
+	// let slotShoes = locate_item(shoes)
+	// let slotGloves = locate_item(gloves)
+	// let slotOrb = locate_item(orb)
+
+	for (let gearSlot in gearDict) {
+		let itemName = gearDict[gearSlot]
+		if (!itemName) continue
+		let itemSlot = locate_item(itemName)
+		equipFromItems(itemName, itemSlot, gearSlot)
+	}
+
+	// for (let equippedSlot in character.slots) {
+	 	// equippedSlot = mainhand		etc 
+		
+	 	// item in equippedSlot
+	// 	let item = character.slots[equippedSlot]
+	// 	if (!item) continue
+
+		// switch (String(equippedSlot)) {
+		// 	case 'helmet':
+		// 		equipFromItems(helmet, slotHelmet, equippedSlot)
+
+		// 		break
+		// 	case 'chest':
+		// 		equipFromItems(chest, slotChest, equippedSlot)
+
+		// 		break
+		// 	case 'pants':
+		// 		equipFromItems(pants, slotPants, equippedSlot)
+
+		// 		break
+		// 	case 'shoes':
+		// 		equipFromItems(shoes, slotShoes, equippedSlot)
+
+		// 		break
+		// 	case 'gloves':
+		// 		equipFromItems(gloves, slotGloves, equippedSlot)
+
+		// 		break
+		// 	case 'orb':
+		// 		equipFromItems(orb, slotOrb, equippedSlot)
+
+		// 		break
+		// }
+	// }
+}
 
 
 

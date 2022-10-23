@@ -21,7 +21,8 @@ let rat = { map: 'mansion', x: 165.33474873906044, y: -261.7979385004271 }
 let spider = { map: 'main', x: 925, y: -155}
 let armadillo = { map: 'main', x: 526, y: 1821 }
 let boar = { map: 'winterland', x: 17, y: -840 }
-let porcupine = { map: 'desertland', x: -824, y: 146}
+let porcupine = { map: 'desertland', x: -824, y: 146 }
+let bigbird = {map: 'main', x: 1150, y: 200}
 
 	
 
@@ -64,12 +65,16 @@ let mobLocationDict = {
 		loc: rat,
 		turret: true,
 	},
+
+
+	'bigbird': {
+		loc: bigbird,
+		turret: false,
+	},
 	'boar': {
 		loc: boar,
-		turret: true,
+		turret: false,
 	},
-
-
 	'spider': {
 		loc: spider,
 		turret: false,
@@ -106,7 +111,7 @@ let bots = {
 	'2ra1pa': ['couplaGrapes','camelCase','SaladMan','VendorGuy'],
 	'1ra1pa1ro': ['camelCase','SaladMan','Teef','VendorGuy'],
 	'2ra1ma': ['Hoodlamb', 'couplaGrapes', 'camelCase', 'VendorGuy'],
-	'1ra1pr1ro': ['Teef', 'prayerBeads', 'camelCase', 'VendorGuy'],
+	'1ra1pr1ro': ['prayerBeads', 'Teef', 'camelCase', 'VendorGuy'],
 }
 
 function makeGroups(){
