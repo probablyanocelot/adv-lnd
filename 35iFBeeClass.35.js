@@ -577,9 +577,9 @@ class Ranger {
 			case 'priest':
 				if (target.target == character.id && target.hp >= 8000 && target.max_hp >= 10000) gearSwap(priTank)
 				if (target.hp < 2500 && target.max_hp >= 10000) gearSwap(priLuck)
+				if (!is_on_cooldown('partyheal') && character.mp > G.skills.partyheal.mp) this.priestHeal()
 				if (is_friendly(target.target) && !mobsGroup.includes(target.name) && !is_on_cooldown('absorb') && character.mp > G.skills.absorb.mp) use_skill('absorb', target.target)
 				if (!is_on_cooldown('curse') && character.mp > G.skills.curse.mp) use_skill('curse', target)
-				if (!is_on_cooldown('partyheal') && character.mp > G.skills.partyheal.mp) this.priestHeal()
 				break
 			
 			case 'rogue':
