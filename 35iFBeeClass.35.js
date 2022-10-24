@@ -833,9 +833,12 @@ function doCombat() { // doCombat(char)
 	}
 }
 
+let gearDict = {}
 
+let priTank = ['phelmet', 'harmor', 'hpants', 'xboots', 'hgloves', 'lantern', ]
+let priLuck = ['wcap', 'wattire', 'wbreeches', 'wshoes', 'wgloves', 'mshield', ]
 
-// returns bool for locate_item('name'), > -1 == true
+// returns true if item is in character.items
 function isInItems(itemSlot) {
 	if (itemSlot > -1) return true
 	return false
@@ -846,11 +849,6 @@ function equipFromItems(itemName, invSlot, gearSlotName) {
 	let equippedItem = character.slots[gearSlotName]
 	if ( isInItems( invSlot ) && ( !equippedItem || equippedItem.name != itemName ) ) equip(invSlot)
 }
-
-let gearDict = {}
-
-let priTank = ['phelmet', 'harmor', 'hpants', 'xboots', 'hgloves', 'lantern', 'hpamulet',]
-let priLuck = ['wcap', 'wattire', 'wbreeches', 'wshoes', 'wgloves', 'mshield', 'spookyamulet',]
 
 // get eq gear type/slot from item name
 function getGearType(itemName) {
@@ -870,19 +868,8 @@ function populateGearDict(loadout) {
 }
 
 function gearSwap(loadout) {
-
+	// { helmet : 'phelmet' , chest:...}
 	gearDict = populateGearDict(loadout)
-
-	// const { 'helmet':helmet, 'chest':chest, 'pants': pants, 'shoes':shoes, 'gloves':gloves, 'orb': orb } = gearDict
-	// TODO: from dict to 'helmet' == 'phelmet'
-
-
-	// let slotHelmet = locate_item(helmet)
-	// let slotChest = locate_item(chest)
-	// let slotPants = locate_item(pants)
-	// let slotShoes = locate_item(shoes)
-	// let slotGloves = locate_item(gloves)
-	// let slotOrb = locate_item(orb)
 
 	for (let gearSlot in gearDict) {
 		let itemName = gearDict[gearSlot]
@@ -890,41 +877,6 @@ function gearSwap(loadout) {
 		let itemSlot = locate_item(itemName)
 		equipFromItems(itemName, itemSlot, gearSlot)
 	}
-
-	// for (let equippedSlot in character.slots) {
-	 	// equippedSlot = mainhand		etc 
-		
-	 	// item in equippedSlot
-	// 	let item = character.slots[equippedSlot]
-	// 	if (!item) continue
-
-		// switch (String(equippedSlot)) {
-		// 	case 'helmet':
-		// 		equipFromItems(helmet, slotHelmet, equippedSlot)
-
-		// 		break
-		// 	case 'chest':
-		// 		equipFromItems(chest, slotChest, equippedSlot)
-
-		// 		break
-		// 	case 'pants':
-		// 		equipFromItems(pants, slotPants, equippedSlot)
-
-		// 		break
-		// 	case 'shoes':
-		// 		equipFromItems(shoes, slotShoes, equippedSlot)
-
-		// 		break
-		// 	case 'gloves':
-		// 		equipFromItems(gloves, slotGloves, equippedSlot)
-
-		// 		break
-		// 	case 'orb':
-		// 		equipFromItems(orb, slotOrb, equippedSlot)
-
-		// 		break
-		// }
-	// }
 }
 
 
