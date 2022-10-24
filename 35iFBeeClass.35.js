@@ -28,7 +28,8 @@ if (character.controller) log(character.controller)
 if (character.name == currentGroup[0]) startBots(currentGroup);
 const keyInviteBots = map_key("9", "snippet", "sendInvites('r3')")
 const keyKillBots = map_key('8', 'snippet', "killBots(currentGroup)")
-setInterval(loot, 50)
+
+if (character.ctype != 'rogue') setInterval(loot, 50)
 
 let lastScare;
 
@@ -835,8 +836,8 @@ function doCombat() { // doCombat(char)
 
 let gearDict = {}
 
-let priTank = ['phelmet', 'harmor', 'hpants', 'xboots', 'hgloves', 'lantern', ]
-let priLuck = ['wcap', 'wattire', 'wbreeches', 'wshoes', 'wgloves', 'mshield', ]
+let priTank = ['phelmet', 'harmor', 'hpants', 'xboots', 'hgloves',] //'lantern', ]
+let priLuck = ['wcap', 'wattire', 'wbreeches', 'wshoes', 'wgloves',] //'mshield', ]
 
 // returns true if item is in character.items
 function isInItems(itemSlot) {
