@@ -23,7 +23,7 @@ let armadillo = { map: 'main', x: 526, y: 1821 }
 let boar = { map: 'winterland', x: 17, y: -840 }
 let porcupine = { map: 'desertland', x: -824, y: 146 }
 let bigbird = { map: 'main', x: 1150, y: 200 }
-let bbpompom = { map: 'winter_cave', x: 50, y:-150 }
+let bbpompom = { map: 'winter_cave', x: -90, y:-950 }
 
 	
 
