@@ -22,14 +22,17 @@ let spider = { map: 'main', x: 925, y: -155}
 let armadillo = { map: 'main', x: 526, y: 1821 }
 let boar = { map: 'winterland', x: 17, y: -840 }
 let porcupine = { map: 'desertland', x: -824, y: 146 }
-let bigbird = {map: 'main', x: 1150, y: 200}
+let bigbird = { map: 'main', x: 1150, y: 200 }
+let bbpompom = { map: 'winter_cave', x: 50, y:-150 }
 
 	
 
 let mrgreen = { map: 'spookytown', x: 480, y:1070 }
 let snowman = { map: 'winterland', x:1150, y:-850 }
 
+// TURRET MAY BE OVERKILL?
 let mobLocationDict = {
+	
 	'crab': {
 		loc: crab,
 		turret: true,
@@ -65,42 +68,37 @@ let mobLocationDict = {
 		loc: rat,
 		turret: true,
 	},
+	'bbpompom': {
+		loc: bbpompom,
+		turret: true,
+	},
 
 
 	'bigbird': {
 		loc: bigbird,
-		turret: false,
 	},
 	'boar': {
 		loc: boar,
-		turret: false,
 	},
 	'spider': {
 		loc: spider,
-		turret: false,
 	},
 	'cgoo': {
 		loc: cgoo,
-		turret: false,
 	},
 	'mrpumpkin': {
 		loc: mrpumpkin,
-		turret: false,
 	},
 	'mrgreen': {
 		loc: mrgreen,
-		turret: false,
 	},
 	'snowman': {
 		loc: snowman,
-		turret: false,
 	},
 	// below maybe redundant/unnecessary?
 	'crabxx': {
-		turret: false
 	},
 	'franky': {
-		turret: false
 	}
 }
 
@@ -238,8 +236,8 @@ let farmDefault = {
 	"camelCase": 'crab',
 	"couplaGrapes": 'squig2',
 	"Hoodlamb": 'crab',
-	'prayerBeads': 'boar',
-	'Teef': 'boar',
+	'prayerBeads': 'bbpompom',
+	'Teef': 'bbpompom',
 }
 
 let seasonalEvents = ['halloween','holidayseason','lunarnewyear','valentines']
