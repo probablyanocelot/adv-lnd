@@ -1,5 +1,4 @@
 // ! TODO: MAKE BLOCKABLE ACTIONS DICT (for 'exchange', 'craft', etc)
-// ! TODO: REPLACE 'exchange' current_actions WITH this.exchange = true
 log("3 - Merchant") // display load_code() page number for debugging purposes
 load_code('16Relations')
 load_code('1Main') // main
@@ -308,7 +307,6 @@ class Merchant extends Character {
 
 	async crumbDump() {
 		// quick, dirty solution to full character.
-		// TODO: find another place to implement this, possibly even modify dumpNonUppables()
 		if (!character.bank) await doBank()
 		for (let idx in character.items) {
 
@@ -317,8 +315,12 @@ class Merchant extends Character {
 
 			let itemName = item.name
 
-			// if not in keep dict, or is shiny, or is upgradable and level > 6 then store
-			if (itemName == 'jacko' || !sell_dict['keep'].includes(itemName) || item.p || (isUpgradable(itemName) && item.level > 6)) bank_store(idx);
+			// if not in keep dict, or is shiny, or is upgradable and level > 4 then store
+			if (item.l) continue // locked
+			if (sell_dict['keep'].includes(itemName)) continue // keep dict
+			if (isUpgradable(itemName) && item.level < 5 && !item.p ) continue // upgrade non-shinys
+			
+			bank_store(idx);
 		}
 		return
 	}
@@ -330,6 +332,7 @@ class Merchant extends Character {
 		if (character.bank) {
 			if (character.esize <= 5) await this.crumbDump()
 			await this.dumpNonUppables()
+			getCompoundables()
 			await smart_move(this.home)
 		}
 		this.clear_current_action();

@@ -104,7 +104,7 @@ function populateBankCompoundDict() {
 	}
 }
 
-function updateMaster() {
+function getCompoundables() {
 	// TODO: let someVar = new Date;  if it's been too long -> go to bank & refresh
 	if (character.bank) {
 		updateBank()
@@ -126,6 +126,7 @@ function bankHanoi(array){
 		 //TODO: Hanoi
 		 for (let i = 0; i < iterations; i ++) { // Math.floor(array.length / 3)
 
+			// if (i == 2 &&)
 			let item = array[i]
 			let container = item.container
 			let slot = item.slot
@@ -140,18 +141,20 @@ function checkBankCompound() {
 	for (let itemName in bankCompoundDict) {
 		
 		// if empty, can't do anything. --- maybe use this to trigger
-		// 		smart_move('bank') -> updateMaster()
+		// 		smart_move('bank') -> getCompoundables()
 		if (!itemName) return
 		//log('didnt return')
         
 		let level0 = bankCompoundDict[itemName][0]
-        let level1 = bankCompoundDict[itemName][1]
-        let level2 = bankCompoundDict[itemName][2]
+		let level1 = bankCompoundDict[itemName][1]
+		let level2 = bankCompoundDict[itemName][2]
         // let level3 = bankCompoundDict[itemName][0]
 		
 		arrays = [ level0, level1, level2 ]
 		
-		for (let array of arrays){
+		for (let array of arrays) {
+			// TODO: some whitelist.includes()/.hasOwnProperty()
+			if (itemName == 'vitring' && array == level2) continue
 				bankHanoi(array)
 		}
 
