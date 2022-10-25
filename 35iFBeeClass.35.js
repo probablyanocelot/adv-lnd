@@ -20,9 +20,8 @@ let desired_mp_pot = "mpot1"
 let desired_hp_pot = "hpot1"
 let PACK_THRESHOLD = 28;
 
-let myMtype = 'cgoo'
 
-if (character.controller) log(character.controller)
+if (character.controller) log(`CONTROLLER = ${character.controller}`)
 
 //STARTUP
 if (character.name == currentGroup[0]) startBots(currentGroup);
@@ -32,6 +31,7 @@ const keyKillBots = map_key('8', 'snippet', "killBots(currentGroup)")
 if (character.ctype != 'rogue') setInterval(loot, 50)
 
 let lastScare;
+let targetId;
 
 character.on('hit', function(data) {
 	if (data.heal > 0) return
@@ -324,12 +324,12 @@ class Ranger {
 	  	// checks to see if we need merch pots
 		
 	  	// if no health potions, go get them
-	  	if (quantity(desired_hp_pot) < 100) {
+	  	if (item_quantity(desired_hp_pot) < 100) {
 			  return true;
 	  	}
   
 	  	// if no mana potions, go get them
-	  	if (quantity(desired_mp_pot) < 100) {
+	  	if (item_quantity(desired_mp_pot) < 100) {
 			  return true;
 	  	}
 	  
@@ -339,8 +339,8 @@ class Ranger {
   
 	count_pot() {
 		// determine how many we need to buy
-		let HP_TO_BUY = desired_potion_count - quantity(desired_hp_pot);
-		let MP_TO_BUY = desired_potion_count - quantity(desired_mp_pot);	
+		let HP_TO_BUY = desired_potion_count - item_quantity(desired_hp_pot);
+		let MP_TO_BUY = desired_potion_count - item_quantity(desired_mp_pot);	
 		let pots = {
 			h: {
 				type: desired_hp_pot,
@@ -493,15 +493,17 @@ class Ranger {
 	}
 
 
-	manage_combat() {
+	manage_combat(lastTargetID) {
 		
 		if (character.rip || smart.moving) return;
 		
 		let target;
 
+		if (lastTargetID) target = get_monster(lastTargetID)
+
 		// if (character.ctype != 'ranger' && character.ctype != 'merchant') doCombat()
 
-		if (this.current_action && G.monsters.hasOwnProperty(this.current_action)) target = get_nearest_monster({ type: this.current_action })
+		if (!target && this.current_action && G.monsters.hasOwnProperty(this.current_action)) target = get_nearest_monster({ type: this.current_action, no_target: true })
 
 		if (this.target) {
 			if (this.target.dead || this.target.rip) this.target = false
@@ -509,13 +511,11 @@ class Ranger {
 		}
 
 		// GROUP MOBS / HARDER MOBS GET PRIORITY
-		if (!target) {
-			for (let mob of mobsFocus) {
-				let targetFocus = get_nearest_monster({ type: mob })
-				if (!targetFocus) continue
-				target = targetFocus
-				break
-			}
+		for (let mob of mobsFocus) {
+			let targetFocus = get_nearest_monster({ type: mob })
+			if (!targetFocus) continue
+			target = targetFocus
+			break
 		}
 
 
@@ -524,13 +524,14 @@ class Ranger {
 			this.target = false
 							
 			if (this.isActionMonster()) {
-				target = get_nearest_monster({ type: this.current_action })
+				target = get_nearest_monster({ type: this.current_action, no_target: true })
 			}
 
 			if (this.current_action && !this.isActionMonster()) {
 
 				for (let mob of mobsLow) {
-					target = get_nearest_monster({ type: mob })
+
+					target = get_nearest_monster({ type: mob, no_target: true })
 					// ! NOT OPTIMAL; SUPERSHOT IS 3x character.range !!
 					if (target) break
 				}
@@ -538,8 +539,17 @@ class Ranger {
 				
 		}
 		
-		
+
+		let companionTarget = getCompanionTarget('prayerBeads')
+		if (companionTarget) target = companionTarget
+
+
 		if (!target) return 	// must have target beyond here
+		
+		let targetTarget = target.target
+
+		// ! if (targetTarget && !is_friendly(targetTarget) && !mobsGroup.includes(target.name)) // FIX THIS
+
 		this.target = target
 
 		// if(!is_in_range(target) && can_move_to(target.x, target.y)) {
@@ -551,22 +561,14 @@ class Ranger {
 		// }
 		let targetName = target.mtype
 
+
+		// TODO: BETTER SOLUTION BELOW
+		if (!lastTargetID && character.ctype == 'rogue' && get_player('prayerBeads') && !companionTarget) return
+		
 		// TODO: maybe better phoenix selection
 		if (!mobsFocus.includes(targetName)) {
 			if (get_nearest_monster({ type: 'phoenix' })) target = get_nearest_monster({ type: 'phoenix' })
 		}
-
-		if (character.ctype == 'rogue') {
-			let priest = get_player('prayerBeads')
-			if (priest && (!priest.target || priest.target.rip || priest.target.dead)) return
-			if (priest && priest.target && get_monster(priest.target)) {
-				if (is_in_range(get_monster(priest.target))) {
-					target = get_monster(priest.target)
-					this.target = target
-				}
-			}
-		}
-
 
 		combatDistancing(target)
 
@@ -579,6 +581,7 @@ class Ranger {
 
 
 		change_target(target)
+
 		
 		switch(character.ctype) {
 				
@@ -628,7 +631,7 @@ class Ranger {
 
 	manage_item_bounty() {
 		if (!this.itemBounty) return
-		if (quantity(this.itemBounty) >= this.itemBountyQty) {
+		if (item_quantity(this.itemBounty) >= this.itemBountyQty) {
 			this.clear_current_action()
 			this.itemBountyQty = false
 			this.itemBounty = false
@@ -731,11 +734,12 @@ function avoid(target) {
 
 function item_quantity(name)
 {
+	let itemCount = 0
 	for(var i=0;i<42;i++)
 	{
-		if(character.items[i] && character.items[i].name==name) return character.items[i].q||0;
+		if(character.items[i] && character.items[i].name==name) itemCount += character.items[i].q||0;
 	}
-	return 0;
+	return itemCount;
 }
 
 function death_return(location){
@@ -762,26 +766,28 @@ function toMerch(){
 	}return;
 }
 
-function getTarget() {
 
-	let target = get_nearest_monster()
-	let mobType = null
-	if (target) mobType = target.mtype
+function sendTarget(){
+	if (!target) return
+	for (let member of partyMembers) {
+		if (get_player(member)) send_cm(member, { cmd:'target', id: target.id })
+	}
+}
 
-	let rgoo = get_nearest_monster({type: 'rgoo'})
 
-	if (rgoo) return rgoo
+function getCompanionTarget(companionName) {
+	if (smart.moving) return
 
-	if (!mobType) return false
+	let companionChar = get_player(companionName)
+	if (!companionChar) return
 
-	// if in dict: return target
-	if (mobsLow.includes(mobType) || (mobsMed.includes(mobType) &&
-		character.ctype == 'paladin')) return target;
+	let companionTarget = companionChar.target
+	if (!companionTarget) return
+	
+	let companionMonster = get_monster(companionTarget)
+	if (!companionMonster || companionMonster.rip || companionMonster.dead) return
 
-	// else, set null and return
-	target = null
-	set_message("No Monsters");
-	return false
+	return companionMonster
 }
 
 function goToTarget(target) {
@@ -796,31 +802,32 @@ function goToTarget(target) {
 		character.y+(target.y-character.y)/2
 		);
 }
-	function combatDistancing(target){
-		if (target) {
-			// if turret, don't poke
-			// ! TODO: fix having to list each ctype below
-			if (mobLocationDict.hasOwnProperty(target.name) && (character.ctype == 'ranger' && mobLocationDict[target].turret)) return
-			
-			// can't kill in 2 hits, 1/4 range or closer -> move away
-			if (target.hp > character.attack * 2 && distanceToTarget(target) <= character.range * 0.25) {
-				// TODO: poking ( CREATE LINE AND MOVE 1/4 character.range DOWN LINE )
-				// xmove(
-				// 	character.x + (target.x - character.x) * 1.05,
-				// 	character.y + (target.y - character.y) * 1.05
-				// );
-			}
-			
-			if (!is_in_range(target)) {
-				// TODO: move into 3/4 character.range
-				xmove(
-					character.x + (target.x - character.x) / 2,
-					character.y + (target.y - character.y) / 2
-				);
-			}
 
+function combatDistancing(target) {
+	if (target) {
+		// if turret, don't poke
+		// ! TODO: fix having to list each ctype below
+		if (mobLocationDict.hasOwnProperty(target.name) && (character.ctype == 'ranger' && mobLocationDict[target].turret)) return
+		
+		// can't kill in 2 hits, 1/4 range or closer -> move away
+		if (target.hp > character.attack * 2 && distanceToTarget(target) <= character.range * 0.25) {
+			// TODO: poking ( CREATE LINE AND MOVE 1/4 character.range DOWN LINE )
+			// xmove(
+			// 	character.x + (target.x - character.x) * 1.05,
+			// 	character.y + (target.y - character.y) * 1.05
+			// );
 		}
+		
+		if (!is_in_range(target)) {
+			// TODO: move into 3/4 character.range
+			xmove(
+				character.x + (target.x - character.x) / 2,
+				character.y + (target.y - character.y) / 2
+			);
+		}
+
 	}
+}
 
 function distanceToTarget(target){
 	let dist;
@@ -828,30 +835,6 @@ function distanceToTarget(target){
 	return dist
 }
 
-function doCombat() { // doCombat(char)
-
-	if (character.ctype == merchant) return
-	// if (char.turret == false && char.current_action === 'unpacking') return
-	let target = get_targeted_monster()
-
-	if (!target || target.rip) target = getTarget()
-	if (target) myMtype = target.mtype
-	change_target(target)
-	goToTarget(target)
-
-
-	if (can_attack(target)) {
-		pallySkills(target)
-		attack(target);
-	}
-
-	if (!getTarget()){
-		let spawnBorder = getTargetSpawnBorder(myMtype)
-		let topLeft = spawnBorder[0]
-
-		xmove(topLeft[0]*.5, topLeft[1]*.5)
-	}
-}
 
 let gearDict = {}
 
@@ -917,6 +900,13 @@ function getTargetSpawnBorder(mtype, map = false) {
             return [topLeft, bottomRight]
         }
     }
+}
+
+function goToTopLeft(monsterName) {
+	let spawnBorder = getTargetSpawnBorder(monsterName)
+	let topLeft = spawnBorder[0]
+
+	xmove(topLeft[0]*.5, topLeft[1]*.5)
 }
 
 function hasLuck(){
