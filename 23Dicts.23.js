@@ -2,6 +2,9 @@
 // ! USE THIS IN TRAVELLING FN TO GIVE COORDS IF NO x / y GIVEN
 // let map = G.maps[character.map];
 
+let priTank = ['phelmet', 'harmor', 'hpants', 'xboots', 'hgloves',] //'lantern', ]
+let priLuck = ['wcap', 'wattire', 'wbreeches', 'wshoes', 'wgloves',] //'mshield', ]
+
 // // iterate through the monsters
 // for (let monster of map.monsters) {
 // 	// if it's of our target type
@@ -200,7 +203,7 @@ let upgradeDict = {
 let mobsLow = [
 	"bee", "crab", "squigtoad", "snake", "osnake",
 	"croc", "squig", "goo", "tortoise", 
-	"minimush", 'frog', "armadillo",
+	"minimush", 'frog', "armadillo", 'spider',
 
 
 	// harder
@@ -236,8 +239,8 @@ let farmDefault = {
 	"camelCase": 'crab',
 	"couplaGrapes": 'squig2',
 	"Hoodlamb": 'crab',
-	'prayerBeads': 'bbpompom',
-	'Teef': 'bbpompom',
+	'prayerBeads': 'spider',
+	'Teef': 'spider',
 }
 
 let seasonalEvents = ['halloween','holidayseason','lunarnewyear','valentines']

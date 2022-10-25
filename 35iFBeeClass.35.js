@@ -20,6 +20,11 @@ let desired_mp_pot = "mpot1"
 let desired_hp_pot = "hpot1"
 let PACK_THRESHOLD = 28;
 
+let gearDict = {}
+
+let lastScare;
+let lastGearSwap;
+let targetId;
 
 if (character.controller) log(`CONTROLLER = ${character.controller}`)
 
@@ -30,8 +35,6 @@ const keyKillBots = map_key('8', 'snippet', "killBots(currentGroup)")
 
 if (character.ctype != 'rogue') setInterval(loot, 50)
 
-let lastScare;
-let targetId;
 
 character.on('hit', function(data) {
 	if (data.heal > 0) return
@@ -597,8 +600,8 @@ class Ranger {
 				break
 				
 			case 'priest':
-				// if (target.target == character.id && target.hp >= 8000 && target.max_hp >= 10000) gearSwap(priTank)
-				if (target.hp < 2500 && target.max_hp >= 10000) gearSwap(priLuck)
+				if (target.target == character.id && target.hp > target.max_hp / 6 && target.attack >= 100) gearSwap(priTank)
+				if (target.hp < target.max_hp / 6) gearSwap(priLuck)
 				if (!is_on_cooldown('partyheal') && character.mp > G.skills.partyheal.mp) this.priestHeal()
 				if (is_friendly(target.target) && !mobsGroup.includes(target.name) && !is_on_cooldown('absorb') && character.mp > G.skills.absorb.mp) use_skill('absorb', target.target)
 				if (!is_on_cooldown('curse') && character.mp > G.skills.curse.mp) use_skill('curse', target)
@@ -836,11 +839,6 @@ function distanceToTarget(target){
 }
 
 
-let gearDict = {}
-
-let priTank = ['phelmet', 'harmor', 'hpants', 'xboots', 'hgloves',] //'lantern', ]
-let priLuck = ['wcap', 'wattire', 'wbreeches', 'wshoes', 'wgloves',] //'mshield', ]
-
 // returns true if item is in character.items
 function isInItems(itemSlot) {
 	if (itemSlot > -1) return true
@@ -872,14 +870,17 @@ function populateGearDict(loadout) {
 
 function gearSwap(loadout) {
 	// { helmet : 'phelmet' , chest:...}
+	if (lastGearSwap && new Date() - lastGearSwap < 1000) return
 	gearDict = populateGearDict(loadout)
 
 	for (let gearSlot in gearDict) {
 		let itemName = gearDict[gearSlot]
 		if (!itemName) continue
 		let itemSlot = locate_item(itemName)
+		if (itemSlot < 0) continue
 		equipFromItems(itemName, itemSlot, gearSlot)
 	}
+	lastGearSwap = new Date()
 }
 
 
