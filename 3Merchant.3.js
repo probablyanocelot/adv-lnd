@@ -15,6 +15,21 @@ load_code('40Gui')
 // webFrame.setZoomFactor(1);
 
 let lastScare;
+let lastBankUpdate = false;
+let bankUpdateTime = 1000*60*15 // sec_to_ms * num_seconds * num_minutes
+
+async function doBankUpdate() {
+	// pass if not due for update or smart.moving
+	if (smart.moving) return
+	if (lastBankUpdate && new Date() - lastBankUpdate < bankUpdateTime) return
+	
+	if (!character.bank) await smart_move('bank')
+	await merchantBot.dumpIfNot(isUpgradable)
+	await merchantBot.dumpIfNot(isCompoundable)
+	getCompoundables()
+	await merchantBot.dumpIfNot(isCompoundable)
+	lastBankUpdate = new Date()
+}
 
 map_key('F12', {
     'name': 'pure_eval',
@@ -112,6 +127,7 @@ class Merchant extends Character {
 			this.clear_current_action();
 			this.thinking = false; // most blocking state
 		} else {
+			if (character.moving) this.idle_counter = 0;
 			this.incrementCounter();
 
 			loot();
@@ -127,9 +143,7 @@ class Merchant extends Character {
 				if (locate_item('rod') >= 0 || (character.slots.mainhand && character.slots.mainhand.name == 'rod')) this.do_action("fishing");
 				if (locate_item('pickaxe' || (character.slots.mainhand && character.slots.mainhand.name == 'pickaxe')) >= 0) this.do_action("mining");
 				this.bank_mining();
-				if (character.moving) {
-					this.idle_counter = 0;
-				}
+				doBankUpdate()
 			}
 
 			if (character.bank && this.idle_counter > 30 && !smart.moving) smart_move(this.home)
@@ -290,7 +304,8 @@ class Merchant extends Character {
 	}
 
 
-	async dumpNonUppables() {
+	async dumpIfNot(condition1, condition2) {
+		if (!condition1) return
 		if (!character.bank) await doBank()
 		for (let idx in character.items) {
 
@@ -298,11 +313,13 @@ class Merchant extends Character {
 			if (!item) continue;
 
 			let itemName = item.name
+			if (condition1(itemName)) continue
+			if (condition2 && condition2(itemName)) continue
 
-			if (!isUpgradable(itemName) && !isCompoundable(itemName) && !sell_dict['keep'].includes(itemName)) bank_store(idx);
+			// if (!isUpgradable(itemName) && !isCompoundable(itemName) && !sell_dict['keep'].includes(itemName)) bank_store(idx);
+			if (!sell_dict['keep'].includes(itemName)) bank_store(idx);
 
 		}
-		return
 	}
 
 	async crumbDump() {
@@ -322,7 +339,6 @@ class Merchant extends Character {
 			
 			bank_store(idx);
 		}
-		return
 	}
 
 	async doBank() {
@@ -331,7 +347,7 @@ class Merchant extends Character {
 		}
 		if (character.bank) {
 			if (character.esize <= 5) await this.crumbDump()
-			await this.dumpNonUppables()
+			await this.dumpIfNot(isUpgradable, isCompoundable)
 			getCompoundables()
 			await smart_move(this.home)
 		}

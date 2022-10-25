@@ -19,7 +19,7 @@ function transcribe(fromDataStructure, toDataStructure) {
 let bankDict = new Object;
 
 
-function updateBank(){
+async function updateBank(){
 	if (!character.bank) return
 	// must be in bank
 	bankDict = {}
@@ -31,7 +31,7 @@ let bankItemDict = new Object;
 
 
 // !ACCOUNT FOR ACHIEVEMENTS, OTHER MODIFIERS LATER!
-function populateBankItemDict() {
+async function populateBankItemDict() {
 
 
 		// "intamulet": {
@@ -95,7 +95,7 @@ function populateBankItemDict() {
 
 let bankCompoundDict = new Object;
 
-function populateBankCompoundDict() {
+async function populateBankCompoundDict() {
 	
     for (let itemName in bankItemDict) {
 		if (!G.items[itemName].compound) continue; 
@@ -104,19 +104,19 @@ function populateBankCompoundDict() {
 	}
 }
 
-function getCompoundables() {
+async function getCompoundables() {
 	// TODO: let someVar = new Date;  if it's been too long -> go to bank & refresh
 	if (character.bank) {
-		updateBank()
-		populateBankItemDict()
-		populateBankCompoundDict()
-		checkBankCompound()
+		await updateBank()
+		await populateBankItemDict()
+		await populateBankCompoundDict()
+		await checkBankCompound()
 	}
 
 }
 
 
-function bankHanoi(array){
+async function bankHanoi(array){
 	// if we have anough to upgrade, grab them
 	if (array && array.length >= 3) {
          
@@ -137,7 +137,7 @@ function bankHanoi(array){
 }
 
 
-function checkBankCompound() {
+async function checkBankCompound() {
 	for (let itemName in bankCompoundDict) {
 		
 		// if empty, can't do anything. --- maybe use this to trigger
@@ -155,7 +155,7 @@ function checkBankCompound() {
 		for (let array of arrays) {
 			// TODO: some whitelist.includes()/.hasOwnProperty()
 			if (itemName == 'vitring' && array == level2) continue
-				bankHanoi(array)
+				await bankHanoi(array)
 		}
 
     }

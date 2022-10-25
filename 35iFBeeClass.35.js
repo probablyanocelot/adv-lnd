@@ -306,20 +306,34 @@ class Ranger {
 		// }
 	}
   
+	needsMerch() {
+		// returns BOOL
+		// switch = true, else false
+		switch (true) {
+			case this.dry():
+			case !hasLuck():
+			case character.esize <= 14:
+			case !character.slots.elixir:
+			case !character.s.mluck:
+				return true
+		}
+		return false
+	}
   
 	dry() {
-	  // checks to see if we're out of weed
-	  // if no health potions, go get them
-	  if (quantity(desired_hp_pot) < 100) {
-		  return true;
-	  }
+	  	// checks to see if we need merch pots
+		
+	  	// if no health potions, go get them
+	  	if (quantity(desired_hp_pot) < 100) {
+			  return true;
+	  	}
   
-	  // if no mana potions, go get them
-	  if (quantity(desired_mp_pot) < 100) {
-		  return true;
-	  }
+	  	// if no mana potions, go get them
+	  	if (quantity(desired_mp_pot) < 100) {
+			  return true;
+	  	}
 	  
-	  return false;
+	  	return false;
 	}
   
   
@@ -354,12 +368,14 @@ class Ranger {
 		for (let event in parent.S) {
 			if (parent.S[event].live && mobsGroup.includes(String(event))) return
 		}
-		if (!this.current_action) return
-		if (this.dry()) {
-			// if (this.turret == false) this.set_current_action('unpacking')
-			doCm(merchant, { cmd: 'unpack', loc: current_location(), pots: this.count_pot() });
-		}
-		if (character.esize <= 14) doCm(merchant, {cmd:'unpack', loc:current_location(), pots: this.count_pot()});
+
+		// ! TRY NOT TO CALL MERCH IF YOU'RE NOT IN A SEMI-PERMANENT SPOT
+		if (!this.current_action || !character.target) return
+		// if (this.dry()) {
+		// 	// if (this.turret == false) this.set_current_action('unpacking')
+		// 	doCm(merchant, { cmd: 'unpack', loc: current_location(), pots: this.count_pot() });
+		// }
+		if (this.needsMerch()) doCm(merchant, {cmd:'unpack', loc:current_location(), pots: this.count_pot()});
 	}
 	
   
@@ -543,8 +559,11 @@ class Ranger {
 		if (character.ctype == 'rogue') {
 			let priest = get_player('prayerBeads')
 			if (priest && (!priest.target || priest.target.rip || priest.target.dead)) return
-			if (priest && priest.target) {
-				if(get_monster(priest.target)) target = get_monster(priest.target) 
+			if (priest && priest.target && get_monster(priest.target)) {
+				if (is_in_range(get_monster(priest.target))) {
+					target = get_monster(priest.target)
+					this.target = target
+				}
 			}
 		}
 
@@ -575,7 +594,7 @@ class Ranger {
 				break
 				
 			case 'priest':
-				if (target.target == character.id && target.hp >= 8000 && target.max_hp >= 10000) gearSwap(priTank)
+				// if (target.target == character.id && target.hp >= 8000 && target.max_hp >= 10000) gearSwap(priTank)
 				if (target.hp < 2500 && target.max_hp >= 10000) gearSwap(priLuck)
 				if (!is_on_cooldown('partyheal') && character.mp > G.skills.partyheal.mp) this.priestHeal()
 				if (is_friendly(target.target) && !mobsGroup.includes(target.name) && !is_on_cooldown('absorb') && character.mp > G.skills.absorb.mp) use_skill('absorb', target.target)
@@ -637,7 +656,7 @@ class Ranger {
 		
 		handle_party()
 		orbSwap()
-		if (!this.current_action || this.current_action && !mobsGroup.includes(this.current_action)) getLuck()
+		// if (!this.current_action || this.current_action && !mobsGroup.includes(this.current_action)) getLuck()
 		this.drink()
 		this.manage_item_bounty
 		//this.handleMonsterHunt();
@@ -900,8 +919,9 @@ function getTargetSpawnBorder(mtype, map = false) {
     }
 }
 
-function getLuck(){
-	if (!character.s.mluck || character.s.mluck.f != merchant) doCm(merchant, {cmd:'unpack', loc:	current_location()})
+function hasLuck(){
+	if (!character.s.mluck || character.s.mluck.f != merchant) return false
+	return true
 }
 
 // let spawnBorder = getTargetSpawnBorder(target)
