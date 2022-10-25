@@ -317,7 +317,7 @@ class Merchant extends Character {
 			if (condition2 && condition2(itemName)) continue
 
 			// if (!isUpgradable(itemName) && !isCompoundable(itemName) && !sell_dict['keep'].includes(itemName)) bank_store(idx);
-			if (!sell_dict['keep'].includes(itemName)) bank_store(idx);
+			if (!sell_dict['keep'].includes(itemName) && itemName != 'ringsj') bank_store(idx);
 
 		}
 	}
@@ -347,6 +347,7 @@ class Merchant extends Character {
 		}
 		if (character.bank) {
 			if (character.esize <= 5) await this.crumbDump()
+			await this.dumpIfNot(isUpgradable)
 			await this.dumpIfNot(isUpgradable, isCompoundable)
 			getCompoundables()
 			await smart_move(this.home)
@@ -395,6 +396,8 @@ class Merchant extends Character {
 					if (character.bank) this.thinking = false
 					log("Bank success clear")
 					bank_store(locate_item("gemfragment"), "items1");
+					this.dumpIfNot(isUpgradable)
+					getCompoundables()
 					this.bank();
 				})
 				.catch(() => {

@@ -2,6 +2,15 @@
 // ! USE THIS IN TRAVELLING FN TO GIVE COORDS IF NO x / y GIVEN
 // let map = G.maps[character.map];
 
+let farmDefault = {
+	"cannaMace": 'squig',
+	"camelCase": 'crab',
+	"couplaGrapes": 'squig2',
+	"Hoodlamb": 'crab',
+	'prayerBeads': 'bbpompom',
+	'Teef': 'bbpompom',
+}
+
 let priTank = ['phelmet', 'harmor', 'hpants', 'xboots', 'hgloves',] //'lantern', ]
 let priLuck = ['wcap', 'wattire', 'wbreeches', 'wshoes', 'wgloves',] //'mshield', ]
 
@@ -172,7 +181,7 @@ let upgradeDict = {
 		
 		"stinger", "wcap", "wattire",
 		"wbreeches", "wgloves", "wshoes",
-		"swifty", "hbow", "sshield", "blade",
+		"swifty", "hbow", "sshield",
 		"quiver", "cclaw",
 		 
 		'ololipop', 'broom',
@@ -232,15 +241,5 @@ let mobsHard = {
 
 }
 
-
-
-let farmDefault = {
-	"cannaMace": 'squig',
-	"camelCase": 'crab',
-	"couplaGrapes": 'squig2',
-	"Hoodlamb": 'crab',
-	'prayerBeads': 'spider',
-	'Teef': 'spider',
-}
 
 let seasonalEvents = ['halloween','holidayseason','lunarnewyear','valentines']
