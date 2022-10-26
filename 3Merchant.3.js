@@ -1,9 +1,10 @@
 // ! TODO: MAKE BLOCKABLE ACTIONS DICT (for 'exchange', 'craft', etc)
 log("3 - Merchant") // display load_code() page number for debugging purposes
+load_code('12Utility')
+
 load_code('16Relations')
 load_code('1Main') // main
 load_code('11Npcs') // NPCS - buyFromPonty()/Goblin
-load_code('12Inv')
 load_code('14Partying')
 load_code('19Management')
 load_code('40Gui')

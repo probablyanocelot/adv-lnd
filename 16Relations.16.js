@@ -69,12 +69,27 @@ character.on("cm", async (m) => {
 			smart_move(data.loc)
 			break;
 				
+		
+		// ! what if sending +3 item and +0 item in character.items?
+		// TODO: data.item.name, data.item.level 
 		case 'get_item':
 			let itemToSend = locate_item(data.item)
 			if (itemToSend < 0) break
 			send_item(m.name, itemToSend, data.qty ?? 1)
 			break
 
+		case 'sent_equip':
+			let itemReceived = locate_items(data.item, data.level)[0]
+			if (!itemReceived) break
+			equip(itemReceived)
+			break
+		
+		case 'equip':
+			let equipItem = locate_items(data.item, data.level)[0]
+			if (!equipItem) break
+			equip(equipItem)
+			break
+		
 		case 'get_loc':
 			savePosition()
 			let myLoc = getPosition(character.name)

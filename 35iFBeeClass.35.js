@@ -1,5 +1,6 @@
 log("31")
 performance_trick()
+load_code('12Utility')
 load_code('1Main')
 load_code('16Relations')	// cm
 load_code('13Skills')	//skill3shot(), get_nearby_entitties()
