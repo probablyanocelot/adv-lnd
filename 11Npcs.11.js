@@ -1,5 +1,5 @@
 log("11 - Npcs.11.js")
-let itemsToBuy = ["ink", 'suckerpunch', 'tshirt88', 'supermittens', 'powerglove',
+let itemsToBuy = ['angelwings', "ink", 'suckerpunch', 'tshirt88', 'supermittens', 'powerglove',
     'tigercape', "ringhs", 'dexearringx', 'lostearring', 'sbelt', 'santabelt', 'mbelt',
     'talkingskull', 'orbofsc', 'ftrinket', "offeringp", 'skullamulet', 'orbofdex', 'orbofint', 'orbofstr',
     'tigerstone', 'orbg', 'broom', 't2quiver', 'wbookhs', 'wbook1', 't2dexamulet',
@@ -18,6 +18,7 @@ let itemsToBuy = ["ink", 'suckerpunch', 'tshirt88', 'supermittens', 'powerglove'
     'wbreeches', 'wgloves', "vitring", "dexearring", "dexring", "dexbelt", "dexamulet","strring", 'strearring', 'stramulet',
     "strbelt", "intbelt", "intring", "intearring", "intamulet", 'wattire',
     "tracker", 'ornament', 'feather0', 'gemfragment', 'carrot', 'ololipop', 'feather1', 'harpybow',
+    'luckyt','tshirt88', 
 ] // 'ecape', 'eears', 'epyjamas','eslippers',
 
 
