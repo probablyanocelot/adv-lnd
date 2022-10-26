@@ -411,7 +411,7 @@ class Merchant extends Character {
 
 	go_exchange() {
 		// dont do if there's something else going on
-		if (this.current_action || this.thinking) return; // && this.current_action != 'exchange' || 
+		if (this.current_action || this.thinking || character.bank) return; // && this.current_action != 'exchange' || 
 
 		if (!parent.character.q.exchange) this.exchange = false
 
