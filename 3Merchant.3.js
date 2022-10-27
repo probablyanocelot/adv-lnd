@@ -12,8 +12,8 @@ load_code('40Gui')
 //load_code(53) // upgrade_all2 WILL ADD MORE
 //performance_trick()
 
-// const { webFrame } = require('electron');
-// webFrame.setZoomFactor(1);
+ const { webFrame } = require('electron');
+ webFrame.setZoomFactor(1);
 
 let lastScare;
 let lastBankUpdate = false;
@@ -26,9 +26,9 @@ async function doBankUpdate() {
 	
 	if (!character.bank) await smart_move('bank')
 	await merchantBot.dumpIfNot(isUpgradable)
-	await merchantBot.dumpIfNot(isCompoundable)
+	// await merchantBot.dumpIfNot(isCompoundable)
 	getCompoundables()
-	await merchantBot.dumpIfNot(isCompoundable)
+	// await merchantBot.dumpIfNot(isCompoundable)
 	lastBankUpdate = new Date()
 }
 
@@ -349,7 +349,7 @@ class Merchant extends Character {
 		if (character.bank) {
 			if (character.esize <= 5) await this.crumbDump()
 			await this.dumpIfNot(isUpgradable)
-			await this.dumpIfNot(isUpgradable, isCompoundable)
+			// await this.dumpIfNot(isUpgradable, isCompoundable)
 			getCompoundables()
 			await smart_move(this.home)
 		}

@@ -18,7 +18,7 @@ let itemsToBuy = ['angelwings', "ink", 'suckerpunch', 'tshirt88', 'supermittens'
     'wbreeches', 'wgloves', "vitring", "dexearring", "dexring", "dexbelt", "dexamulet","strring", 'strearring', 'stramulet',
     "strbelt", "intbelt", "intring", "intearring", "intamulet", 'wattire',
     "tracker", 'ornament', 'feather0', 'gemfragment', 'carrot', 'ololipop', 'feather1', 'harpybow',
-    'luckyt','tshirt88', 
+    'luckyt','tshirt88', 'essenceoffrost', 'essenceofgreed', 'essenceoflife', 'essenceoffire', 'essenceofnature',
 ] // 'ecape', 'eears', 'epyjamas','eslippers',
 
 
