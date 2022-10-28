@@ -577,8 +577,6 @@ function upgrade_all() {
 
 			for (let listIndex in itemSlots) {
 
-				merchantBot.goHomeIfIdle()
-
 
 				let itemIndex = itemSlots[listIndex];
 				
@@ -598,10 +596,12 @@ function upgrade_all() {
 				} 
 
 				// shiny / achievement / rare / level 8   :   skip
-				if (grade == 2 || item.level >= 8) continue
+				if (grade == 2 || item.level >= 7) continue
+
+				merchantBot.goHomeIfIdle()
 
 				// grade 1 or ( 0 & level 3-6 )
-				if (grade == 1 && item.level < 6 || (grade == 0 && item.level >= 3 && item.level < 7)) {
+				if (grade == 1 && item.level < 7 || (grade == 0 && item.level >= 3 && item.level < 7)) {
 
 					log(`${itemName} grade: ${grade} level: ${item.level} -> ${item.level + 1}`)
 
@@ -612,6 +612,11 @@ function upgrade_all() {
 
 				}
 				let conservativeUpList = ['ololipop','broom',]
+				
+				// turn on to save money
+				if (item.level >= 6) continue
+				
+				// do 6 -> 7 -> 8 with scroll2
 				if (item.level > 5 && item.level < 8 && !conservativeUpList.includes(itemName)) {
 
 					log(`${itemName} 7 -> 8`)
@@ -688,7 +693,10 @@ function high_upgrade_all() {
                 }
 
 				// if (grade == 2) {
-				if (level >= 5){ 
+				if (level >= 5) { 
+					// save money
+					continue
+
 					scrollType = 'scroll2'					
 				}
 				if (grade == 2 && level >=6) continue

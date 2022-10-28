@@ -4,9 +4,9 @@ let itemsToBuy = ['angelwings', "ink", 'suckerpunch', 'tshirt88', 'supermittens'
     'talkingskull', 'orbofsc', 'ftrinket', "offeringp", 'skullamulet', 'orbofdex', 'orbofint', 'orbofstr',
     'tigerstone', 'orbg', 'broom', 't2quiver', 'wbookhs', 'wbook1', 't2dexamulet',
     't2intamulet', 'snakeoil', 'poker', "snakefang", "quiver", "lotusf", "mistletoe", "basketofeggs",
-    "candycane", "candy0", "candy1", "cscale", "ascale", "pleather", "poison", "leather",
+    "candycane", "cscale", "ascale", "pleather", "poison", "leather",
     'spidersilk', 'emptyheart', '5bucks', "troll", "candypop", "mshield", "mearring", "spookyamulet",
-    'gift1', 'gift0', 'feather0', 'candy0', 'candy1', 'goldenegg', 'weaponbox', 'xbox', 'cryptkey',
+    'gift1', 'gift0', 'feather0', 'goldenegg', 'weaponbox', 'xbox', 'cryptkey',
     'cxjar', 'emotionjar', 'frozenkey', 'x0', 'x1', 'x2', 'x3', 'x4', 'x5', 'x6', 'x7', 'x8', 'egg0',
     'egg1', 'egg2', 'egg3', 'egg4', 'egg5', 'egg6', 'egg7', 'egg8', 'rod', 'pickaxe', 'funtoken',
     'monstertoken', 'pvptoken', 'luckscroll', 'frequencyscroll', 'xpscroll', 'evasionscroll',
@@ -16,10 +16,12 @@ let itemsToBuy = ['angelwings', "ink", 'suckerpunch', 'tshirt88', 'supermittens'
     'bowofthedead', 'xmace', 'crossbow', 'pinkie', 'ooze', 'oozingterror', 'cupid', 'bataxe',
     'xmasshoes', 'xmaspants', 'xmassweater', "xmashat", "hbow", "cryptkey", 'rednose', 'tigerhelmet',
     'wbreeches', 'wgloves', "vitring", "dexearring", "dexring", "dexbelt", "dexamulet","strring", 'strearring', 'stramulet',
-    "strbelt", "intbelt", "intring", "intearring", "intamulet", 'wattire',
+    "strbelt", "intbelt", "intring", "intearring", "intamulet", 'wattire', 'vitearring',
     "tracker", 'ornament', 'feather0', 'gemfragment', 'carrot', 'ololipop', 'feather1', 'harpybow',
     'luckyt','tshirt88', 'essenceoffrost', 'essenceofgreed', 'essenceoflife', 'essenceoffire', 'essenceofnature',
-] // 'ecape', 'eears', 'epyjamas','eslippers',
+] 
+// "candy0", "candy1",
+// 'ecape', 'eears', 'epyjamas','eslippers',
 
 
 function buyFromPonty() {

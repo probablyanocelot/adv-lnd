@@ -204,7 +204,7 @@ let upgradeDict = {
 		'strearring', 'stramulet', 'strbelt', 'dexamulet',
 		'dexring', 'dexbelt', 'dexearring', 'skullamulet',
 		'book0', 'hpamulet', 'hpbelt', 'ringsj', 'wbook0',
-		'vitring', 'jacko', 'talkingskull',
+		'vitring', 'jacko', 'talkingskull', 'vitearring',
 		//'lantern',
 	],
 }
