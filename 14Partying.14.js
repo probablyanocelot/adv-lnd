@@ -33,6 +33,23 @@ function sendInvites() {
 	for (let idx in activeChars) {
 		let char = activeChars[idx];
 		if ( char == character.name) continue;
+		if ( parent.party.hasOwnProperty(char) ) continue
+
+		// if pri & rogue, group together.
+		// need to add logic to party all bots during event
+		// if (activeChars.includes('prayerBeads') && activeChars.includes('Teef')){
+		switch (character.name) {
+			case 'prayerBeads':
+				send_party_invite('Teef')
+				break
+			case 'Teef':
+				send_party_invite('prayerBeads')
+				break
+			case 'camelCase':
+				send_party_invite('VendorGuy')
+				break
+		}
+		// }
 		send_party_invite(char)
 	}
 }

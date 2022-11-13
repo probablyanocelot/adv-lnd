@@ -288,8 +288,7 @@ class Ranger {
 		
 		if (this.idle_counter > 5 && !smart.moving) {
 			log('idle move')
-			await smart_move(myFarmLocation)
-			this.set_current_action(myFarmMob)
+			this.moveToThen(myFarmLocation, this.set_current_action(myFarmMob))
 		}
 	}
 

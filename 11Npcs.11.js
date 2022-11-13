@@ -3,7 +3,7 @@ let itemsToBuy = ['angelwings', "ink", 'suckerpunch', 'tshirt88', 'supermittens'
     'tigercape', "ringhs", 'dexearringx', 'lostearring', 'sbelt', 'santabelt', 'mbelt',
     'talkingskull', 'orbofsc', 'ftrinket', "offeringp", 'skullamulet', 'orbofdex', 'orbofint', 'orbofstr',
     'tigerstone', 'orbg', 'broom', 't2quiver', 'wbookhs', 'wbook1', 't2dexamulet',
-    't2intamulet', 'snakeoil', 'poker', "snakefang", "quiver", "lotusf", "mistletoe", "basketofeggs",
+    't2intamulet', 'snakeoil', 'poker', "snakefang", "lotusf", "mistletoe", "basketofeggs",
     "candycane", "cscale", "ascale", "pleather", "poison", "leather",
     'spidersilk', 'emptyheart', '5bucks', "troll", "candypop", "mshield", "mearring", "spookyamulet",
     'gift1', 'gift0', 'feather0', 'goldenegg', 'weaponbox', 'xbox', 'cryptkey',

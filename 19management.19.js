@@ -148,9 +148,9 @@ async function checkBankCompound() {
 		let level0 = bankCompoundDict[itemName][0]
 		let level1 = bankCompoundDict[itemName][1]
 		let level2 = bankCompoundDict[itemName][2]
-        // let level3 = bankCompoundDict[itemName][0]
+        let level3 = bankCompoundDict[itemName][3]
 		
-		arrays = [ level0, level1, level2 ]
+		arrays = [ level0, level1, level2, level3 ] //level3
 		
 		for (let array of arrays) {
 			// TODO: some whitelist.includes()/.hasOwnProperty()

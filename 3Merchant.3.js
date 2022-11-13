@@ -139,12 +139,13 @@ class Merchant extends Character {
 
 			if (!this.current_action) {
 				this.manage_slots()
+				doBankUpdate()
 
 				//below, add if(this.rod/pick) fish/mine
 				if (locate_item('rod') >= 0 || (character.slots.mainhand && character.slots.mainhand.name == 'rod')) this.do_action("fishing");
 				if (locate_item('pickaxe' || (character.slots.mainhand && character.slots.mainhand.name == 'pickaxe')) >= 0) this.do_action("mining");
 				this.bank_mining();
-				doBankUpdate()
+				
 			}
 
 			if (character.bank && this.idle_counter > 30 && !smart.moving) smart_move(this.home)
