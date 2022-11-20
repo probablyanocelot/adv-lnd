@@ -158,6 +158,7 @@ character.on("cm", async (m) => {
 				if (!character.items[itemIndex]) continue;
 				let item = character.items[itemIndex]
 				if (item.l) continue
+				// if (priTank.includes(item.name) || priLuck.includes(item.name))
 				if (!sell_dict['keep'].includes(item.name))send_item(m.name, itemIndex, 9999)
 			}
 			if (char) {

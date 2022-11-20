@@ -12,8 +12,8 @@ load_code('40Gui')
 //load_code(53) // upgrade_all2 WILL ADD MORE
 //performance_trick()
 
- const { webFrame } = require('electron');
- webFrame.setZoomFactor(1);
+// const { webFrame } = require('electron');
+// webFrame.setZoomFactor(1);
 
 let lastScare;
 let lastBankUpdate = false;
@@ -129,6 +129,7 @@ class Merchant extends Character {
 			this.thinking = false; // most blocking state
 		} else {
 			if (character.moving) this.idle_counter = 0;
+			this.fixActionStuck();
 			this.incrementCounter();
 
 			loot();
@@ -164,11 +165,16 @@ class Merchant extends Character {
 
 	incrementCounter() {
 		// increment counter when we're doing nothing
-		if ((!this.current_action || this.current_action && this.current_action == 'unpacking') && !character.moving && !this.thinking) {
+		if (!this.current_action || this.current_action == 'unpacking' || this.current_action == 'banking') {
 			this.idle_counter += 1
 			// log(`Idle: ${this.idle_counter}`);
 			set_message(`Idle: ${this.idle_counter}`);
 		}
+	}
+
+	fixActionStuck() {
+		if (this.current_action != 'unpacking' && this.current_action != 'banking') return
+		if (this.idle_counter >= 20) this.clear_current_action()
 	}
 
 	getItemAndSlot(itemName) {
@@ -247,6 +253,7 @@ class Merchant extends Character {
 						this.clear_current_action();
 						this.bank()
 						//this.clear_current_action()
+						// smart_move(this.home)
 					})
 					.catch(() => {
 						log("FAILURE Gobbo");
@@ -352,7 +359,7 @@ class Merchant extends Character {
 			await this.dumpIfNot(isUpgradable)
 			// await this.dumpIfNot(isUpgradable, isCompoundable)
 			getCompoundables()
-			await smart_move(this.home)
+			// await smart_move(this.home)
 		}
 		this.clear_current_action();
 
@@ -366,7 +373,7 @@ class Merchant extends Character {
 		if (this.current_action != 'banking') this.set_current_action("banking");
 		if (!smart.moving) await this.doBank()
 		this.clear_current_action()
-		if (character.bank && !smart.moving) await smart_move(this.home)
+		// if (character.bank && !smart.moving) await smart_move(this.home)
 		return
 	}
 

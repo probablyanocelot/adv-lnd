@@ -154,7 +154,7 @@ async function checkBankCompound() {
 		
 		for (let array of arrays) {
 			// TODO: some whitelist.includes()/.hasOwnProperty()
-			if (itemName == 'vitring' && array == level2) continue
+			if (noUp['2'].includes(itemName) && array == level2) continue
 				await bankHanoi(array)
 		}
 

@@ -7,13 +7,16 @@ let farmDefault = {
 	"camelCase": 'crab',
 	"couplaGrapes": 'squig2',
 	"Hoodlamb": 'crab',
-	'prayerBeads': 'bbpompom',
-	'Teef': 'bbpompom',
+	'prayerBeads': 'bigbird',
+	'Teef': 'bigbird',
 }
 
-let priTank = ['phelmet', 'harmor', 'hpants', 'xboots', 'hgloves',] //'lantern', ]
-let priLuck = ['wcap', 'wattire', 'wbreeches', 'wshoes', 'wgloves',] //'mshield', ]
+let priTank = ['phelmet', 'harmor', 'hpants', 'xboots', 'vgloves', 'sshield', ] //'lantern', ]
+let priLuck = ['wcap', 'wattire', 'wbreeches', 'wshoes', 'wgloves','mshield',] //, ]
 
+let noUp = {
+	'2':['vitring', 'talkingskull',],
+}
 // // iterate through the monsters
 // for (let monster of map.monsters) {
 // 	// if it's of our target type
@@ -36,9 +39,6 @@ let boar = { map: 'winterland', x: 17, y: -840 }
 let porcupine = { map: 'desertland', x: -824, y: 146 }
 let bigbird = { map: 'main', x: 1150, y: 200 }
 let bbpompom = { map: 'winter_cave', x: 50, y:-150 }
-
-	
-
 let mrgreen = { map: 'spookytown', x: 480, y:1070 }
 let snowman = { map: 'winterland', x:1150, y:-850 }
 
@@ -151,6 +151,7 @@ let sell_dict = {
 			'cscroll0', 'cscroll1', 'cscroll2',
 			'candy1', 'candy0', 'luckbooster',
 			'elixirluck', 'jacko',
+			'mshield', 'sshield',		// ! TODO: block sending loadout gear in unpack code instead
 		],
     'low':
 		[
@@ -184,7 +185,7 @@ let upgradeDict = {
 		"swifty", "hbow", "sshield",
 		"quiver", "cclaw",
 		 
-		'ololipop', 'broom',
+		'ololipop', 'broom', 'wingedboots'
 	],
 	high_upgrade_all: [
 		// 'xmasshoes', 'xmaspants', 'xmassweater',
@@ -197,7 +198,7 @@ let upgradeDict = {
 		'oozingterror', "harbringer", "basher", 'pinkie', 't2bow',
 		'merry', "firestaff", "fireblade", "bataxe", 'sword','dagger',
 
-		'hpants', 'hgloves', 
+		'hpants', 'hgloves', 'fierygloves',
 	], 
 	compound: [
 		'intamulet', 'intring', 'intbelt', 'intearring', 'strring',

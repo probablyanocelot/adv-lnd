@@ -110,7 +110,7 @@ class Character {
 					if (action == "fishing" || action == "mining") {
 						if (character.slots.offhand) unequip("offhand")
 					
-						if (!character.slots.mainhand || !(character.slots.mainhand.name == itemName)) equip(itemIndex)
+						if (character.slots?.mainhand.name != itemName) equip(itemIndex)
 					}
 				
 					let actionInterval = setInterval(() => {
