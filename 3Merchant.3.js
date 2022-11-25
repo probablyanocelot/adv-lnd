@@ -10,7 +10,7 @@ load_code('19Management')
 load_code('40Gui')
 
 //load_code(53) // upgrade_all2 WILL ADD MORE
-//performance_trick()
+performance_trick()
 
 // const { webFrame } = require('electron');
 // webFrame.setZoomFactor(1);

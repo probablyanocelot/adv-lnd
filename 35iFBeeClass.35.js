@@ -203,7 +203,7 @@ class Ranger {
 		for (let boss of bosses) {
 			if (parent.S[boss] && parent.S[boss].live) {
 
-				if (boss == 'snowman' && (parent.S?.mrgreen.live || parent.S?.mrpumpkin.live)) return
+				if (boss == 'snowman' && (parent.S?.mrgreen?.live || parent.S?.mrpumpkin?.live)) return
 
 				// TODO: what if current_action is more important event?
 				if (smart.moving) return
