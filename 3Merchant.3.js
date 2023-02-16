@@ -164,6 +164,8 @@ class Merchant extends Character {
 	}
 
 	incrementCounter() {
+		// reset idle if exchanging
+		if (character.q.exchange) this.idle_counter = 0
 		// increment counter when we're doing nothing
 		if (!this.current_action || this.current_action == 'unpacking' || this.current_action == 'banking') {
 			this.idle_counter += 1
@@ -426,7 +428,7 @@ class Merchant extends Character {
 		let exchangeItems = [
 			"basketofeggs", "goldenegg", "gem0", 
 			"weaponbox", 'armorbox', "candy0", "candy1", 
-			"candycane",
+			"candycane", 'greenenvelope',
 		];
 
 		let hasExchangeable = false;
@@ -457,6 +459,7 @@ class Merchant extends Character {
 				// doesn't have a modifier
 				if (character.items[item].p) {
 					log("item has modifier")
+					continue
 				} else if (character.items[item].level) {
 					log("item has level")
 				} else {
@@ -604,12 +607,12 @@ function upgrade_all() {
 				} 
 
 				// shiny / achievement / rare / level 8   :   skip
-				if (grade == 2 || item.level >= 7) continue
+				if (grade == 2 || item.level >= 8) continue
 
 				merchantBot.goHomeIfIdle()
 
 				// grade 1 or ( 0 & level 3-6 )
-				if (grade == 1 && item.level < 7 || (grade == 0 && item.level >= 3 && item.level < 7)) {
+				if (grade == 1 && item.level <= 7 || (grade == 0 && item.level >= 3 && item.level < 7)) {
 
 					log(`${itemName} grade: ${grade} level: ${item.level} -> ${item.level + 1}`)
 

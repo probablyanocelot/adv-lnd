@@ -155,7 +155,7 @@ let sell_dict = {
 		],
     'low':
 		[
-			'hpamulet', 'hpbelt', 'wcap', 'wshoes', 'wattire',
+			'hpamulet', 'hpbelt', 'wattire', 'wcap',
 			'wbreeches', 'wgloves', 'stinger', 'cclaw', 'ringsj',
 			'vitearring',
 		],
@@ -181,8 +181,8 @@ let upgradeDict = {
 		'xmasshoes', 'xmaspants', 'xmassweater', "xmashat", 'mittens', 
 		"eslippers", "eears", "epyjamas",
 		
-		"stinger", "wcap", "wattire",
-		"wbreeches", "wgloves", "wshoes",
+		"stinger", "wattire",
+		"wbreeches", "wgloves",
 		"swifty", "hbow", "sshield",
 		"quiver", "cclaw",
 		 

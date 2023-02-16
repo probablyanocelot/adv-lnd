@@ -30,7 +30,7 @@ const shinyBlackList = [
     'stinger', 'mushroomstaff', 'slimestaff',
     'warmscarf', 'carrotsword', 'candycanesword',
     'shoes1', 'gloves1', 'pants1', 'coat1', 'helmet1',
-    'gphelmet', 
+    'gphelmet', 'spear', 'iceskates',
 ]
 
 function buyFromPonty() {
@@ -45,8 +45,10 @@ function buyFromPonty() {
                 // don't buy junk shinies
                 if (shinyBlackList.includes(d.name)) continue
                 
+                // TODO: WHITELIST FOR LEVELLED SHINIES
+
                 if (d.level == 0) {
-                    parent.socket.emit("sbuy", { "rid": d.rid }, 1)
+                parent.socket.emit("sbuy", { "rid": d.rid }, 1)
                 }
             }
 
