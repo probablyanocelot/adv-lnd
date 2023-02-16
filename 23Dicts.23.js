@@ -7,8 +7,8 @@ let farmDefault = {
 	"camelCase": 'crab',
 	"couplaGrapes": 'squig2',
 	"Hoodlamb": 'crab',
-	'prayerBeads': 'bigbird',
-	'Teef': 'bigbird',
+	'prayerBeads': 'spider',
+	'Teef': 'spider',
 }
 
 let priTank = ['phelmet', 'harmor', 'hpants', 'xboots', 'vgloves', 'sshield', ] //'lantern', ]
@@ -197,7 +197,8 @@ let upgradeDict = {
 		'daggerofthedead', 'bowofthedead', 'maceofthedead',
 
 		'oozingterror', "harbringer", "basher", 'pinkie', 't2bow',
-		'merry', "firestaff", "fireblade", "bataxe", 'sword','dagger',
+		'merry', "firestaff", "fireblade", "bataxe", 'sword', 'dagger',
+		'tigerhelmet', 'tigershield', 'xmace',
 
 		'hpants', 'hgloves', 'fierygloves',
 	], 
@@ -227,11 +228,12 @@ let mobsLow = [
 
 ];
 
-let mobsGroup = ['crabxx', 'franky', 'mrpumpkin', 'mrgreen', 'icegolem',]
+let mobsGroup = [ 'crabxx', 'franky', 'mrpumpkin', 'mrgreen', 'icegolem',' dragold' ]
 
 let mobsFocus = [
 	'franky', 'mrpumpkin', 'mrgreen', 'icegolem', 'grinch',
 	'cutebee', 'tinyp', 'rgoo', 'jr', 'greenjr', 'snowman',
+	'tiger', 'dragold',
 ]
 
 let mobsMed = [
