@@ -5,7 +5,8 @@ let itemsToBuy = ['angelwings', "ink", 'suckerpunch', 'tshirt88', 'supermittens'
     'tigerstone', 'orbg', 'broom', 't2quiver', 'wbookhs', 'wbook1', 't2dexamulet',
     't2intamulet', 'snakeoil', 'poker', "snakefang", "lotusf", "mistletoe", "basketofeggs",
     "candycane", "cscale", "ascale", "pleather", "poison", "leather",
-    'spidersilk', 'emptyheart', '5bucks', "troll", "candypop", "mshield", "mearring", "spookyamulet",
+    'spidersilk', 'emptyheart', '5bucks', "troll", "candypop", "mshield", "mearring", 
+				  
     'gift1', 'gift0', 'feather0', 'goldenegg', 'weaponbox', 'xbox', 'cryptkey',
     'cxjar', 'emotionjar', 'frozenkey', 'x0', 'x1', 'x2', 'x3', 'x4', 'x5', 'x6', 'x7', 'x8', 'egg0',
     'egg1', 'egg2', 'egg3', 'egg4', 'egg5', 'egg6', 'egg7', 'egg8', 'rod', 'pickaxe', 'funtoken',
@@ -14,15 +15,23 @@ let itemsToBuy = ['angelwings', "ink", 'suckerpunch', 'tshirt88', 'supermittens'
     'cearring', 'cring', 'resistancering', 'armorring', 'vring', 'zapper', 'trigger', 'ringofluck',
     'solitaire', 'fierygloves', 'cyber', 'fury', 'oxhelmet', "jacko", 'merry', 't3bow',
     'bowofthedead', 'xmace', 'crossbow', 'pinkie', 'ooze', 'oozingterror', 'cupid', 'bataxe',
-    'xmasshoes', 'xmaspants', 'xmassweater', "xmashat", "hbow", "cryptkey", 'rednose', 'tigerhelmet',
-    'wbreeches', 'wgloves', "vitring", "dexearring", "dexring", "dexbelt", "dexamulet","strring", 'strearring', 'stramulet',
-    "strbelt", "intbelt", "intring", "intearring", "intamulet", 'wattire', 'vitearring',
+    "hbow", "cryptkey", 'rednose', 'tigerhelmet',
+
+    'wattire', 'wbreeches','wgloves',
+
+    "vitring", "dexearring", "dexring", "dexbelt", "dexamulet","strring", 'strearring', 'stramulet',
+    "strbelt", "intbelt", "intring", "intearring", "intamulet", 'vitearring',
     "tracker", 'ornament', 'feather0', 'gemfragment', 'carrot', 'ololipop', 'feather1', 'harpybow',
     'luckyt','tshirt88', 'essenceoffrost', 'essenceofgreed', 'essenceoflife', 'essenceoffire', 'essenceofnature',
 ] 
 // "candy0", "candy1",
 // 'ecape', 'eears', 'epyjamas','eslippers',
-
+const shinyBlackList = [
+    'stinger', 'mushroomstaff', 'slimestaff',
+    'warmscarf', 'carrotsword', 'candycanesword',
+    'shoes1', 'gloves1', 'pants1', 'coat1', 'helmet1',
+    'gphelmet', 
+]
 
 function buyFromPonty() {
 
@@ -33,6 +42,9 @@ function buyFromPonty() {
         for(let d of data) {
             if (d.p){
                 game_log(`ITEM ${d.name} has ${d.p}!`)
+                // don't buy junk shinies
+                if (shinyBlackList.includes(d.name)) continue
+                
                 if (d.level == 0) {
                     parent.socket.emit("sbuy", { "rid": d.rid }, 1)
                 }
