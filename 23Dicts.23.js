@@ -11,7 +11,7 @@ let farmDefault = {
 	'Teef': 'spider',
 }
 
-let priTank = ['phelmet', 'harmor', 'hpants', 'xboots', 'vgloves', 'sshield', ] //'lantern', ]
+let priTank = ['oxhelmet', 'harmor', 'frankypants', 'xboots', 'vgloves', 'sshield', ] //'lantern', ]
 let priLuck = ['wcap', 'wattire', 'wbreeches', 'wshoes', 'wgloves','mshield',] //, ]
 
 let noUp = {
