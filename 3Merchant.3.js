@@ -777,7 +777,7 @@ function sell_extras() {
 			sell(itemSlot, item.q)
 			continue
 		}
-		sell(itemSlot)
+		if (item.level <= 2) sell(itemSlot)
     }
 	setTimeout(sell_extras, 3000) //1440 * 1000
 }

@@ -168,6 +168,7 @@ let sell_dict = {
 			'coat1', 'helmet1', 'hpbelt', 'hpamulet', 'whiteegg', 
 			'smoke', 'phelmet', 'gphelmet', 'pants1', 'gloves1', 'shoes1', 'throwingstars',
 			'pmaceofthedead',
+			'wcap','wshoes',
 		],
 	'merchTradeSell':
 		[
