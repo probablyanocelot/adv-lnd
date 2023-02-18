@@ -25,6 +25,8 @@ async function doBankUpdate() {
 	if (lastBankUpdate && new Date() - lastBankUpdate < bankUpdateTime) return
 	
 	if (!character.bank) await smart_move('bank')
+	
+	// bank dumps compoundables
 	await merchantBot.dumpIfNot(isUpgradable)
 	// await merchantBot.dumpIfNot(isCompoundable)
 	getCompoundables()
