@@ -19,13 +19,15 @@ let itemsToBuy = ['angelwings', "ink", 'suckerpunch', 'tshirt88', 'supermittens'
 
     'wattire', 'wbreeches','wgloves',
 
-    "vitring", "dexearring", "dexring", "dexbelt", "dexamulet","strring", 'strearring', 'stramulet',
+    "dexearring", "dexring", "dexbelt", "dexamulet","strring", 'strearring', 'stramulet',
     "strbelt", "intbelt", "intring", "intearring", "intamulet", 'vitearring',
     "tracker", 'ornament', 'feather0', 'gemfragment', 'carrot', 'ololipop', 'feather1', 'harpybow',
     'luckyt','tshirt88', 'essenceoffrost', 'essenceofgreed', 'essenceoflife', 'essenceoffire', 'essenceofnature',
 ] 
+// "vitring",
 // "candy0", "candy1",
 // 'ecape', 'eears', 'epyjamas','eslippers',
+
 const shinyBlackList = [
     'stinger', 'mushroomstaff', 'slimestaff',
     'warmscarf', 'carrotsword', 'candycanesword',
