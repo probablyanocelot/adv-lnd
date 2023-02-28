@@ -224,11 +224,11 @@ let mobsLow = [
 	'snowman', 'cutebee', 'grinch', 'rgoo', 'bgoo',
 	"goldenbat", "tinyp", "greenjr", "phoenix", 
 	// 1st priority - group mobs
-	'crabxx', 'franky', 'mrpumpkin','mrgreen', "icegolem",
-
+	 'franky', 'mrpumpkin','mrgreen', "icegolem",
+	// 'crabxx',
 ];
 
-let mobsGroup = [ 'crabxx', 'franky', 'mrpumpkin', 'mrgreen', 'icegolem',' dragold' ]
+let mobsGroup = [ 'franky', 'mrpumpkin', 'mrgreen', 'icegolem',' dragold' ] // 'crabxx',
 
 let mobsFocus = [
 	'franky', 'mrpumpkin', 'mrgreen', 'icegolem', 'grinch',
