@@ -531,18 +531,21 @@ function do_combine(item_name) {
 
 	let levelArray = [0, 1, 2, 3,]
 	for (let level in levelArray) {
-		// check if need different scroll
+		
 		// limited level 3 support
-		if (level == 3 && item_name != 'ringsj') continue
-		if (level == 3) {
-			COMPOUND_SCROLL = "cscroll1"
-		}
-		scrollSlot = locate_item(COMPOUND_SCROLL);
-		buy_compound_scroll(scrollSlot, COMPOUND_SCROLL)
-
+		// if (level == 3 && item_name != 'ringsj') continue
+		
 		// get a list of items
 		let itemList = locate_items(item_name, level);
 		if (itemList.length >= 3) {
+
+			// check if need different scroll
+			if (level == 3 || item_grade(character.items[itemList[0]]) == 1) {
+				COMPOUND_SCROLL = "cscroll1"
+			}
+			scrollSlot = locate_item(COMPOUND_SCROLL);
+			buy_compound_scroll(scrollSlot, COMPOUND_SCROLL)
+
 			if (item_name == "vitring" && level == 2) {
 				continue
 			}
