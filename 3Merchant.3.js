@@ -421,17 +421,34 @@ class Merchant extends Character {
 		}
 	}
 
+		// ! FOUND IN MIDDLE OF GO_EXCHANGE, WTF WAS IT DOING THERE
+		// 	let sellItems = []
+		// for (let idx in sellItems) {
+		// 	let item = locate_item(sellItems[idx])
+		// 	if (item > -1) {
+		// 		// doesn't have a modifier
+		// 		if (character.items[item].p) {
+		// 			log("item has modifier")
+		// 			continue
+		// 		} else if (character.items[item].level) {
+		// 			log("item has level")
+		// 		} else {
+		// 			sell(item)
+		// 		}
+		// 	}
+		// }
 
 	go_exchange() {
 		// dont do if there's something else going on
 		if (this.current_action || this.thinking || character.bank) return; // && this.current_action != 'exchange' || 
+		if (character.esize ==  1) return
 
 		if (!parent.character.q.exchange) this.exchange = false
 
 		let exchangeItems = [
 			"basketofeggs", "goldenegg", "gem0", 
 			"weaponbox", 'armorbox', "candy0", "candy1", 
-			"candycane", 'greenenvelope',
+			"candycane", 'greenenvelope', 'seashell',
 		];
 
 		let hasExchangeable = false;
@@ -449,27 +466,13 @@ class Merchant extends Character {
 		if (smart.moving) log("Going to exchange")
 
 		let exchangeCoordinates = { map: 'main', x: -165.70087581199823, y: -179.8048822284356 }
+		if (locate_item('seashell') > -1) exchangeCoordinates = find_npc('fisherman')
 		if (!smart.moving && character.x != exchangeCoordinates.x && character.y != exchangeCoordinates.y) smart_move(exchangeCoordinates)		
 		// if (this.current_action != "exchange") this.set_current_action("exchange");
 
 		// if( character.x != exchangeCoordinates.x && character.y != exchangeCoordinates.y) return
 		if (!hasExchangeable) return // || !this.exchange
 
-		let sellItems = []
-		for (let idx in sellItems) {
-			let item = locate_item(sellItems[idx])
-			if (item > -1) {
-				// doesn't have a modifier
-				if (character.items[item].p) {
-					log("item has modifier")
-					continue
-				} else if (character.items[item].level) {
-					log("item has level")
-				} else {
-					sell(item)
-				}
-			}
-		}
 
 		if (character.esize == 0) {
 			log("No Space");

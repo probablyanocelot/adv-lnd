@@ -1,11 +1,11 @@
-
+load_code('99Secrets')
 // ! FOR USE OUTSIDE OF GAME
 // let { CHAT_ID, http_token } = require('./99secrets.99.js');
 // let XMLHttpRequest = require('xhr2');
 // console.log(CHAT_ID)
 // console.log(http_token)
 
-let { CHAT_ID, http_token } = require_code('99secrets');
+// let { CHAT_ID, http_token } = require_code('99Secrets');
 
 function send_tg_bot_message(message) {
     console.log("Sending message to Telegram");
