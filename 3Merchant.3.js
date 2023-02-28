@@ -278,7 +278,7 @@ class Merchant extends Character {
 	
 	merch_pots(){
 		if (parent.character.q.upgrade || parent.character.q.compound){
-				if (locate_item('mpot1') > 0) return
+				if (locate_item('mpot1') > -1) return
 				buy('mpot1', 9999)
 				return
 		}
