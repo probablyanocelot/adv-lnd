@@ -454,6 +454,8 @@ class Merchant extends Character {
 		let hasExchangeable = false;
 		for (let idx in exchangeItems) {
 			if (locate_item(exchangeItems[idx]) > -1) {
+				// don't go exchanging waterfalls, we need more shells first!
+				if (exchangeItems[idx] == 'seashell' && quantity('seashell') < 20) continue 
 				hasExchangeable = true;
 			}
 		}

@@ -224,7 +224,7 @@ class Ranger {
 			}
 
 			if (!this.current_action == boss) continue
-			if (parent.S[boss] && !parent.S[boss].live && this.current_action == boss && !smart.moving) this.clear_current_action()
+			if (parent.S[boss] && !parent.S[boss].live && this.current_action == boss && !smart.moving) this.moveToThen(myFarmLocation, this.clear_current_action())
 		}
 
 	}
@@ -255,7 +255,10 @@ class Ranger {
 			if (this.joinEvent(event)) this.current_action = event
 	
 
-			if (this.current_action == event && !parent.S[event] && !smart.moving) this.moveToThen(myFarmLocation, this.clear_current_action())
+			if (this.current_action == event && !parent.S[event] && !smart.moving) {
+				use_skill('use_town').then(this.moveToThen(myFarmLocation, this.clear_current_action()))
+				
+			}
 			
 		}
 	}
