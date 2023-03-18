@@ -17,7 +17,7 @@ let itemsToBuy = ['angelwings', "ink", 'suckerpunch', 'tshirt88', 'supermittens'
     'bowofthedead', 'xmace', 'crossbow', 'pinkie', 'ooze', 'oozingterror', 'cupid', 'bataxe',
     "hbow", "cryptkey", 'rednose', 'tigerhelmet',
 
-    'wattire', 'wbreeches','wgloves',
+    'wbreeches','wgloves', // 'wattire', 
 
     "dexearring", "dexring", "dexbelt", "dexamulet","strring", 'strearring', 'stramulet',
     "strbelt", "intbelt", "intring", "intearring", "intamulet", 'vitearring',

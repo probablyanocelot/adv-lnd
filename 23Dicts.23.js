@@ -168,6 +168,7 @@ let sell_dict = {
 			'coat1', 'helmet1', 'hpbelt', 'hpamulet', 'whiteegg', 
 			'smoke', 'phelmet', 'gphelmet', 'pants1', 'gloves1', 'shoes1', 'throwingstars',
 			'pmaceofthedead',
+			'warmscarf', 'snowball',
 			'wcap','wshoes',
 		],
 	'merchTradeSell':
@@ -225,10 +226,10 @@ let mobsLow = [
 	"goldenbat", "tinyp", "greenjr", "phoenix", 
 	// 1st priority - group mobs
 	 'franky', 'mrpumpkin','mrgreen', "icegolem",
-	// 'crabxx',
+	'crabxx',
 ];
 
-let mobsGroup = [ 'franky', 'mrpumpkin', 'mrgreen', 'icegolem',' dragold' ] // 'crabxx',
+let mobsGroup = [ 'franky', 'mrpumpkin', 'mrgreen', 'icegolem',' dragold', 'crabxx' ] // ,
 
 let mobsFocus = [
 	'franky', 'mrpumpkin', 'mrgreen', 'icegolem', 'grinch',

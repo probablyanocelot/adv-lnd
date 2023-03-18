@@ -517,6 +517,19 @@ class Merchant extends Character {
 			})
 		}
 	}
+
+	full_sell() {
+		if (this.current_action != 'unpacking') return
+		if (character.esize > 0) return // only do if full
+		if (!hasItem('ringsj')) return // has items to sell
+		let ringsj_array = locate_items('ringsj', 0) // array of sell items slot position
+		if (ringsj_array.length < 1) ringsj_array = locate_items('ringsj', 1)
+		if (ringsj_array.length < 1) ringsj_array = locate_items('ringsj', 2)
+		if (ringsj_array.length < 1) ringsj_array = locate_items('ringsj', 3)
+		for (let idx of ringsj_array) {
+			sell(idx)
+		}
+	}
 }
 
 
@@ -771,9 +784,15 @@ function compound_loop() {
 	}, 1000)
 }
 
+function hasItem(itemName) {
+	let itemIndex = locate_item(itemName)
+	if (itemIndex == -1) return false
+	if (itemIndex > -1) return itemIndex
+}
 
 
 function sell_extras() {
+	merchantBot.full_sell()
 	// index of item in inv
 	for (let itemSlot in character.items) {
 		// idx, 0-41
