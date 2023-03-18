@@ -20,6 +20,11 @@ let lastScare;
 let lastBankUpdate = false;
 let bankUpdateTime = 1000*60*15 // sec_to_ms * num_seconds * num_minutes
 
+async function getExchangeable() {
+	if (!character.bank) return
+	// TODO: get seashells
+}
+
 async function doBankUpdate() {
 	// pass if not due for update or smart.moving
 	if (smart.moving) return
@@ -690,7 +695,7 @@ function high_upgrade_all() {
 	let itemList = upgradeDict.high_upgrade_all
 	
 	let scrollType = "scroll1"
-    let maxLevel = 8;
+    let maxLevel = 7;
 
     for (let level = 0; level < maxLevel; level++) {
         for (let idx in itemList) {
@@ -728,7 +733,7 @@ function high_upgrade_all() {
                 }
 
 				// if (grade == 2) {
-				if (level >= 5) { 
+				if (level >= maxLevel) { 
 					// save money
 					continue
 
