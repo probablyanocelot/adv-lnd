@@ -284,7 +284,7 @@ class Merchant extends Character {
 	merch_pots(){
 		if (parent.character.q.upgrade || parent.character.q.compound){
 				if (locate_item('mpot1') > -1) return
-				buy('mpot1', 9999)
+				buy_with_gold('mpot1', 9999)
 				return
 		}
 	}
@@ -313,8 +313,8 @@ class Merchant extends Character {
 			await smart_move('potions')
 			log('at potions')
 			// get potions since we're out of one of them
-			if (HP_TO_BUY > 0) buy(HP_TYPE, HP_TO_BUY);
-			if (MP_TO_BUY > 0) buy(MP_TYPE, MP_TO_BUY);
+			if (HP_TO_BUY > 0) buy_with_gold(HP_TYPE, HP_TO_BUY);
+			if (MP_TO_BUY > 0) buy_with_gold(MP_TYPE, MP_TO_BUY);
 			if (lastAction == 'unpacking') {
 				this.set_current_action('unpacking')
 			} else { this.clear_current_action(); }
