@@ -140,7 +140,7 @@ class Merchant extends Character {
 			this.fixActionStuck();
 			this.incrementCounter();
 
-			loot();
+			// loot();
 			
 			this.merch_pots()
 
