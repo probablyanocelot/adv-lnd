@@ -33,6 +33,7 @@ if (character.controller) log(`CONTROLLER = ${character.controller}`)
 if (character.name == currentGroup[0]) startBots(currentGroup);
 const keyInviteBots = map_key("9", "snippet", "sendInvites('r3')")
 const keyKillBots = map_key('8', 'snippet', "killBots(currentGroup)")
+const keyStartBots = map_key('7', 'snippet', 'startBots(currentGroup)')
 
 if (character.ctype != 'rogue') setInterval(loot, 50)
 

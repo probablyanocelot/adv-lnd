@@ -18,7 +18,7 @@ function startBots(group) {
 	for (let toon of group)
 	{
 		if (toon == character.id || toon == merchant) continue; // || toon == "camelCase"
-		start_character(toon, 35)
+		start_character(toon, 5)
 	}
 }
 
