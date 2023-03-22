@@ -238,8 +238,9 @@ let mobsFocus = [
 ]
 
 let mobsMed = [
-	'rat', 'bbpompom', 'cgoo', "iceroamer", 'scorpion', "bat", 'arcticbee',
-	"porcupine", "spider",
+	// 'rat', 'bbpompom', 'cgoo', "iceroamer", 'scorpion', "bat", 'arcticbee',
+	// "porcupine", "spider",
+	'bigbird', 'mole', 'fireroamer', 'wolf', 'plantoid', 'xscorpion', 'prat', 
 ]
 
 let mobsHard = {

@@ -232,6 +232,7 @@ class Ranger {
 	
 	joinEvent(event) {
 		// event = 'icegolem', etc
+		if (character.ctype == 'ranger') return
 		if (!parent.S[event]) return// no event 
 		if (event == 'franky') return;
 		if (parent.S.halloween) return // nobody farming in season
@@ -247,6 +248,7 @@ class Ranger {
 
 	serverEvents() {
 		if (character.ctype == 'merchant') return;
+		if (character.ctype == 'ranger') return
 		for (let event in G.events) {
 			// seasonal events are global, not joinable
 			if (seasonalEvents.includes(event)) continue
@@ -594,7 +596,7 @@ class Ranger {
 			}
 		}
 
-		kite(target)
+		// kite(target)
 
 		change_target(target)
 
@@ -632,6 +634,8 @@ class Ranger {
 
 
 		if (!is_on_cooldown('attack')) attack(target)
+
+		if (mobsMed.includes(target.mtype) && target.target == character.name) goToTopLeft(target.id)
 
 		// if (!is_on_cooldown('3shot')) skill3shot(mobsLow, get_nearby_entities());
 	}
@@ -900,8 +904,8 @@ function gearSwap(loadout) {
 
 function getTargetSpawnBorder(mtype, map = false) {
     // get a target monster and return the spawn border
-    if (!map) map = G.maps[character.map];
 	if (map) map = G.maps[map]
+    if (!map) map = G.maps[character.map] ?? G.maps[character.in];
     // iterate through the monsters
     for (let monster of map.monsters) {
         // if it's of our target type
@@ -916,11 +920,32 @@ function getTargetSpawnBorder(mtype, map = false) {
     }
 }
 
-function goToTopLeft(monsterName) {
-	let spawnBorder = getTargetSpawnBorder(monsterName)
+function coordDifference(coord1, coord2) {
+	return Math.abs(coord1 - coord2)
+}
+
+function isNearArea(loc_coords, char_coords) {
+	const loc_x = Math.abs(loc_coords[0])
+	const loc_y = Math.abs(loc_coords[1])
+	const char_x = Math.abs(char_coords[0])
+	const char_y = Math.abs(char_coords[1])
+
+	const differenceX = coordDifference(loc_x, char_x)
+	const differenceY = coordDifference(loc_y, char_y)
+
+	if (differenceX >= 5 || differenceY >= 5) return false
+	
+	return true
+}
+
+function goToTopLeft(monsterID) {
+	let spawnBorder = getTargetSpawnBorder(parent.entities[monsterID].mtype)
 	let topLeft = spawnBorder[0]
 
-	xmove(topLeft[0]*.5, topLeft[1]*.5)
+	let border_coords = [topLeft[0], topLeft[1]]
+	let char_coords = [character.x, character.y]
+
+	if (!isNearArea(border_coords, char_coords)) xmove(topLeft[0], topLeft[1])
 }
 
 function hasLuck(){
