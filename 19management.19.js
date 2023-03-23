@@ -26,6 +26,19 @@ async function updateBank(){
 	transcribe(character.bank, bankDict)
 }
 
+async function searchBank(itemName) {
+	for (let container in bankDict) {
+		// log(bankDict[container])
+		for (let slot in bankDict[container]) {
+			// if (!Object.hasOwn(bankDict[container][slot], itemName)) continue
+			// log(`${container} has itemName`)
+			let itemContainerIndex = bankDict[container][slot].map(function(item) { return item.name; }).indexOf(itemName);
+			log(itemContainerIndex)
+		}
+		// bank_retrieve(container,)
+	}
+}
+
 
 let bankItemDict = new Object;
 

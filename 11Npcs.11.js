@@ -40,7 +40,7 @@ function buyFromPonty() {
 
     // Set up the handler
     var itemsBought = 0
-    parent.socket.once("secondhands", function(data) {
+    parent.socket.on("secondhands", function(data) {
         for(let d of data) {
             if (d.p){
                 game_log(`ITEM ${d.name} has ${d.p}!`)
@@ -91,7 +91,7 @@ function buyFromGoblin() {
 
     // Set up the handler
     var itemsBought = 0
-    parent.socket.once("lostandfound", function(data) {
+    parent.socket.on("lostandfound", function(data) {
         for(let d of data) {
             if (d.p){
                 game_log(`ITEM ${d.name} has ${d.p}!`)

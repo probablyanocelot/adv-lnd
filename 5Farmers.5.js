@@ -117,7 +117,7 @@ function farmerBank() {
 
 let attack_mode = false
 
-class Ranger {  
+class Farmer {  
 
 	constructor() {
   
@@ -554,6 +554,9 @@ class Ranger {
 
 
 		if (!target) return 	// must have target beyond here
+		if (character.ctype != 'priest' && character.ctype != 'warrior') { // keep farmer from suiciding by monster cop
+			if (mobsMed.includes(target.mtype) && !getCompanionTarget('prayerBeads')) return
+		}
 		
 		let targetTarget = target.target
 
@@ -635,7 +638,10 @@ class Ranger {
 
 		if (!is_on_cooldown('attack')) attack(target)
 
-		if (mobsMed.includes(target.mtype) && target.target == character.name) goToTopLeft(target.id)
+		if (mobsMed.includes(target.mtype) && target.target == character.name) {
+			if (character.name == 'prayerBeads') goToTopLeft(target.id)
+			if (!get_player('prayerBeads')) goToTopLeft(target.id)
+		}
 
 		// if (!is_on_cooldown('3shot')) skill3shot(mobsLow, get_nearby_entities());
 	}
@@ -705,7 +711,7 @@ class Ranger {
 	};
   }
   
-let char = new Ranger;
+let char = new Farmer;
 char.loop();
 
 character.on("cm", async (m) => {
@@ -799,13 +805,13 @@ function getCompanionTarget(companionName) {
 	if (smart.moving) return
 
 	let companionChar = get_player(companionName)
-	if (!companionChar) return
+	if (!companionChar) return false
 
 	let companionTarget = companionChar.target
-	if (!companionTarget) return
+	if (!companionTarget) return false
 	
 	let companionMonster = get_monster(companionTarget)
-	if (!companionMonster || companionMonster.rip || companionMonster.dead) return
+	if (!companionMonster || companionMonster.rip || companionMonster.dead) return false
 
 	return companionMonster
 }
