@@ -149,9 +149,11 @@ let sell_dict = {
 			'primling', 'offering',
 			'scroll0', 'scroll1', 'scroll2',
 			'cscroll0', 'cscroll1', 'cscroll2',
-			'candy1', 'candy0', 'luckbooster',
+			'luckbooster',
 			'elixirluck', 'jacko',
 			'mshield', 'sshield',		// ! TODO: block sending loadout gear in unpack code instead
+			// 'candy1', 'candy0',
+			'egg0','egg1','egg2','egg3','egg4','egg5','egg6','egg7','egg8',
 		],
     'low':
 		[

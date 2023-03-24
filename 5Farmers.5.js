@@ -8,7 +8,7 @@ load_code('14Partying')	// PARTY, bots
 load_code('15Combat')
 load_code('19management') //sell extras -- merge this and 12Inv?
 load_code('40Gui')
-load_code('30WabbitHunt')
+// load_code('30WabbitHunt')
 
 let merchant = 'VendorGuy';
 let group = '1ra1pr1ro'
@@ -36,7 +36,7 @@ const keyInviteBots = map_key("9", "snippet", "sendInvites('r3')")
 const keyKillBots = map_key('8', 'snippet', "killBots(currentGroup)")
 const keyStartBots = map_key('7', 'snippet', 'startBots(currentGroup)')
 
-if (character.ctype != 'rogue') setInterval(loot, 50)
+if (character.ctype != 'rogue') setInterval(loot, 25)
 
 
 character.on('hit', function(data) {
@@ -193,11 +193,20 @@ class Farmer {
 		if (!character.slots['elixir'] && elixir > -1) use(elixir)
 	}
 	
-	
+	async wabbitHunt() {
+		if (!parent.S.wabbit.live && this.current_action == 'wabbit') this.clear_current_action()
+		if (!parent.S.wabbit.live) return
+		this.current_action = 'wabbit'
+		await gooseChase(parent.S.wabbit.map,'wabbit')
+		if (!parent.S.wabbit.live) this.clear_current_action()
+
+	}
+
+
 	serverMiniEvents() {
 
 		// TODO: snowman, rabbit support -- smart_move('snowman') gives 'Unrecognized Location'
-		let bosses = ['mrpumpkin', 'mrgreen', 'snowman',]		//'snowman', 'rabbit'
+		let bosses = ['mrpumpkin', 'mrgreen', 'snowman', ]		//'snowman', 'rabbit'
 		let rareBosses = []
 
 		// if (this.current_action && this.current_action != 'farming') return
@@ -329,7 +338,7 @@ class Farmer {
 		switch (true) {
 			case this.dry():
 			case !hasLuck():
-			case character.esize <= 14:
+			case character.esize <= 8:
 			case !character.slots.elixir:
 			case !character.s.mluck:
 				return true
@@ -686,7 +695,7 @@ class Farmer {
 		}
 		//}
   
-	sequence() {
+	async sequence() {
 		this.handle_death()
 
 		if (character.rip) return;
@@ -702,6 +711,7 @@ class Farmer {
 		// this.manage_task()
 		this.manage_healing()
 		//this.manage_buffs()
+		await this.wabbitHunt()
 		this.manage_combat()
 		this.fixStuck();
 		this.serverEvents()
@@ -709,7 +719,7 @@ class Farmer {
 	}
 
   
-	loop() {
+	async loop() {
 	  this.sequence()
 		  
 	  // loop timeout
@@ -973,3 +983,19 @@ function hasLuck(){
 // if ( (target.hp < target.max_hp) && character.x !== topLeft[0] ) {
 // 	xmove(topLeft[0], topLeft[1])
 // }
+
+async function gooseChase(map, goose) {
+	if (character.map != map) await smart_move(map)
+	await doChase(map, goose)
+}
+
+async function doChase(map, goose) {
+	for (let monsterData of map.monsters) {
+		let bottomRight = [monsterData.boundary[1], monsterData.boundary[2]]
+		await smart_move(bottomRight)
+		let found_goose = get_nearest_monster({type:goose})
+		if (!found_goose) continue
+		break
+	}
+	// if (!parent.S[goose].live) clear_current_action()
+}

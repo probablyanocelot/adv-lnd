@@ -1,9 +1,9 @@
-game.on("event",function(data){
+game.on("event",async (data) => {
 	if(data.name=="wabbit")
 	{
-		show_json(data)
+		// show_json(data)
 		// let map = data.map
-        gooseChase(data.map, data.name)
+        await gooseChase(data.map, data.name)
 		// Data includes only the "map"
 		// It's up to you to visit all the possible monster spawns
 	}
