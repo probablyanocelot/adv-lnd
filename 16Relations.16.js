@@ -101,7 +101,7 @@ character.on("cm", async (m) => {
 			// only merch unpack
 			if (character.ctype != 'merchant' || merchantBot.current_action && merchantBot.current_action != 'exchange') break;
 
-			merchantBot.set_current_action('unpacking')
+			if (merchantBot.current_action != 'banking') merchantBot.set_current_action('unpacking')
 
 			// get pots if we need them
 			if (data.pots) await merchantBot.get_pots(data.pots);
