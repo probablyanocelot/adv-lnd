@@ -8,6 +8,7 @@ load_code('14Partying')	// PARTY, bots
 load_code('15Combat')
 load_code('19management') //sell extras -- merge this and 12Inv?
 load_code('40Gui')
+load_code('30WabbitHunt')
 
 let merchant = 'VendorGuy';
 let group = '1ra1pr1ro'
@@ -236,6 +237,13 @@ class Farmer {
 		if (!parent.S[event]) return// no event 
 		if (event == 'franky') return;
 		if (parent.S.halloween) return // nobody farming in season
+		if (parent.S.egghunt) {
+			switch (event) {
+				case 'crabxx':
+				case 'icegolem':
+					return
+			}
+		}
 
 		if (this.current_action == event) return // we set this true once we get there
 
@@ -255,7 +263,7 @@ class Farmer {
 			event = String(event)
 	
 			// if checks return true, set action to event
-			if (this.joinEvent(event)) this.current_action = event
+			if (this.joinEvent(event) && G.monsters[event]) this.current_action = event
 	
 
 			if (this.current_action == event && !parent.S[event] && !smart.moving) {
@@ -536,15 +544,15 @@ class Farmer {
 				target = get_nearest_monster({ type: this.current_action, no_target: true })
 			}
 
-			if (this.current_action && !this.isActionMonster()) {
+			// if (this.current_action && !this.isActionMonster()) {
 
-				for (let mob of mobsLow) {
+			// 	for (let mob of mobsLow) {
 
-					target = get_nearest_monster({ type: mob, no_target: true })
-					// ! NOT OPTIMAL; SUPERSHOT IS 3x character.range !!
-					if (target) break
-				}
-			}
+			// 		target = get_nearest_monster({ type: mob, no_target: true })
+			// 		// ! NOT OPTIMAL; SUPERSHOT IS 3x character.range !!
+			// 		if (target) break
+			// 	}
+			// }
 				
 		}
 		
