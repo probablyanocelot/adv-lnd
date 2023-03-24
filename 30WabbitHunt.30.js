@@ -21,7 +21,8 @@ async function doChase(map, goose) {
         let found_goose = get_nearest_monster({type:goose})
         if (!found_goose) continue
         break
-    }
+	}
+	// if (!parent.S[goose].live) clear_current_action()
 }
 // auto_craft("basketofeggs");
 

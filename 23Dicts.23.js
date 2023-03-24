@@ -234,7 +234,7 @@ let mobsGroup = [ 'franky', 'mrpumpkin', 'mrgreen', 'icegolem',' dragold', 'crab
 let mobsFocus = [
 	'franky', 'mrpumpkin', 'mrgreen', 'icegolem', 'grinch',
 	'cutebee', 'tinyp', 'rgoo', 'jr', 'greenjr', 'snowman',
-	'tiger', 'dragold', 'pinkgoo', 'rabbit',
+	'tiger', 'dragold', 'pinkgoo', 'wabbit',
 ]
 
 let mobsMed = [
