@@ -711,7 +711,7 @@ class Farmer {
 		// this.manage_task()
 		this.manage_healing()
 		//this.manage_buffs()
-		await this.wabbitHunt()
+		// await this.wabbitHunt()
 		this.manage_combat()
 		this.fixStuck();
 		this.serverEvents()

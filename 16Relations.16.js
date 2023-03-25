@@ -159,7 +159,7 @@ character.on("cm", async (m) => {
 				let item = character.items[itemIndex]
 				if (item.l) continue
 				// if (priTank.includes(item.name) || priLuck.includes(item.name))
-				if (!sell_dict['keep'].includes(item.name))send_item(m.name, itemIndex, 9999)
+				if (!sell_dict['farmer_keep'].includes(item.name))send_item(m.name, itemIndex, 9999)
 			}
 			if (char) {
 				if (char.current_action == 'unpacking') char.clear_current_action()
@@ -234,7 +234,7 @@ function sendToMerchant() {
 	for (let idx in character.items) {
 		let item = character.items[idx]
 		if (!item) continue;
-		if (sell_dict['keep'].includes(item.name)) continue;
+		if (sell_dict['farmer_keep'].includes(item.name)) continue;
 		if (item.p || sell_dict['toMerch'].includes(item.name) || item.q) send_item(merchant, idx, 9999)
 		// shiny / toMerch whitelisted / stackable : send
 	}

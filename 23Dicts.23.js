@@ -141,7 +141,7 @@ let itemMobDict = {
 	'arcticbee': ['strring', 'vitring', 'intring', 'dexring',],
 }
 let sell_dict = {
-	'keep': 
+	'merch_keep': 
 		[
 			'hpot0', 'hpot1', 'mpot0', 'mpot1',
 			'stand0', 'tracker',
@@ -149,11 +149,17 @@ let sell_dict = {
 			'primling', 'offering',
 			'scroll0', 'scroll1', 'scroll2',
 			'cscroll0', 'cscroll1', 'cscroll2',
-			'luckbooster',
 			'elixirluck', 'jacko',
-			'mshield', 'sshield',		// ! TODO: block sending loadout gear in unpack code instead
 			// 'candy1', 'candy0',
-			'egg0','egg1','egg2','egg3','egg4','egg5','egg6','egg7','egg8',
+		],
+	'farmer_keep':
+		[
+			'hpot0', 'hpot1', 'mpot0', 'mpot1',
+			'tracker',
+			'luckbooster',
+			'jacko',
+			'mshield', 'sshield',		// ! TODO: block sending loadout gear in unpack code instead
+			'egg0', 'egg1', 'egg2', 'egg3', 'egg4', 'egg5', 'egg6', 'egg7', 'egg8',
 		],
     'low':
 		[

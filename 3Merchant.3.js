@@ -336,7 +336,7 @@ class Merchant extends Character {
 			if (condition2 && condition2(itemName)) continue
 
 			// if (!isUpgradable(itemName) && !isCompoundable(itemName) && !sell_dict['keep'].includes(itemName)) bank_store(idx);
-			if (!sell_dict['keep'].includes(itemName) && itemName != 'ringsj') bank_store(idx);
+			if (!sell_dict['merch_keep'].includes(itemName) && itemName != 'ringsj') bank_store(idx);
 
 		}
 	}
@@ -353,7 +353,7 @@ class Merchant extends Character {
 
 			// if not in keep dict, or is shiny, or is upgradable and level > 4 then store
 			if (item.l) continue // locked
-			if (sell_dict['keep'].includes(itemName)) continue // keep dict
+			if (sell_dict['merch_keep'].includes(itemName)) continue // keep dict
 			if (isUpgradable(itemName) && item.level < 5 && !item.p ) continue // upgrade non-shinys
 			
 			bank_store(idx);
