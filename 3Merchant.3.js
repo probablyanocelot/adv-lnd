@@ -25,6 +25,31 @@ async function getExchangeable() {
 	// TODO: get seashells
 }
 
+function replaceTools() {
+	if (!character.bank && !smart.moving) smart_move('bank')
+
+	let rod_or_pick; // determine which is needed
+
+	let pack = searchBank('spidersilk')[0] // when that fn is working
+	let idx = searchBank('spidersilk')[1]
+
+	let to_wd;
+	if (character.esize >= 10) { to_wd = 5 }
+	else to_wd = Math.floor(character.esize/2)
+	bank_retrieve(pack, idx, to_wd)
+	
+	leave() // whatever u do to leave bank
+
+	buy_with_gold(rod_or_pick) // components
+
+	crafter_loc = find_npc('craftsman')
+	smart_move(crafter_loc)
+
+	// loop this
+	auto_craft('pickaxe')
+	auto_craft('pickaxe')
+}
+
 async function doBankUpdate() {
 	// pass if not due for update or smart.moving
 	if (smart.moving) return
@@ -77,6 +102,20 @@ character.on("cm", async (m) => {
 			break
 	}
 })
+
+
+function buyScrolls() {
+	// if (!is_in_range('lucas')) return
+	let scroll0_idx = locate_item('scroll0')
+	let scroll1_idx = locate_item('scroll1')
+	let cscroll0_idx = locate_item('cscroll0')
+	let cscroll1_idx = locate_item('cscroll1')
+
+	if (scroll0_idx == -1) buy_with_gold('scroll0',10)
+	if (scroll1_idx == -1) buy_with_gold('scroll1',10)
+	if (cscroll0_idx == -1) buy_with_gold('cscroll0',10)
+	if (cscroll1_idx == -1) buy_with_gold('cscroll1',10)
+}
 
 
 class Merchant extends Character {
@@ -136,6 +175,7 @@ class Merchant extends Character {
 			this.clear_current_action();
 			this.thinking = false; // most blocking state
 		} else {
+			buyScrolls()
 			if (character.moving) this.idle_counter = 0;
 			this.fixActionStuck();
 			this.incrementCounter();
