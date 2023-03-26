@@ -570,6 +570,7 @@ class Farmer {
 		if (companionTarget) target = companionTarget
 
 
+		if (!target && character.hp <- character.max_hp * 0.6) return
 		if (!target) return 	// must have target beyond here
 		if (character.ctype != 'priest' && character.ctype != 'warrior') { // keep farmer from suiciding by monster cop
 			if (mobsMed.includes(target.mtype) && !getCompanionTarget('prayerBeads')) return
@@ -635,11 +636,11 @@ class Farmer {
 				break
 				
 			case 'priest':
-				if (target.target == character.id && target.hp > target.max_hp / 6 && (target.attack >= 350 || target.max_hp >= 15000)) gearSwap(priTank)
+				if (target.target == character.id && target.hp > target.max_hp / 6) gearSwap(priTank)
 				if (target.hp < target.max_hp / 6) gearSwap(priLuck)
 				if (!is_on_cooldown('partyheal') && character.mp > G.skills.partyheal.mp) this.priestHeal()
-				if (is_friendly(target.target) && target.target != character.name && !mobsGroup.includes(target.name) && !is_on_cooldown('absorb') && character.mp > G.skills.absorb.mp) use_skill('absorb', target.target)
-				if (!is_on_cooldown('curse') && character.mp > G.skills.curse.mp) use_skill('curse', target)
+				if (character.hp >= character.max_hp * 0.6 && is_friendly(target.target) && target.target != character.name && !mobsGroup.includes(target.name) && !is_on_cooldown('absorb') && character.mp > G.skills.absorb.mp) use_skill('absorb', target.target)
+				if (character.hp >= character.max_hp * 0.6 && !is_on_cooldown('curse') && character.mp > G.skills.curse.mp) use_skill('curse', target)
 				break
 			
 			case 'rogue':

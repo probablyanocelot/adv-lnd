@@ -44,7 +44,7 @@ let snowman = { map: 'winterland', x:1150, y:-850 }
 
 // TURRET MAY BE OVERKILL?
 let mobLocationDict = {
-	
+	'prat': { loc: 'prat', },
 	'crab': {
 		loc: crab,
 		turret: true,
