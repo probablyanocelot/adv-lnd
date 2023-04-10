@@ -66,7 +66,13 @@ character.on("cm", async (m) => {
 				if (character.ctype != 'merchant') smart_move(myFarmDefault)
 				break;
 			}
-			smart_move(data.loc)
+			await smart_move(data.loc)
+			if(!data.cmd2) break
+			switch (data.cmd2) {
+				case 'send_equip':
+					send_item(m.name, data.data.idx)
+					send_cm(m.name, {cmd: 'sent_equip', item: data.data.name, level: data.data.level})
+			}
 			break;
 				
 		
@@ -77,7 +83,8 @@ character.on("cm", async (m) => {
 			if (itemToSend < 0) break
 			send_item(m.name, itemToSend, data.qty ?? 1)
 			break
-
+		
+		
 		case 'sent_equip':
 			let itemReceived = locate_items(data.item, data.level)[0]
 			if (!itemReceived) break
@@ -93,6 +100,10 @@ character.on("cm", async (m) => {
 		case 'get_loc':
 			savePosition()
 			let myLoc = getPosition(character.name)
+			if (data.cmd2) {
+				doCm(m.name, {cmd:'move', loc:myLoc, cmd2: data.cmd2, data: data.data})
+				break
+			}
 			doCm(m.name, {cmd:'move', loc:myLoc})
 			break
 		
@@ -225,18 +236,17 @@ function rangerPVP(target) {
 // ############### - MERCHANT - ###############
 
 async function send_equip(itemName, player) {
-	// await smart_move(player)
 
 	// if not in inventory, stop
-	// let item_idx = locate_item(itemName)
-	// if (item_idx == -1) return
+	let item_idx = locate_item(itemName)
+	if (item_idx == -1) return
 	
 	// current solution to find best candidate
 	let matches = []
 	let count = 0
 	let highest_level = 0;
-    for (let item of character_items) {
-        console.log(item)
+    for (let item of character.items) {
+        // console.log(item)
 
         if (!item) {
 			count ++
@@ -255,14 +265,17 @@ async function send_equip(itemName, player) {
 
             }
         }
-        console.log(count)
+        // console.log(count)
         count ++
-        console.log(count)
+        // console.log(count)
         
 
 	}
-	console.log(matches)
-	return matches
+	log(matches)
+	send_cm(player, { cmd: 'get_loc', cmd2: 'send_equip', data:matches })
+	// await smart_move(get_player(player))
+	send_item(player, matches[0].idx)
+	// return matches
 }
 
 

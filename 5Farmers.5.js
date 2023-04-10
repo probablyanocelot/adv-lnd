@@ -390,7 +390,10 @@ class Farmer {
 		
 		// don't call the truck if we're in a very temporary place (event bosses)
 		if (smart.moving || character.moving) return
-		if (this.current_action && mobsGroup.includes(this.current_action)) return
+
+		// ONLY USE IF DON'T WANT TO CALL TRUCK IN EVENTS
+		// if (this.current_action && mobsGroup.includes(this.current_action)) return
+		
 		for (let event in parent.S) {
 			if (parent.S[event].live && mobsGroup.includes(String(event))) return
 		}
