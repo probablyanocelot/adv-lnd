@@ -272,7 +272,7 @@ class Farmer {
 			event = String(event)
 	
 			// if checks return true, set action to event
-			if (this.joinEvent(event) && G.monsters[event]) this.current_action = event
+			if (this.joinEvent(event)) this.current_action = event // && G.monsters[event]
 	
 
 			if (this.current_action == event && !parent.S[event] && !smart.moving) {
@@ -301,7 +301,7 @@ class Farmer {
 		}
 
 		// if (character.ctype == 'paladin') return
-		if (smart.moving || this.isActionMonster() || (this.current_action && !this.current_action === '')) return;
+		if (smart.moving || this.isActionMonster() || (this.current_action && this.current_action !== '')) return;
 
 		// only increment counter when we're doing nothing
 		if (!this.current_action && !character.moving && !this.thinking) {

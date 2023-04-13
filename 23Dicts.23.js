@@ -150,6 +150,7 @@ let sell_dict = {
 			'scroll0', 'scroll1', 'scroll2',
 			'cscroll0', 'cscroll1', 'cscroll2',
 			'elixirluck', 'jacko',
+			'seashell'
 			// 'candy1', 'candy0',
 		],
 	'farmer_keep':
@@ -159,7 +160,7 @@ let sell_dict = {
 			'luckbooster',
 			'jacko',
 			'mshield', 'sshield',		// ! TODO: block sending loadout gear in unpack code instead
-			'egg0', 'egg1', 'egg2', 'egg3', 'egg4', 'egg5', 'egg6', 'egg7', 'egg8',
+			// 'egg0', 'egg1', 'egg2', 'egg3', 'egg4', 'egg5', 'egg6', 'egg7', 'egg8',
 		],
     'low':
 		[
@@ -256,4 +257,4 @@ let mobsHard = {
 }
 
 
-let seasonalEvents = ['halloween','holidayseason','lunarnewyear','valentines']
+let seasonalEvents = ['halloween','holidayseason','lunarnewyear','valentines', 'egghunt']
