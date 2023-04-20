@@ -178,7 +178,8 @@ let sell_dict = {
 			'smoke', 'phelmet', 'gphelmet', 'pants1', 'gloves1', 'shoes1', 'throwingstars',
 			'pmaceofthedead',
 			'warmscarf', 'snowball',
-			'wcap','wshoes',
+			'wcap', 'wshoes',
+			'pstem', 'bfur', 'frogt', 'bandages', 'smush', 'dstones', 'lspores', 
 		],
 	'merchTradeSell':
 		[

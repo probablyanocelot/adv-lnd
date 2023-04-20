@@ -22,7 +22,8 @@ let itemsToBuy = ['angelwings', "ink", 'suckerpunch', 'tshirt88', 'supermittens'
     "dexearring", "dexring", "dexbelt", "dexamulet","strring", 'strearring', 'stramulet',
     "strbelt", "intbelt", "intring", "intearring", "intamulet", 'vitearring',
     "tracker", 'ornament', 'feather0', 'gemfragment', 'carrot', 'ololipop', 'feather1', 'harpybow',
-    'luckyt','tshirt88', 'essenceoffrost', 'essenceofgreed', 'essenceoflife', 'essenceoffire', 'essenceofnature',
+    'luckyt', 'tshirt88', 'essenceoffrost', 'essenceofgreed', 'essenceoflife', 'essenceoffire', 'essenceofnature',
+    'bwing',
 ] 
 // "vitring",
 // "candy0", "candy1",
@@ -123,6 +124,8 @@ function buyFromGoblin() {
     // Attempt to buy stuff
     parent.socket.emit("lostandfound");
 }
+
+
 
 function buyOneFromPonty(itemToBuy) {
     // set up handler to receive the emit

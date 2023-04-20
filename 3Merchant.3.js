@@ -18,7 +18,8 @@ performance_trick()
 
 let lastScare;
 let lastBankUpdate = false;
-let bankUpdateTime = 1000*60*15 // sec_to_ms * num_seconds * num_minutes
+let bankUpdateTime = 1000 * 60 * 15 // sec_to_ms * num_seconds * num_minutes
+let goblin_updated = false;
 
 async function getExchangeable() {
 	if (!character.bank) return
@@ -290,6 +291,54 @@ class Merchant extends Character {
 		}, 1000);
 	}
 
+// shamelessly borrowed from aria for future use after i git gud
+	buyFromGoblin2() {
+		// use_skill("town")
+		smart_move("woffice", () => {
+			let lost_and_found = JSON.parse(localStorage.getItem("lostandfound_" + parent.server_region + " " + parent.server_identifier));
+			// let updated = false;
+			parent.socket._callbacks.$lostandfound.unshift(function (data) {
+				if (parent) {
+					lost_and_found = data;
+					lost_and_found.sort((a, b) => {
+						return parent.calculate_item_value(b) * (b.q || 1) - parent.calculate_item_value(a) * (a.q || 1)
+					});
+					lost_and_found.reverse();
+					parent.lostandfound = lost_and_found;
+					let purchases = 0;
+					for (var i = 0; i < lost_and_found.length; i++) {
+						let item = lost_and_found[i];
+						if (itemsToBuy.includes(item.name)) { //["goldenegg", "essenceoffire", "cryptkey"]
+							parent.socket.emit("sbuy", { rid: item.rid, f: true });
+							purchases++;
+							break;
+						}
+					}
+					localStorage["lostandfound_" + parent.server_region + " " + parent.server_identifier] = JSON.stringify(data);
+					if (purchases == 0 && !goblin_updated) {
+						let least = lost_and_found[0];
+						parent.socket.emit("sbuy", { rid: least.rid, f: true });
+						goblin_updated = true;
+					}
+
+					lost_and_found.reverse();
+				}
+			});
+			if (lost_and_found == null) {
+				parent.donate(1000000);
+				parent.socket.emit("lostandfound");
+			} else {
+				parent.socket._callbacks.$lostandfound.forEach((callback) => {
+					callback(lost_and_found);
+				});
+			}
+
+		})
+			.then(() => {
+				this.bank()
+				this.clear_current_action()
+			})
+	}
 
 	do_runs() {
 		if (this.current_action) return;
@@ -297,21 +346,27 @@ class Merchant extends Character {
 		smart_move(this.home)
 			.then(() => {
 				buyFromPonty()
-				smart_move("woffice")
-					.then(() => {
-						buyFromGoblin()
-						this.clear_current_action();
-						this.bank()
-						//this.clear_current_action()
-						// smart_move(this.home)
-					})
-					.catch(() => {
-						log("FAILURE Gobbo");
-						this.idle_counter = 0;
-						this.clear_current_action()
-					}
-					);
-			})
+				if (!goblin_updated) {
+					this.buyFromGoblin2()
+				}
+				else {
+					smart_move("woffice")
+						.then(() => {
+							buyFromGoblin()
+							this.clear_current_action();
+							this.bank()
+							//this.clear_current_action()
+							// smart_move(this.home)
+						})
+						.catch(() => {
+							log("FAILURE Gobbo");
+							this.idle_counter = 0;
+							this.clear_current_action()
+						}
+						);
+				}
+			}
+			)
 			.catch(() => {
 				log("FAILURE: Ponty")
 				this.idle_counter = 0;
@@ -500,7 +555,7 @@ class Merchant extends Character {
 		for (let idx in exchangeItems) {
 			if (locate_item(exchangeItems[idx]) > -1) {
 				// don't go exchanging waterfalls, we need more shells first!
-				if (exchangeItems[idx] == 'seashell' && quantity('seashell') < 20) continue 
+				if (exchangeItems[idx] == 'seashell' && quantity('seashell') < 500) continue 
 				hasExchangeable = true;
 			}
 		}
@@ -513,7 +568,7 @@ class Merchant extends Character {
 		if (smart.moving) log("Going to exchange")
 
 		let exchangeCoordinates = { map: 'main', x: -165.70087581199823, y: -179.8048822284356 }
-		if (locate_item('seashell') > -1) exchangeCoordinates = find_npc('fisherman')
+		if (locate_item('seashell') > -1 && quantity('seashell') >= 500) exchangeCoordinates = find_npc('fisherman')
 		if (!smart.moving && character.x != exchangeCoordinates.x && character.y != exchangeCoordinates.y) smart_move(exchangeCoordinates)		
 		// if (this.current_action != "exchange") this.set_current_action("exchange");
 
