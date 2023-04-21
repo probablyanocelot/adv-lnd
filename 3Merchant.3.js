@@ -460,8 +460,9 @@ class Merchant extends Character {
 			await smart_move("bank")
 		}
 		if (character.bank) {
-			if (character.esize <= 5) await this.crumbDump()
+			if (character.esize <= 3) await this.crumbDump()
 			await this.dumpIfNot(isUpgradable)
+			dumpPvp()
 			// await this.dumpIfNot(isUpgradable, isCompoundable)
 			getCompoundables()
 			// await smart_move(this.home)
@@ -915,6 +916,14 @@ function sell_extras() {
 	setTimeout(sell_extras, 3000) //1440 * 1000
 }
 
+function dumpPvp() {
+	for (let item in character.items) {
+		if (!character.items[item]) continue;
+		if (character.items[item].hasOwnProperty("v")) {
+			bank_store(item)
+		}
+	}
+}
 
 function isUpgradable(itemName) {
 	if (G.items[itemName].upgrade) return true
