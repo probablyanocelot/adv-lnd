@@ -275,7 +275,7 @@ class Farmer {
 			if (this.joinEvent(event)) this.current_action = event // && G.monsters[event]
 	
 
-			if (this.current_action == event && !parent.S[event] && !smart.moving) {
+			if (this.current_action == event && !parent.S[event]?.live && !smart.moving) {
 				use_skill('use_town').then(this.moveToThen(myFarmLocation, this.clear_current_action()))
 				
 			}

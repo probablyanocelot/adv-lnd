@@ -623,7 +623,7 @@ class Merchant extends Character {
 		if (this.current_action != 'unpacking') return
 		if (character.esize > 0) return // only do if full
 		if (!hasItem('ringsj')) return // has items to sell
-		let ringsj_array = locate_items('ringsj', 0) // array of sell items slot position
+		let ringsj_array = locate_items('ringsj', 0) // array of items slot position
 		if (ringsj_array.length < 1) ringsj_array = locate_items('ringsj', 1)
 		if (ringsj_array.length < 1) ringsj_array = locate_items('ringsj', 2)
 		if (ringsj_array.length < 1) ringsj_array = locate_items('ringsj', 3)
