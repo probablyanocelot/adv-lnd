@@ -228,10 +228,10 @@ class Farmer {
 				let bossLocation = mobLocationDict[boss].loc // imported data set
 				if (!bossLocation) {
 					log('no boss location defined!!')
-					smart_move(boss)
+					if (!smart.moving) smart_move(boss)
 					return
 				}
-				if (this.current_action == boss && !get_nearest_monster({ type: boss })) smart_move(bossLocation)
+				if (this.current_action == boss && !get_nearest_monster({ type: boss })&& !smart.moving) smart_move(bossLocation)
 			}
 
 			if (!this.current_action == boss) continue
@@ -244,7 +244,7 @@ class Farmer {
 		// event = 'icegolem', etc
 		if (character.ctype == 'ranger') return
 		if (!parent.S[event]) return// no event 
-		if (event == 'franky') return;
+		// if (event == 'franky') return;
 		if (parent.S.halloween) return // nobody farming in season
 		if (parent.S.egghunt) {
 			switch (event) {
@@ -284,6 +284,7 @@ class Farmer {
 	}
 
 	moveToThen(loc, then) {
+		if (smart.moving) return 
 		smart_move(loc)
 		.catch(() => {
 			if (!character.moving && !smart.moving) use_skill('use_town')
@@ -607,10 +608,10 @@ class Farmer {
 
 
 		// GROUP MOBS
-		if (mobsGroup.includes(targetName)) {
-			avoid(target)
-			if(!target.target) return
-		}
+		// if (mobsGroup.includes(targetName)) {
+		// 	avoid(target)
+		// 	if(!target.target) return
+		// }
 
 		let kite = (target) => {
 			if (target?.target == character.name){
@@ -762,7 +763,7 @@ character.on("cm", async (m) => {
 			char.clear_current_action()
 			char.set_current_action(data.mob)
 			log(data.mob)
-			await smart_move(mobLoc)
+			if (!smart.moving) await smart_move(mobLoc)
 			break
 	}
 })
@@ -770,9 +771,10 @@ character.on("cm", async (m) => {
 
 function avoid(target) {
 	let mtype = target.mtype
-	let nearest = get_nearest_monster({type: mtype})
+	let nearest = get_nearest_monster({ type: mtype })
+	if (target.target) return
 	if (character.moving||smart.moving) return
-	if (distance(character, nearest) <= character.range / 4) {
+	if (distance(character, nearest) < target.range) {
 		moveInCircle(nearest, 90)
 		return
 	}
@@ -989,14 +991,15 @@ function hasLuck(){
 // }
 
 async function gooseChase(map, goose) {
-	if (character.map != map) await smart_move(map)
+	if (character.map != map && !smart.moving) await smart_move(map)
 	await doChase(map, goose)
 }
 
 async function doChase(map, goose) {
 	for (let monsterData of map.monsters) {
 		let bottomRight = [monsterData.boundary[1], monsterData.boundary[2]]
-		await smart_move(bottomRight)
+		
+		if (!smart.moving) await smart_move(bottomRight)
 		let found_goose = get_nearest_monster({type:goose})
 		if (!found_goose) continue
 		break
