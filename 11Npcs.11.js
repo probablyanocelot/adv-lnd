@@ -23,7 +23,7 @@ let itemsToBuy = ['angelwings', "ink", 'suckerpunch', 'tshirt88', 'supermittens'
     "strbelt", "intbelt", "intring", "intearring", "intamulet", 'vitearring',
     "tracker", 'ornament', 'feather0', 'gemfragment', 'carrot', 'ololipop', 'feather1', 'harpybow',
     'luckyt', 'tshirt88', 'essenceoffrost', 'essenceofgreed', 'essenceoflife', 'essenceoffire', 'essenceofnature',
-    'bwing',
+    'bwing', 'firestaff', 'fireblade', 'pmace',
 ] 
 // "vitring",
 // "candy0", "candy1",
@@ -31,9 +31,12 @@ let itemsToBuy = ['angelwings', "ink", 'suckerpunch', 'tshirt88', 'supermittens'
 
 const shinyBlackList = [
     'stinger', 'mushroomstaff', 'slimestaff',
-    'warmscarf', 'carrotsword', 'candycanesword',
+    'warmscarf', 'carrotsword', //'candycanesword',
     'shoes1', 'gloves1', 'pants1', 'coat1', 'helmet1',
     'gphelmet', 'spear', 'iceskates',
+    'eears', 'epyjamas', 'eslippers',
+    'xmasshoes', 'xmashat', 'xmaspants', 'xmasrobe',
+
 ]
 
 function buyFromPonty() {

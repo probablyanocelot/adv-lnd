@@ -763,9 +763,11 @@ function upgrade_all() {
 					continue;
 
 				}
+				let shinyUpgrades = [
+					'stinger', 'merry',
+				]
 
-
-				if (item && item.p && !itemName === "stinger") {
+				if (item && item.p && !shinyUpgrades.includes(item.name)) {
 
 					log("has some modifier");
 					continue;

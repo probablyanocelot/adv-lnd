@@ -206,12 +206,13 @@ let upgradeDict = {
 		'ecape', 'ornamentstaff',
 		'staffofthedead', 'swordofthedead', // 'pmaceofthedead',
 		'daggerofthedead', 'bowofthedead', 'maceofthedead',
+		'candycanesword',
 
 		'oozingterror', "harbringer", "basher", 'pinkie', 't2bow',
-		'merry', "firestaff", "fireblade", "bataxe", 'sword', 'dagger',
+		'merry', "firestaff", "fireblade", "bataxe", 'dagger',
 		'tigerhelmet', 'tigershield', 'xmace',
 
-		'hpants', 'hgloves', 'fierygloves',
+		'hpants', 'hgloves', 'fierygloves', 'pmace',
 	], 
 	compound: [
 		'intamulet', 'intring', 'intbelt', 'intearring', 'strring',
