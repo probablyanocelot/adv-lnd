@@ -179,7 +179,7 @@ let sell_dict = {
 			'pmaceofthedead',
 			'warmscarf', 'snowball',
 			'wcap', 'wshoes', 'spear',
-			'pstem', 'bfur', 'frogt', 'bandages', 'smush', 'dstones', 'lspores', 
+			'pstem', 'frogt', 'bandages', 'smush', 'dstones', 'lspores', 
 		],
 	'merchTradeSell':
 		[
@@ -193,7 +193,7 @@ let upgradeDict = {
 		// "eslippers", "eears", "epyjamas", "stinger", "swifty", 
 		'mittens', 
 		
-		"wattire", "wbreeches", "wgloves",
+		"wattire", "wbreeches", "wgloves", "wshoes", "wcap",
 		"hbow", "sshield",
 		"quiver", "cclaw",
 		 

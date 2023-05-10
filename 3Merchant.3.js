@@ -731,12 +731,27 @@ function upgrade_all() {
 				// get item grade
 				let grade = item_grade(item);
 
-				if (item.p || item.acc) {
-					log(`${itemName} has some modifier`)
+				// non-shiny .p : skip
+				if (item.p && item.p !== "shiny") {
+					log(`${itemName} has ${item.p}`)
+					continue
+				}
+
+				let shinyKeep = [
+					'ololipop', 'wingedboots', 'broom', 
+				]
+				// valuable shiny : skip
+				if (item.p && shinyKeep.includes(item.name)) {
+					log(`keeping ${item.p} ${itemName}`)
+					continue;
+				}
+				// achievement : skip
+				if (item.acc) {
+					log(`${itemName} has some ${item.acc}`)
 					continue
 				} 
 
-				// shiny / achievement / rare / level 8   :   skip
+				// level 8   :   skip
 				if (grade == 2 || item.level >= 8) continue
 
 				merchantBot.goHomeIfIdle()
@@ -767,17 +782,6 @@ function upgrade_all() {
 
 					continue;
 
-				}
-				let shinyKeep = [
-					'ololipop', 'wingedboots', 'broom', 
-				]
-
-				if (item.p && item.p !== "shiny") continue
-
-				if (item.p && shinyKeep.includes(item.name)) {
-
-					log("has some modifier");
-					continue;
 				}
 				
 				// upgrade if we got here

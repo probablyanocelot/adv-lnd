@@ -1,6 +1,6 @@
 log("11 - Npcs.11.js")
 let itemsToBuy = [
-    "ink", 
+    "ink", 'bfur',
     "offeringp",
     'broom', 'snakeoil', "snakefang", "lotusf", "mistletoe", "basketofeggs",
     "candycane", "cscale", "ascale", "pleather", "poison", "leather",

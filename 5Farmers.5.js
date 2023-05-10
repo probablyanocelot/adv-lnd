@@ -642,7 +642,8 @@ class Farmer {
 			case 'priest':
 				if (target.target == character.id && target.hp > target.max_hp / 6) gearSwap(priTank)
 				if (target.hp < target.max_hp / 6) gearSwap(priLuck)
-				if (!is_on_cooldown('partyheal') && character.mp > G.skills.partyheal.mp) this.priestHeal()
+				if (!is_on_cooldown('attack') && character.max_hp - character.hp >= character.heal) use_skill('heal', character.id)
+				if (!is_on_cooldown('partyheal') && character.mp > G.skills.partyheal.mp) this.priestHealParty()
 				if (character.hp >= character.max_hp * 0.6 && is_friendly(target.target) && target.target != character.name && !mobsGroup.includes(target.name) && !is_on_cooldown('absorb') && character.mp > G.skills.absorb.mp) use_skill('absorb', target.target)
 				if (character.hp >= character.max_hp * 0.6 && !is_on_cooldown('curse') && character.mp > G.skills.curse.mp) use_skill('curse', target)
 				break
@@ -658,8 +659,10 @@ class Farmer {
 		}
 
 
-		if (!is_on_cooldown('attack')) attack(target)
-
+		if (!is_on_cooldown('attack')) {
+			if (character.ctype == 'priest' && character.max_hp - character.hp >= character.heal * 0.8) use_skill('heal', character.id)
+			attack(target)
+		}
 		if (mobsMed.includes(target.mtype) && target.target == character.name) {
 			if (character.name == 'prayerBeads') goToTopLeft(target.id)
 			if (!get_player('prayerBeads')) goToTopLeft(target.id)
@@ -668,12 +671,13 @@ class Farmer {
 		// if (!is_on_cooldown('3shot')) skill3shot(mobsLow, get_nearby_entities());
 	}
 
-	priestHeal() {
+	priestHealParty() {
 		if (character.ctype != 'priest') return
 		for (let member in parent.party) {
 			let toon = get_player(member)
-			if (!toon) continue
-			if (toon.max_hp - toon.hp >= G.skills.partyheal.output && character.mp >= G.skills.partyheal.mp*2) use_skill('partyheal')
+			if (!toon || member == character.name) continue
+			// toon.max_hp - toon.hp >= 
+			if (toon.max_hp - toon.hp >= G.skills.partyheal.output && character.mp >= G.skills.partyheal.mp * 2) use_skill('partyheal')
 		}
 	}
 
