@@ -189,12 +189,12 @@ let sell_dict = {
 
 let upgradeDict = {
 	upgrade_all: [
-		'xmasshoes', 'xmaspants', 'xmassweater', "xmashat", 'mittens', 
-		"eslippers", "eears", "epyjamas",
+		//'xmasshoes', 'xmaspants', 'xmassweater', "xmashat", 
+		// "eslippers", "eears", "epyjamas", "stinger", "swifty", 
+		'mittens', 
 		
-		"stinger", "wattire",
-		"wbreeches", "wgloves",
-		"swifty", "hbow", "sshield",
+		"wattire", "wbreeches", "wgloves",
+		"hbow", "sshield",
 		"quiver", "cclaw",
 		 
 		'ololipop', 'broom', 'wingedboots'

@@ -768,11 +768,13 @@ function upgrade_all() {
 					continue;
 
 				}
-				let shinyUpgrades = [
-					'stinger', 'merry',
+				let shinyKeep = [
+					'ololipop', 'wingedboots', 'broom', 
 				]
 
-				if (item && item.p && !shinyUpgrades.includes(item.name)) {
+				if (item.p && item.p !== "shiny") continue
+
+				if (item.p && shinyKeep.includes(item.name)) {
 
 					log("has some modifier");
 					continue;

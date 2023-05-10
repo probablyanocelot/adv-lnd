@@ -1,7 +1,7 @@
 log("11 - Npcs.11.js")
-let itemsToBuy = ['angelwings', "ink", 'suckerpunch', 'tshirt88', 'supermittens', 'powerglove',
-    'tigercape',
-    "offeringp", 'skullamulet', 'orbofdex', 'orbofint', 'orbofstr',
+let itemsToBuy = [
+    "ink", 
+    "offeringp",
     'broom', 'snakeoil', "snakefang", "lotusf", "mistletoe", "basketofeggs",
     "candycane", "cscale", "ascale", "pleather", "poison", "leather",
     'spidersilk', 'emptyheart', '5bucks', "troll", "candypop", 
@@ -12,20 +12,26 @@ let itemsToBuy = ['angelwings', "ink", 'suckerpunch', 'tshirt88', 'supermittens'
     'monstertoken', 'pvptoken', 'luckscroll', 'frequencyscroll', 'xpscroll', 'evasionscroll',
     'outputscroll', 'critscroll', 'lifestealscroll', 'mbones',
     
-    'solitaire', 'fierygloves', 'cyber', 'fury', 'oxhelmet', 'merry', 't3bow',
+    'merry', 't3bow',
     'bowofthedead', 'xmace', 'crossbow', 'pinkie', 'ooze', 'oozingterror', 'cupid', 'bataxe',
-    "hbow", "cryptkey", 'rednose', 'tigerhelmet',
-
-    'xhelmet', 'xarmor', 'xpants', 'xgloves',
-    
-    'tshirt7', 'tshirt4', 'tshirt9', 'tshirt8', 'tshirt3', 
-    'vattire', 'cdragon', 'warpvest', 'starkillers', 'fallen',
-    'vgloves', 'goldenpowerglove', 'mpxgloves', 'poker', 'wingedboots', 'xboots',
+    "hbow", "cryptkey", 
+// HEAD
+    'xhelmet', 'cyber', 'fury', 'oxhelmet', 'tigerhelmet', 'rednose', 
+// LEGS
+    'starkillers', 'fallen', 'xpants',
+// BODY
+    'tshirt7', 'tshirt4', 'tshirt9', 'tshirt8', 'tshirt3', 'tshirt88', 'luckyt',
+    'vattire', 'cdragon', 'warpvest', 'xarmor', 
+// BOOTS
+    'wingedboots', 'xboots',
+// GLOVES
+    'wgloves', 'fierygloves', 'supermittens', 'powerglove', 'xgloves',
+    'vgloves', 'goldenpowerglove', 'mpxgloves', 'poker', 
 // CAPES
-    'gcape', 'vcape', 'stealthcape', 'fcape', 
+    'gcape', 'vcape', 'stealthcape', 'fcape', 'angelwings', 'tigercape',
 // RINGS
     'cdarktristone', 'cring', 'resistancering', 'armorring', 'vring', 'zapper',
-    "ringhs", 'trigger', 'ringofluck', 'goldring', 
+    "ringhs", 'trigger', 'ringofluck', 'goldring', 'suckerpunch', 'solitaire',
 // EARRINGS
     'dexearringx', 'lostearring', 'cearring', 'molesteeth', "mearring", 
 // AMULETS
@@ -35,7 +41,7 @@ let itemsToBuy = ['angelwings', "ink", 'suckerpunch', 'tshirt88', 'supermittens'
     'mpxbelt', 'sbelt', 'santabelt', 'mbelt',
 // ORBS
     'talkingskull', 'orbofsc', 'ftrinket', "jacko", 'charmer', 'rabbitsfoot',
-    'tigerstone', 'orbg', 'vorb',
+    'tigerstone', 'orbg', 'vorb', 'orbofdex', 'orbofint', 'orbofstr',
 // WEAPONS
     'vhammer',
 // SHIELDS
@@ -43,12 +49,12 @@ let itemsToBuy = ['angelwings', "ink", 'suckerpunch', 'tshirt88', 'supermittens'
 // OFFHANDS
     't2quiver', 'wbook1', 'wbookhs', 'exoarm', 
 
-    'wbreeches','wgloves', // 'wattire', 
+    'wbreeches', // 'wattire', 
 
     "dexearring", "dexring", "dexbelt", "dexamulet","strring", 'strearring', 'stramulet',
     "strbelt", "intbelt", "intring", "intearring", "intamulet", 'vitearring',
     "tracker", 'ornament', 'feather0', 'gemfragment', 'carrot', 'ololipop', 'feather1', 'harpybow',
-    'luckyt', 'essenceoffrost', 'essenceofgreed', 'essenceoflife', 'essenceoffire', 'essenceofnature',
+    'essenceoffrost', 'essenceofgreed', 'essenceoflife', 'essenceoffire', 'essenceofnature',
     'bwing', 'firestaff', 'fireblade', 'pmace', 
 ] 
 // "vitring",
