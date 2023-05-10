@@ -169,6 +169,7 @@ class Merchant extends Character {
 
 		this.stander() // close stand if moving
 
+
 		// if we ripped, respawn and reset
 		if (character.rip) {
 			respawn();
@@ -272,7 +273,7 @@ class Merchant extends Character {
 	manage_slots() {
 		let broom = 'broom'
 		// broom when no action, or not mining/fishing
-		if (!this.current_action || (this.current_action != 'fishing' && this.current_action != 'mining')) this.equipItem(broom, 'mainhand')
+		if (this.current_action != 'fishing' && this.current_action != 'mining') this.equipItem(broom, 'mainhand')
 	}
 
 	stander() {
@@ -332,12 +333,15 @@ class Merchant extends Character {
 					callback(lost_and_found);
 				});
 			}
+			this.bank()
 
 		})
-			.then(() => {
-				this.bank()
-				this.clear_current_action()
-			})
+			// .then(() => {
+			// 	this.bank()
+			// 	current_action()
+			// })
+		this.clear_current_action()
+		
 	}
 
 	do_runs() {
@@ -476,7 +480,8 @@ class Merchant extends Character {
 	}
 
 	async bank() {
-		if (this.current_action != 'banking') this.set_current_action("banking");
+		if (this.current_action != 'banking') this.clear_current_action()
+		this.set_current_action("banking");
 		if (!smart.moving) await this.doBank()
 		this.clear_current_action()
 		// if (character.bank && !smart.moving) await smart_move(this.home)
@@ -860,6 +865,165 @@ function high_upgrade_all() {
 }
 
 
+// function do_trade_manipulation(fn, name=null) {
+// 	for (let slot of Object.keys(character.slots)) {
+// 		if (slot.includes("trade")) {
+// 			fn(slot, name)
+// 		}
+// 	}
+// }
+// function pull_trade_item(slot, name=name) {
+// 	if (character.slots[slot] != null) {
+// 		parent.socket.emit("trade_cancel", {num: slot[5]})
+// 	}
+// }
+
+const tradeStorageItems = [
+	'essenceoffire', 'spidersilk', 'feather0',
+]
+
+const craftItems = [
+	'throwingstars',
+]
+
+const craftDict = {
+	// G.craft.item example:
+	// {
+	// 	"items": [
+	// 		[
+	// 			1,
+	// 			"throwingstars"
+	// 		],
+	// 		[
+	// 			1,
+	// 			"essenceoffire"
+	// 		]
+	// 	],
+	// 	"cost": 180000
+	// }
+	'throwingstars': {
+		name: 'firestars',
+		recipe: G.craft.firestars,
+	}
+}
+
+function getCraftItem() {
+	for (let item of character.items) {
+	
+		// continue if item==null or not in craftItems
+		if (!item) continue
+		if (!craftItems.includes(item.name)) continue
+
+		let craftItem = item.name
+		return craftItem
+
+	}
+	return false
+}
+
+function craft_master() {
+	// if action and not crafting, return
+	if (merchantBot.current_action) return //&& merchantBot.current_action != "crafting"
+
+	if (!getCraftItem()) return
+
+	let craftItem = getCraftItem()
+	let tradeIngredientName = craftDict[craftItem]['recipe']["items"][1][1]
+	
+	if (!has_trade_item(tradeIngredientName)) return
+
+	let tradeSlot = has_trade_item(tradeIngredientName)
+
+	unequip(tradeSlot)
+
+	smart_move(find_npc("craftsman"))
+		.then(auto_craft(craftItem.name))
+		.catch(smart_move(find_npc("craftsman")))
+}
+
+function has_trade_item(name) {
+	// checks trade slots for item, if found, returns slot - else returns false
+	for (let slot of Object.keys(character.slots)) {
+		if (slot.includes("trade")) {
+
+			let itemInTrade = character.slots[slot]
+			
+			if (!itemInTrade) continue
+
+			if (itemInTrade.name == name) {
+				return slot
+			}
+
+		}
+	}
+	return false
+}
+
+
+function store_trade_item(name) {
+	// checks inventory for item, if found, puts it in first open trade slot
+	for (let slot of Object.keys(character.slots)) {
+		if (slot.includes("trade") && !character.slots[slot]) {
+			
+			let itemSlot = locate_item(name)
+			
+			if (itemSlot === -1) return
+			
+			let quantity = character.items[itemSlot].q || 1
+
+			trade(locate_item(name), slot, 99999999999, quantity)
+            return;
+        }
+    }
+}
+
+
+function buy_tool(tool_name) {
+    for (let slot of Object.keys(character.slots)) {
+        if (slot.includes("trade") && !character.slots[slot]) {
+            parent.socket.emit("trade_wishlist",
+                {
+                    q: 1,
+                    slot: slot,
+                    price: 1000000,
+                    level: 0,
+                    name: tool_name
+                }
+            );
+            send_tg_bot_message('Buying tool: ' + tool_name);
+            return;
+        }
+    }
+}
+
+function check_for_tools() {
+    let hasRod = false;
+    let hasPickaxe = false;
+    let hasRodWish = false;
+    let hasPickaxeWish = false;
+    for (let item of character.items) {
+        if (item?.name == "pickaxe") {
+            hasPickaxe = true;
+        }
+
+        if (item?.name == "rod") {
+            hasRod = true;
+        }
+    }
+
+    for (let slot of Object.keys(character.slots)) {
+        let item = character.slots[slot];
+        if (item?.name == "pickaxe") {
+            hasPickaxeWish = true;
+        }
+        if (item?.name == "rod") {
+            hasRodWish = true;
+        }
+    }
+    if (!hasRod && !hasRodWish) buy_tool("rod");
+    if (!hasPickaxe && !hasPickaxeWish) buy_tool("pickaxe");
+}
+
 let slots = character.slots
 let activeTraderSlots = []
 function getActiveTradeSlots(){
@@ -1028,6 +1192,7 @@ merchantBot = new Merchant;
 function initMerch() {
 	if (character.ctype != 'merchant') return;
 	merchantBot.loop();
+	check_for_tools()
 	setInterval(hanoi, 30000)
 	sell_extras();
 	compound_loop();

@@ -175,7 +175,7 @@ let sell_dict = {
 	'merchSell':
 		[
 			'coat1', 'helmet1', 'hpbelt', 'hpamulet', 'whiteegg', 
-			'smoke', 'phelmet', 'gphelmet', 'pants1', 'gloves1', 'shoes1', 'throwingstars',
+			'smoke', 'phelmet', 'gphelmet', 'pants1', 'gloves1', 'shoes1',
 			'pmaceofthedead',
 			'warmscarf', 'snowball',
 			'wcap', 'wshoes', 'spear',
@@ -211,6 +211,8 @@ let upgradeDict = {
 		'oozingterror', "harbringer", "basher", 'pinkie', 't2bow',
 		'merry', "firestaff", "fireblade", "bataxe", 'dagger',
 		'tigerhelmet', 'tigershield', 'xmace',
+
+		'firestars',
 
 		'hpants', 'hgloves', 'fierygloves', 'pmace',
 	], 

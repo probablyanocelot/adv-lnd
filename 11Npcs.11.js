@@ -59,7 +59,7 @@ const shinyBlackList = [
     'stinger', 'mushroomstaff', 'slimestaff',
     'warmscarf', 'carrotsword', //'candycanesword',
     'shoes1', 'gloves1', 'pants1', 'coat1', 'helmet1',
-    'gphelmet', 'spear', 'iceskates',
+    'gphelmet', 'spear', 'iceskates', 'phelmet',
     'eears', 'epyjamas', 'eslippers',
     'xmasshoes', 'xmashat', 'xmaspants', 'xmasrobe',
 
