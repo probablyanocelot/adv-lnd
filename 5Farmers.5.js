@@ -643,7 +643,7 @@ class Farmer {
 				if (target.target == character.id && target.hp > target.max_hp / 6) gearSwap(priTank)
 				if (target.hp < target.max_hp / 6) gearSwap(priLuck)
 				if (!is_on_cooldown('attack') && character.max_hp - character.hp >= character.heal) use_skill('heal', character.id)
-				if (!is_on_cooldown('partyheal') && character.mp > G.skills.partyheal.mp) this.priestHealParty()
+				this.priestHealParty()
 				if (character.hp >= character.max_hp * 0.6 && is_friendly(target.target) && target.target != character.name && !mobsGroup.includes(target.name) && !is_on_cooldown('absorb') && character.mp > G.skills.absorb.mp) use_skill('absorb', target.target)
 				if (character.hp >= character.max_hp * 0.6 && !is_on_cooldown('curse') && character.mp > G.skills.curse.mp) use_skill('curse', target)
 				break
@@ -671,14 +671,34 @@ class Farmer {
 		// if (!is_on_cooldown('3shot')) skill3shot(mobsLow, get_nearby_entities());
 	}
 
+
 	priestHealParty() {
 		if (character.ctype != 'priest') return
-		for (let member in parent.party) {
-			let toon = get_player(member)
-			if (!toon || member == character.name) continue
-			// toon.max_hp - toon.hp >= 
-			if (toon.max_hp - toon.hp >= G.skills.partyheal.output && character.mp >= G.skills.partyheal.mp * 2) use_skill('partyheal')
+		if (is_on_cooldown('partyheal')) return
+		if (character.mp < G.skills.partyheal.mp) return
+
+		let missing_hp = get_party_missing_hp() // {total: x, player1: y, ...}
+		if (missing_hp.length <= 2) return
+
+		let arr = Object.values(missing_hp); // [x, y, ...]
+		arr.shift() // remove total
+
+		let heal = G.skills.partyheal.output
+
+		let length = missing_hp.length - 1
+		let min = Math.min(...arr);
+		let max = Math.max(...arr);
+		let avg = missing_hp.total / length
+
+		// heal lowest toon if missing >= 1000
+		if (max >= 1000) {
+			let max_toon = getKeyByValue(missing_hp, max)
+			use_skill('heal', max_toon)
 		}
+
+		// party heal if avg is > heal-100 and 1 toon isn't too hurt
+		if (avg >= heal - 100 && max - min <= 1000) use_skill('partyheal')
+		// TODO: account for toons between max & min
 	}
 
 	manage_item_bounty() {
@@ -820,6 +840,26 @@ function toMerch(){
 	}return;
 }
 
+function get_party_missing_hp() {
+	// returns [{character.name: missing_hp}, ...]
+	let party_hp = {total: 0}
+	if (character.party) {
+		for (let member in parent.party) {
+			if (!get_player(member)) continue
+			let toon = get_player(member)
+			let missing_hp = toon.max_hp - toon.hp
+			if (missing_hp == 0) continue
+			party_hp[member] = missing_hp
+			party_hp.total += missing_hp
+		}
+	}
+	return party_hp
+}
+
+function who_to_heal() {
+	hp_array = this.get_party_missing_hp()
+	if (hp_array.length == 0) return false
+}
 
 function sendTarget(){
 	if (!target) return
@@ -1010,3 +1050,7 @@ async function doChase(map, goose) {
 	}
 	// if (!parent.S[goose].live) clear_current_action()
 }
+
+function getKeyByValue(object, value) {
+	return Object.keys(object).find(key => object[key] === value);
+  }
