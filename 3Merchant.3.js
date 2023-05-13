@@ -119,6 +119,8 @@ function buyScrolls() {
 }
 
 
+
+
 class Merchant extends Character {
 	constructor() {
 		super()
@@ -178,6 +180,7 @@ class Merchant extends Character {
 			this.thinking = false; // most blocking state
 		} else {
 			buyScrolls()
+			this.gatheringHelper();
 			if (character.moving) this.idle_counter = 0;
 			this.fixActionStuck();
 			this.incrementCounter();
@@ -290,6 +293,28 @@ class Merchant extends Character {
 		setTimeout(() => {
 			this.stander
 		}, 1000);
+	}
+
+	gatheringHelper() {
+		// only use this if we're not moving
+		if (smart.moving || character.moving) return
+
+		if (this.current_action == 'fishing' && !character.c.fishing) {
+			// not at fishing spot, move to it
+			if (character.x != location_map.fishing.x || character.y != location_map.fishing.y) smart_move(location_map.fishing)
+			// not wearing rod, equip it
+			if (!character.slots.mainhand || character.slots.mainhand.name != 'rod') equip(locate_item('rod'))
+
+			this.gatheringInterval('fishing')
+		}
+		if (this.current_action == 'mining' && !character.c.mining) {
+			// not at mining spot, move to it
+			if (character.x != location_map.mining.x || character.y != location_map.mining.y) smart_move(location_map.mining)
+			// not wearing pickaxe, equip it
+			if (!character.slots.mainhand || character.slots.mainhand.name != 'pickaxe') equip(locate_item('pickaxe'))
+
+			this.gatheringInterval('mining')
+		}
 	}
 
 // shamelessly borrowed from aria for future use after i git gud

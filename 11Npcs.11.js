@@ -67,7 +67,7 @@ const shinyBlackList = [
     'shoes1', 'gloves1', 'pants1', 'coat1', 'helmet1',
     'gphelmet', 'spear', 'iceskates', 'phelmet',
     'eears', 'epyjamas', 'eslippers',
-    'xmasshoes', 'xmashat', 'xmaspants', 'xmasrobe',
+    'xmasshoes', 'xmashat', 'xmaspants', 'xmasrobe', 'xmassweater',
 
 ]
 

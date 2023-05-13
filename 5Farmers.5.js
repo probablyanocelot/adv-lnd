@@ -44,7 +44,7 @@ character.on('hit', function(data) {
 	let orb = character.slots.orb
 	if (!orb || !orb.name == 'jacko') return
 	if (lastScare == null || new Date() - lastScare >= 1000) {
-		if (character.mp >= 50 && !is_on_cooldown('scare')) {
+		if (character.mp >= G.skills.scare.mp && !is_on_cooldown('scare')) {
 			use_skill('scare', data.actor)
 			lastScare = new Date()
 		}
@@ -127,6 +127,7 @@ class Farmer {
 		this.thinking;
 		this.current_action;
 		this.idle_counter = 0;
+		this.eventJoined;
   
 	  // timing
 		this.idle_start;
@@ -237,6 +238,7 @@ class Farmer {
 			if (!this.current_action == boss) continue
 			if (parent.S[boss] && !parent.S[boss].live && this.current_action == boss && !smart.moving) this.moveToThen(myFarmLocation, this.clear_current_action())
 		}
+		if (bosses.includes(this.current_action) && !parent.S[this.current_action]?.live) this.clear_current_action()
 
 	}
 	
@@ -263,20 +265,48 @@ class Farmer {
 		return true;
 	}
 
+	serverEventEnd() {
+		if (G.events.hasOwnProperty(this.current_action) && !parent.S[this.current_action]?.live) {
+			this.eventJoined = false
+			use_skill('use_town').then(() => {
+				this.clear_current_action()
+				smart_move(myFarmLocation)
+			})
+		}
+	}
+
 	serverEvents() {
 		if (character.ctype == 'merchant') return;
 		if (character.ctype == 'ranger') return
 		for (let event in G.events) {
+			event = String(event)
+			if (!parent.S[event]) continue
+
 			// seasonal events are global, not joinable
 			if (seasonalEvents.includes(event)) continue
-			event = String(event)
-	
-			// if checks return true, set action to event
-			if (this.joinEvent(event)) this.current_action = event // && G.monsters[event]
-	
 
+			// set event as current action if it's live
+			if (parent.S[event] && parent.S[event].live) this.current_action = event
+
+			if (parent.S[event].join && !this.eventJoined) {
+				join(event)
+				this.eventJoined = true
+			}
+			// if checks return true, set action to event
+			// if (this.joinEvent(event)) this.current_action = event // && G.monsters[event]
+	
+			// if (get_nearest_monster({ type: 'bgoo' })) this.current_action = 'bgoo'
+			// if (get_nearest_monster({ type: 'rgoo' })) this.current_action = 'rgoo'
+
+
+			// if (!this.joinEvent(event) && this.current_action == event) use_skill('use_town').then(this.moveToThen(myFarmLocation, this.clear_current_action()))
 			if (this.current_action == event && !parent.S[event]?.live && !smart.moving) {
-				use_skill('use_town').then(this.moveToThen(myFarmLocation, this.clear_current_action()))
+				this.eventJoined = false
+				use_skill('use_town').then(() => {
+					this.clear_current_action()
+					smart_move(myFarmLocation)
+				})
+				// use_skill('use_town').then(this.moveToThen(myFarmLocation, this.clear_current_action()))
 				
 			}
 			
@@ -297,7 +327,7 @@ class Farmer {
 
 	async manage_idle() {
 
-		if (smart.moving) {
+		if (character.moving) {
 			this.idle_counter = 0;
 		}
 
@@ -640,7 +670,7 @@ class Farmer {
 				break
 				
 			case 'priest':
-				if (target.target == character.id && target.hp > target.max_hp / 6) gearSwap(priTank)
+				if (target.target == character.id && target.hp > target.max_hp / 6 && target.attack >= 550) gearSwap(priTank)
 				if (target.hp < target.max_hp / 6) gearSwap(priLuck)
 				if (!is_on_cooldown('attack') && character.max_hp - character.hp >= character.heal) use_skill('heal', character.id)
 				this.priestHealParty()
@@ -743,6 +773,7 @@ class Farmer {
 		// await this.wabbitHunt()
 		this.manage_combat()
 		this.fixStuck();
+		this.serverEventEnd()
 		this.serverEvents()
 		this.serverMiniEvents()
 	}

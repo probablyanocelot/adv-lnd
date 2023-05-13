@@ -7,8 +7,8 @@ let farmDefault = {
 	"camelCase": 'crab',
 	"couplaGrapes": 'squig2',
 	"Hoodlamb": 'crab',
-	'prayerBeads': 'bigbird',
-	'Teef': 'bigbird',
+	'prayerBeads': 'prat',
+	'Teef': 'prat',
 }
 
 let priTank = ['oxhelmet', 'harmor', 'frankypants', 'xboots', 'vgloves', 'sshield', ] //'lantern', ]
@@ -40,11 +40,16 @@ let porcupine = { map: 'desertland', x: -824, y: 146 }
 let bigbird = { map: 'main', x: 1150, y: 200 }
 let bbpompom = { map: 'winter_cave', x: 50, y:-150 }
 let mrgreen = { map: 'spookytown', x: 480, y:1070 }
-let snowman = { map: 'winterland', x:1150, y:-850 }
+let snowman = { map: 'winterland', x: 1150, y: -850 }
+let prat = {
+	x: -86,
+	y: 17,
+	map: "level1"
+}
 
 // TURRET MAY BE OVERKILL?
 let mobLocationDict = {
-	'prat': { loc: 'prat', },
+	'prat': { loc: prat, },
 	'crab': {
 		loc: crab,
 		turret: true,
@@ -189,7 +194,7 @@ let sell_dict = {
 
 let upgradeDict = {
 	upgrade_all: [
-		//'xmasshoes', 'xmaspants', 'xmassweater', "xmashat", 
+		'xmasshoes', 'xmaspants', 'xmassweater', "xmashat", 
 		// "eslippers", "eears", "epyjamas", "stinger", "swifty", 
 		'mittens', 
 		
@@ -242,12 +247,12 @@ let mobsLow = [
 	'crabxx',
 ];
 
-let mobsGroup = [ 'franky', 'mrpumpkin', 'mrgreen', 'icegolem',' dragold', 'crabxx' ] // ,
+let mobsGroup = [ 'franky', 'mrpumpkin', 'mrgreen', 'icegolem',' dragold', 'crabxx', 'rgoo', 'bgoo' ] // ,
 
 let mobsFocus = [
 	'franky', 'mrpumpkin', 'mrgreen', 'icegolem', 'grinch',
 	'cutebee', 'tinyp', 'rgoo', 'jr', 'greenjr', 'snowman',
-	'tiger', 'dragold', 'pinkgoo', 'wabbit',
+	'tiger', 'dragold', 'pinkgoo', 'wabbit', 'crabxx',
 ]
 
 let mobsMed = [

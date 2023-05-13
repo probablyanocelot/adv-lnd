@@ -113,37 +113,41 @@ class Character {
 						if (character.slots?.mainhand.name != itemName) equip(itemIndex)
 					}
 				
-					let actionInterval = setInterval(() => {
-				
-						if (is_on_cooldown(action)) {
-							log("Action cooldown clear 2")
-							switch (action) {
-								case "fishing":
-								case "mining":
-									unequip("mainhand")
-									break;
-								default:
-									break;
-							}
-							this.clear_current_action();
-
-							clearInterval(actionInterval);
-
-						} else {
-							
-							if (!character.c[action]) {
-								use_skill(action)
-							}
-						}
-					}, 1000)
+					gatheringInterval(action);
 				})
 				.catch(() => {
 					this.thinking = false;
 					log(`Couldn't go ${action}`)
+					this.clear_current_action();
 				}
 		)
 	}
 
+	gatheringInterval(action) {
+		let actionInterval = setInterval(() => {
+					
+			if (is_on_cooldown(action)) {
+				log("Action cooldown clear 2")
+				switch (action) {
+					case "fishing":
+					case "mining":
+						unequip("mainhand")
+						break;
+					default:
+						break;
+				}
+				this.clear_current_action();
+	
+				clearInterval(actionInterval);
+	
+			} else {
+				
+				if (!character.c[action]) {
+					use_skill(action)
+				}
+			}
+		}, 1000)
+	}
 
 	buff(skill) {
 
