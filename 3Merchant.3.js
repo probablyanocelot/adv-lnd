@@ -44,7 +44,9 @@ function replaceTools() {
 	buy_with_gold(rod_or_pick) // components
 
 	crafter_loc = find_npc('craftsman')
-	smart_move(crafter_loc)
+	if (locate_item('computer') < 0) {
+		smart_move(crafter_loc)
+	}
 
 	// loop this
 	auto_craft('pickaxe')
@@ -181,6 +183,8 @@ class Merchant extends Character {
 			this.clear_current_action();
 			this.thinking = false; // most blocking state
 		} else {
+			craft_master();
+
 			buyScrolls()
 			// this.gatheringHelper();
 			if (character.moving) this.idle_counter = 0;
@@ -220,7 +224,7 @@ class Merchant extends Character {
 
 	incrementCounter() {
 		// reset idle if exchanging
-		if (character.q.exchange) this.idle_counter = 0
+		// if (character.q.exchange) this.idle_counter = 0 // only without computer
 		// increment counter when we're doing nothing
 		if (!this.current_action || this.current_action == 'unpacking' || this.current_action == 'banking') {
 			this.idle_counter += 1
@@ -435,10 +439,13 @@ class Merchant extends Character {
 
 		// don't have enough potions -> go get some
 		if (HP_TO_BUY > 0 || MP_TO_BUY > 0) {
-			if (this.current_action != 'get_pots') this.set_current_action('get_pots')
-			await smart_move('potions')
-			log('at potions')
-			// get potions since we're out of one of them
+			if (locate_item('computer') < 0) {
+
+				if (this.current_action != 'get_pots') this.set_current_action('get_pots')
+				await smart_move('potions')
+				log('at potions')
+				// get potions since we're out of one of them
+			}
 			if (HP_TO_BUY > 0) buy_with_gold(HP_TYPE, HP_TO_BUY);
 			if (MP_TO_BUY > 0) buy_with_gold(MP_TYPE, MP_TO_BUY);
 			if (lastAction == 'unpacking') {
@@ -602,7 +609,9 @@ class Merchant extends Character {
 
 		let exchangeCoordinates = { map: 'main', x: -165.70087581199823, y: -179.8048822284356 }
 		if (locate_item('seashell') > -1 && quantity('seashell') >= 500) exchangeCoordinates = find_npc('fisherman')
-		if (!smart.moving && character.x != exchangeCoordinates.x && character.y != exchangeCoordinates.y) smart_move(exchangeCoordinates)		
+		if (locate_item('computer') < 0) {
+			if (!smart.moving && character.x != exchangeCoordinates.x && character.y != exchangeCoordinates.y) smart_move(exchangeCoordinates)
+		}
 		// if (this.current_action != "exchange") this.set_current_action("exchange");
 
 		// if( character.x != exchangeCoordinates.x && character.y != exchangeCoordinates.y) return
@@ -956,22 +965,32 @@ function getCraftItem() {
 
 function craft_master() {
 	// if action and not crafting, return
-	if (merchantBot.current_action) return //&& merchantBot.current_action != "crafting"
+	// if (merchantBot.current_action) return //&& merchantBot.current_action != "crafting"
 
 	if (!getCraftItem()) return
 
+	// some item in inventory that is part of a recipe. e.g. throwingstars
 	let craftItem = getCraftItem()
+	if (character.items[locate_item(craftItem)].level > 0) return
 	let tradeIngredientName = craftDict[craftItem]['recipe']["items"][1][1]
 	
-	if (!has_trade_item(tradeIngredientName)) return
+	if (!has_trade_item(tradeIngredientName) && locate_item(tradeIngredientName) <0 ) return
 
 	let tradeSlot = has_trade_item(tradeIngredientName)
 
 	unequip(tradeSlot)
 
-	smart_move(find_npc("craftsman"))
-		.then(auto_craft(craftItem.name))
-		.catch(smart_move(find_npc("craftsman")))
+	if (locate_item('computer') < 0) {
+
+		smart_move(find_npc("craftsman"))
+			.then(auto_craft(craftItem.name))
+			.catch(smart_move(find_npc("craftsman")))
+	}
+
+	auto_craft(craftItem.name)
+
+	if (!getCraftItem()) store_trade_item(tradeIngredientName)
+
 }
 
 function has_trade_item(name) {

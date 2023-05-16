@@ -155,7 +155,7 @@ let sell_dict = {
 			'scroll0', 'scroll1', 'scroll2',
 			'cscroll0', 'cscroll1', 'cscroll2',
 			'elixirluck', 'jacko',
-			'seashell'
+			'seashell', 'computer', 'essenceoffire',
 			// 'candy1', 'candy0',
 		],
 	'farmer_keep':
