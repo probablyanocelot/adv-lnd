@@ -66,6 +66,8 @@ async function doBankUpdate() {
 	lastBankUpdate = new Date()
 }
 
+map_key('0', 'eval', 'socket.emit("eval",{command: "give spares"})')
+
 map_key('F12', {
     'name': 'pure_eval',
     'code': 'electron_dev_tools()',
@@ -180,7 +182,7 @@ class Merchant extends Character {
 			this.thinking = false; // most blocking state
 		} else {
 			buyScrolls()
-			this.gatheringHelper();
+			// this.gatheringHelper();
 			if (character.moving) this.idle_counter = 0;
 			this.fixActionStuck();
 			this.incrementCounter();
@@ -305,7 +307,7 @@ class Merchant extends Character {
 			// not wearing rod, equip it
 			if (!character.slots.mainhand || character.slots.mainhand.name != 'rod') equip(locate_item('rod'))
 
-			this.gatheringInterval('fishing')
+			// this.gatheringInterval('fishing')
 		}
 		if (this.current_action == 'mining' && !character.c.mining) {
 			// not at mining spot, move to it
@@ -313,7 +315,7 @@ class Merchant extends Character {
 			// not wearing pickaxe, equip it
 			if (!character.slots.mainhand || character.slots.mainhand.name != 'pickaxe') equip(locate_item('pickaxe'))
 
-			this.gatheringInterval('mining')
+			// this.gatheringInterval('mining')
 		}
 	}
 

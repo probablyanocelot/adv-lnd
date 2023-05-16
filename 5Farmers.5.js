@@ -266,7 +266,7 @@ class Farmer {
 	}
 
 	serverEventEnd() {
-		if (G.events.hasOwnProperty(this.current_action) && !parent.S[this.current_action]?.live) {
+		if (G.events.hasOwnProperty(this.current_action) && !parent.S[this.current_action]) { // ?.live
 			this.eventJoined = false
 			use_skill('use_town').then(() => {
 				this.clear_current_action()
@@ -279,16 +279,16 @@ class Farmer {
 		if (character.ctype == 'merchant') return;
 		if (character.ctype == 'ranger') return
 		for (let event in G.events) {
-			event = String(event)
+			// event = String(event)
 			if (!parent.S[event]) continue
 
 			// seasonal events are global, not joinable
 			if (seasonalEvents.includes(event)) continue
 
 			// set event as current action if it's live
-			if (parent.S[event] && parent.S[event].live) this.current_action = event
+			if (parent.S[event]) this.current_action = event // && parent.S[event].live
 
-			if (parent.S[event].join && !this.eventJoined) {
+			if (parent.S[event] && !this.eventJoined) {
 				join(event)
 				this.eventJoined = true
 			}
@@ -300,15 +300,15 @@ class Farmer {
 
 
 			// if (!this.joinEvent(event) && this.current_action == event) use_skill('use_town').then(this.moveToThen(myFarmLocation, this.clear_current_action()))
-			if (this.current_action == event && !parent.S[event]?.live && !smart.moving) {
-				this.eventJoined = false
-				use_skill('use_town').then(() => {
-					this.clear_current_action()
-					smart_move(myFarmLocation)
-				})
+			// if (this.current_action == event && !parent.S[event]?.live && !smart.moving) {
+			// 	this.eventJoined = false
+			// 	use_skill('use_town').then(() => {
+			// 		this.clear_current_action()
+			// 		smart_move(myFarmLocation)
+			// 	})
 				// use_skill('use_town').then(this.moveToThen(myFarmLocation, this.clear_current_action()))
 				
-			}
+			// }
 			
 		}
 	}

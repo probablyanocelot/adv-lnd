@@ -113,7 +113,7 @@ class Character {
 						if (character.slots?.mainhand.name != itemName) equip(itemIndex)
 					}
 				
-					gatheringInterval(action);
+					this.gatheringInterval(action);
 				})
 				.catch(() => {
 					this.thinking = false;
