@@ -154,8 +154,12 @@ let sell_dict = {
 			'primling', 'offering',
 			'scroll0', 'scroll1', 'scroll2',
 			'cscroll0', 'cscroll1', 'cscroll2',
-			'elixirluck', 'jacko',
-			'seashell', 'computer', 'essenceoffire',
+			'elixirluck', // 'jacko',
+			'seashell', 'computer',
+			
+			// CRAFTING
+			'essenceoffire', 'feather0',
+			
 			// 'candy1', 'candy0',
 		],
 	'farmer_keep':

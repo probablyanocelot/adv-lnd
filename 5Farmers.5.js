@@ -172,7 +172,8 @@ class Farmer {
 	}
   
 	handle_death() {
-	  if (character.rip) {
+		if (character.rip) {
+		  this.eventJoined = false;
 		  if (this.last_respawn == null || new Date() - this.last_respawn >= 10000) {
 			  this.clear_current_action();
 		  respawn();

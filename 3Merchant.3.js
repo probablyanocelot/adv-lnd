@@ -183,6 +183,7 @@ class Merchant extends Character {
 			this.clear_current_action();
 			this.thinking = false; // most blocking state
 		} else {
+			simple_craft();
 			craft_master();
 
 			buyScrolls()
@@ -790,10 +791,10 @@ function upgrade_all() {
 				// level 8   :   skip
 				if (grade == 2 || item.level >= 8) continue
 
-				merchantBot.goHomeIfIdle()
+				// merchantBot.goHomeIfIdle()
 
 				// grade 1 or ( 0 & level 3-6 )
-				if (grade == 1 && item.level <= 7 || (grade == 0 && item.level >= 3 && item.level < 7)) {
+				if (grade == 1 && item.level < 7 || (grade == 0 && item.level >= 3 && item.level < 7)) {
 
 					log(`${itemName} grade: ${grade} level: ${item.level} -> ${item.level + 1}`)
 
@@ -925,7 +926,11 @@ const tradeStorageItems = [
 ]
 
 const craftItems = [
-	'throwingstars',
+	'throwingstars', // 'feather0', 'spidersilk', 'mbones',
+]
+
+const simpleCrafts = [
+	'feather0', 'spidersilk', 'mbones',
 ]
 
 const craftDict = {
@@ -946,7 +951,13 @@ const craftDict = {
 	'throwingstars': {
 		name: 'firestars',
 		recipe: G.craft.firestars,
-	}
+	},
+	'feather0': {
+		name: 'wingedboots',
+		recipe: G.craft.wingedboots,
+	},
+	'spidersilk': {
+	},
 }
 
 function getCraftItem() {
@@ -963,15 +974,40 @@ function getCraftItem() {
 	return false
 }
 
-function craft_master() {
-	// if action and not crafting, return
-	// if (merchantBot.current_action) return //&& merchantBot.current_action != "crafting"
+function simple_craft() {
+	// 
+	if (merchantBot.current_action == 'unpacking' || merchantBot.current_action == 'fishing' || merchantBot.current_action == 'mining') return
 
-	if (!getCraftItem()) return
+	for (let craftable of simpleCrafts) {
+		let craftableIdx = locate_item(craftable)
+		if (craftableIdx < 0 && !has_trade_item(craftable)) continue
+		
+		if (craftableIdx < 0 && has_trade_item(craftable)) unequip(has_trade_item(craftable))
+
+		craftableIdx = locate_item(craftable)
+
+		let item = character.items[craftableIdx]
+
+		if (craftable == 'feather0') {
+			// must have 20+ for recipe
+			if (item.q < 20) continue
+			// buy shoes if needed
+			if (locate_item('shoes') < 0 && character.esize > 2) buy_with_gold('shoes', 1)
+			auto_craft('wingedboots')
+		}
+
+	} return
+}
+
+
+function craft_master() {
 
 	// some item in inventory that is part of a recipe. e.g. throwingstars
 	let craftItem = getCraftItem()
-	if (character.items[locate_item(craftItem)].level > 0) return
+	if (!getCraftItem()) return // no item, stop
+
+	let craftBase = character.items[locate_item(craftItem)]
+	if (craftBase.level > 0) return
 	let tradeIngredientName = craftDict[craftItem]['recipe']["items"][1][1]
 	
 	if (!has_trade_item(tradeIngredientName) && locate_item(tradeIngredientName) <0 ) return
@@ -987,10 +1023,23 @@ function craft_master() {
 			.catch(smart_move(find_npc("craftsman")))
 	}
 
-	auto_craft(craftItem.name)
+	auto_craft(craftDict[craftItem].name)
 
 	if (!getCraftItem()) store_trade_item(tradeIngredientName)
 
+}
+
+function pull_or_store() {
+
+	// TODO: some way to pull or store ingredient if/not crafting base in inventory
+
+	// some item in inventory that is part of a recipe. e.g. throwingstars
+	let craftItem = getCraftItem()
+	if (character.items[locate_item(craftItem)].level > 0) return
+	let tradeIngredientName = craftDict[craftItem]['recipe']["items"][1][1]
+
+	if (!has_trade_item(tradeIngredientName) && locate_item(tradeIngredientName) <0 ) return
+	
 }
 
 function has_trade_item(name) {

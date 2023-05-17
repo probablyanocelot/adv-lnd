@@ -43,7 +43,7 @@ let itemsToBuy = [
     'talkingskull', 'orbofsc', 'ftrinket', "jacko", 'charmer', 'rabbitsfoot',
     'tigerstone', 'orbg', 'vorb', 'orbofdex', 'orbofint', 'orbofstr',
 // WEAPONS
-    'vhammer',
+    'vhammer', 'throwingstars',
 // SHIELDS
     "sshield", 'tigershield', 'xshield', "mshield",
 // OFFHANDS
@@ -56,9 +56,10 @@ let itemsToBuy = [
     "tracker", 'ornament', 'feather0', 'gemfragment', 'carrot', 'ololipop', 'feather1', 'harpybow',
     'essenceoffrost', 'essenceofgreed', 'essenceoflife', 'essenceoffire', 'essenceofnature',
     'bwing', 'firestaff', 'fireblade', 'pmace', 
+    "candy0", 
 ] 
 // "vitring",
-// "candy0", "candy1",
+// "candy1",
 // 'ecape', 'eears', 'epyjamas','eslippers',
 
 const shinyBlackList = [
