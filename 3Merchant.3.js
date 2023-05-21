@@ -590,6 +590,7 @@ class Merchant extends Character {
 			"basketofeggs", "goldenegg", "gem0", 
 			"weaponbox", 'armorbox', "candy0", "candy1", 
 			"candycane", 'greenenvelope', 'seashell',
+			'mistletoe',
 		];
 
 		let hasExchangeable = false;
@@ -682,6 +683,7 @@ function buy_compound_scroll(scrollSlot, COMPOUND_SCROLL) {
 	}
 }
 
+let compoundAlert;
 
 function do_combine(item_name) {
 	let COMPOUND_SCROLL = "cscroll0"
@@ -698,6 +700,13 @@ function do_combine(item_name) {
 		
 		// get a list of items
 		let itemList = locate_items(item_name, level);
+		for (item in itemList) {
+			if (itemList[item].p && itemList[item].p != 'shiny') {
+				// compoundAlert = new Date()
+				// send_tg_bot_message(`Found a ${itemList[item].p} ${item_name}`)
+				continue
+			}
+		}
 		if (itemList.length >= 3) {
 
 			// check if need different scroll
@@ -807,7 +816,7 @@ function upgrade_all() {
 				let conservativeUpList = ['ololipop','broom',]
 				
 				// turn on to save money
-				if (item.level >= 6) continue
+				// if (item.level >= 6) continue
 				
 				// do 6 -> 7 -> 8 with scroll2
 				if (item.level > 5 && item.level < 8 && !conservativeUpList.includes(itemName)) {
@@ -972,6 +981,25 @@ function getCraftItem() {
 
 	}
 	return false
+}
+
+function has_eggs() {
+	for (let ingredient of G.craft.basketofeggs.items) {
+		if (locate_item(ingredient[1]) < 0) return false
+	}
+	return true
+}
+
+
+function craft_basket() {
+	// doesn't clear interval properly; is temporary solution to quickly crafting baskets
+	let basketWeaving;
+	if (character.bank && basketWeaving) {
+		clearInterval(basketWeaving)
+		return
+	}
+	if (has_eggs() && !basketWeaving) basketWeaving = setInterval(auto_craft, 50, 'basketofeggs')
+	if (!has_eggs() && basketWeaving) clearInterval(basketWeaving)
 }
 
 function simple_craft() {
@@ -1293,12 +1321,14 @@ merchantBot = new Merchant;
 function initMerch() {
 	if (character.ctype != 'merchant') return;
 	merchantBot.loop();
+	craft_basket()
 	check_for_tools()
 	setInterval(hanoi, 30000)
 	sell_extras();
 	compound_loop();
 	upgrade_all();
 	high_upgrade_all();
+
 	//upgrade_all2();
 	alertSystem();
 }

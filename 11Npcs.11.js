@@ -1,14 +1,25 @@
 log("11 - Npcs.11.js")
 let itemsToBuy = [
-    "ink", 'bfur',
+// INGREDIENTS
+    "ink", 'bfur', 'snakeoil', "snakefang", "lotusf", "cscale", "ascale", "pleather", "poison", 
+    'spidersilk', 'emptyheart', 'feather0', 
+    'x0', 'x1', 'x2', 'x3', 'x4', 'x5', 'x6', 'x7', 'x8',
+    'egg0', 'egg1', 'egg2', 'egg3', 'egg4', 'egg5', 'egg6', 'egg7', 'egg8',
+    'feather0', 'carrot', 'feather1',
+    'essenceoffrost', 'essenceofgreed', 'essenceoflife', 'essenceoffire', 'essenceofnature',
+    'bwing',
+    
     "offeringp",
-    'broom', 'snakeoil', "snakefang", "lotusf", "mistletoe", "basketofeggs",
-    "candycane", "cscale", "ascale", "pleather", "poison", "leather",
-    'spidersilk', 'emptyheart', '5bucks', "troll", "candypop", 
-				  
-    'gift1', 'gift0', 'feather0', 'goldenegg', 'weaponbox', 'xbox', 'cryptkey',
-    'cxjar', 'emotionjar', 'frozenkey', 'x0', 'x1', 'x2', 'x3', 'x4', 'x5', 'x6', 'x7', 'x8', 'egg0',
-    'egg1', 'egg2', 'egg3', 'egg4', 'egg5', 'egg6', 'egg7', 'egg8', 'rod', 'pickaxe', 'funtoken',
+
+// EXCHANGE
+    "mistletoe", "basketofeggs",
+    "candycane",  "leather",  'goldenegg', 'xbox',
+    '5bucks', "troll", "candypop", 
+	'gift0', 'gift1', 'armorbox', 'weaponbox', "candy0",
+    'ornament','gemfragment',
+// MISC
+    'cryptkey',
+    'cxjar', 'emotionjar', 'frozenkey', 'funtoken',
     'monstertoken', 'pvptoken', 'luckscroll', 'frequencyscroll', 'xpscroll', 'evasionscroll',
     'outputscroll', 'critscroll', 'lifestealscroll', 'mbones',
     
@@ -30,20 +41,23 @@ let itemsToBuy = [
 // CAPES
     'gcape', 'vcape', 'stealthcape', 'fcape', 'angelwings', 'tigercape',
 // RINGS
+    "intring","dexring",  "strring", 
     'cdarktristone', 'cring', 'resistancering', 'armorring', 'vring', 'zapper',
     "ringhs", 'trigger', 'ringofluck', 'goldring', 'suckerpunch', 'solitaire',
 // EARRINGS
-    'dexearringx', 'lostearring', 'cearring', 'molesteeth', "mearring", 
+    'strearring',"dexearring", 
+    'dexearringx', 'lostearring', 'cearring', 'molesteeth', "mearring","intearring",  'vitearring', 
 // AMULETS
     'amuletofm', 't2dexamulet', 't2intamulet', 't2stramulet', 'snring', 'bfangamulet', 
-    'sanguine', 'mpxamulet', 'northstar',
+    'sanguine', 'mpxamulet', 'northstar',"dexamulet",'stramulet',"intamulet",
 // BELTS
-    'mpxbelt', 'sbelt', 'santabelt', 'mbelt',
+    'mpxbelt', 'sbelt', 'santabelt', 'mbelt',"dexbelt","strbelt", "intbelt",
 // ORBS
     'talkingskull', 'orbofsc', 'ftrinket', "jacko", 'charmer', 'rabbitsfoot',
     'tigerstone', 'orbg', 'vorb', 'orbofdex', 'orbofint', 'orbofstr',
 // WEAPONS
-    'vhammer', 'throwingstars',
+    'vhammer', 'throwingstars', 'broom', 'rod', 'pickaxe', 'firestaff', 'fireblade', 'pmace',
+    'ololipop',  'harpybow',
 // SHIELDS
     "sshield", 'tigershield', 'xshield', "mshield",
 // OFFHANDS
@@ -51,18 +65,18 @@ let itemsToBuy = [
 
     'wbreeches', // 'wattire', 
 
-    "dexearring", "dexring", "dexbelt", "dexamulet","strring", 'strearring', 'stramulet',
-    "strbelt", "intbelt", "intring", "intearring", "intamulet", 'vitearring',
-    "tracker", 'ornament', 'feather0', 'gemfragment', 'carrot', 'ololipop', 'feather1', 'harpybow',
-    'essenceoffrost', 'essenceofgreed', 'essenceoflife', 'essenceoffire', 'essenceofnature',
-    'bwing', 'firestaff', 'fireblade', 'pmace', 
-    "candy0", 
+     
+     
+    "tracker",
+    
+    'vblood',
 ] 
 // "vitring",
 // "candy1",
 // 'ecape', 'eears', 'epyjamas','eslippers',
 
 const shinyBlackList = [
+    'hpamulet', 'hpbelt',
     'stinger', 'mushroomstaff', 'slimestaff',
     'warmscarf', 'carrotsword', //'candycanesword',
     'shoes1', 'gloves1', 'pants1', 'coat1', 'helmet1',

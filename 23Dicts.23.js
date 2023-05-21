@@ -7,8 +7,9 @@ let farmDefault = {
 	"camelCase": 'crab',
 	"couplaGrapes": 'squig2',
 	"Hoodlamb": 'crab',
-	'prayerBeads': 'prat',
+	'prayerBeads': 'croc',
 	'Teef': 'prat',
+	'Boink': 'croc',
 }
 
 let priTank = ['oxhelmet', 'harmor', 'frankypants', 'xboots', 'vgloves', 'sshield', ] //'lantern', ]
@@ -41,6 +42,13 @@ let bigbird = { map: 'main', x: 1150, y: 200 }
 let bbpompom = { map: 'winter_cave', x: 50, y:-150 }
 let mrgreen = { map: 'spookytown', x: 480, y:1070 }
 let snowman = { map: 'winterland', x: 1150, y: -850 }
+let arcticbee = { map: 'winterland', x: 1150, y: -850 }
+let croc = {
+	"x": 799,
+	"y": 1623.5,
+	"map": "main"
+}
+
 let prat = {
 	x: -86,
 	y: 17,
@@ -69,6 +77,10 @@ let mobLocationDict = {
 		loc: optimalBee,
 		turret: true,
 	},
+	'arcticbee': {
+		loc: arcticbee,
+		turret: true,
+	},
 	'snake': {
 		loc: snake,
 		turret: true,
@@ -79,6 +91,10 @@ let mobLocationDict = {
 	},
 	'armadillo': {
 		loc: armadillo,
+		turret: true,
+	},
+	'croc': {
+		loc: croc,
 		turret: true,
 	},
 	'rat': {
@@ -127,6 +143,7 @@ let bots = {
 	'1ra1pa1ro': ['camelCase','SaladMan','Teef','VendorGuy'],
 	'2ra1ma': ['Hoodlamb', 'couplaGrapes', 'camelCase', 'VendorGuy'],
 	'1ra1pr1ro': ['prayerBeads', 'Teef', 'camelCase', 'VendorGuy'],
+	'1w1pr1ra': ['Boink', 'prayerBeads', 'camelCase', 'VendorGuy'],
 }
 
 function makeGroups(){
@@ -156,6 +173,7 @@ let sell_dict = {
 			'cscroll0', 'cscroll1', 'cscroll2',
 			'elixirluck', // 'jacko',
 			'seashell', 'computer',
+			'egg0', 'egg1', 'egg2', 'egg3', 'egg4', 'egg5', 'egg6', 'egg7', 'egg8', 'basketofeggs',
 			
 			// CRAFTING
 			'essenceoffire', 'feather0',
@@ -189,6 +207,8 @@ let sell_dict = {
 			'warmscarf', 'snowball',
 			'wcap', 'wshoes', 'spear',
 			'pstem', 'frogt', 'bandages', 'smush', 'dstones', 'lspores', 
+
+			'eears', 'eslippers', 'epyjamas', 'carrotsword',
 		],
 	'merchTradeSell':
 		[
@@ -213,8 +233,8 @@ let upgradeDict = {
 		// "quiver", "xmashat", "epyjamas", "eears",
 
 		'ecape', 'ornamentstaff',
-		'staffofthedead', 'swordofthedead', // 'pmaceofthedead',
-		'daggerofthedead', 'bowofthedead', 'maceofthedead',
+		// 'staffofthedead', 'swordofthedead', // 'pmaceofthedead',
+		'daggerofthedead', // 'bowofthedead', 'maceofthedead',
 		'candycanesword',
 
 		'oozingterror', "harbringer", "basher", 'pinkie', 't2bow',

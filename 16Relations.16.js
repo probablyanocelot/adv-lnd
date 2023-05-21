@@ -66,6 +66,7 @@ character.on("cm", async (m) => {
 				if (character.ctype != 'merchant') smart_move(myFarmDefault)
 				break;
 			}
+			if (smart.moving) return
 			await smart_move(data.loc)
 			if(!data.cmd2) break
 			switch (data.cmd2) {

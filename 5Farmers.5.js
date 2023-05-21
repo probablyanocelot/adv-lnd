@@ -11,7 +11,7 @@ load_code('40Gui')
 // load_code('30WabbitHunt')
 
 let merchant = 'VendorGuy';
-let group = '1ra1pr1ro'
+let group = '1w1pr1ra' //'1ra1pr1ro'
 let currentGroup = getGroup(group)
 let myFarmMob = farmDefault[character.id]
 let myFarmLocation = mobLocationDict[myFarmMob].loc
@@ -38,10 +38,12 @@ const keyStartBots = map_key('7', 'snippet', 'startBots(currentGroup)')
 
 if (character.ctype != 'rogue') setInterval(loot, 25)
 
+let adds = ['nerfedmummy', ]
 
 character.on('hit', function(data) {
 	if (data.heal > 0) return
 	let orb = character.slots.orb
+	if (character.ctype == 'priest' && !adds.includes(data.actor)) return
 	if (!orb || !orb.name == 'jacko') return
 	if (lastScare == null || new Date() - lastScare >= 1000) {
 		if (character.mp >= G.skills.scare.mp && !is_on_cooldown('scare')) {
@@ -212,6 +214,7 @@ class Farmer {
 		let rareBosses = []
 
 		// if (this.current_action && this.current_action != 'farming') return
+		// if (character.ctype == 'ranger') return
 
 		for (let boss of bosses) {
 			if (parent.S[boss] && parent.S[boss].live) {
@@ -564,6 +567,8 @@ class Farmer {
 
 		// if (character.ctype != 'ranger' && character.ctype != 'merchant') doCombat()
 
+		// if (character.ctype == 'warrior' && get_player('prayerBeads')?.target) target = get_player('prayerBeads').target
+
 		if (!target && this.current_action && G.monsters.hasOwnProperty(this.current_action)) target = get_nearest_monster({ type: this.current_action, no_target: true })
 
 		if (this.target) {
@@ -685,6 +690,26 @@ class Farmer {
 				this.party_buff('rspeed', currentGroup)
 				if (!is_on_cooldown('quickstab') && character.mp > G.skills.quickstab.mp) use_skill('quickstab', target)
 
+				break
+			
+			case 'warrior':
+				let war2h = ['scythe', 'axe',] // list of 2h weapons
+				let wepType = (hand) => { return G.items[character.slots[hand].name].wtype } // checks weapon type
+				
+				if (!is_on_cooldown('charge')) use_skill('charge')
+				if (war2h.includes(wepType('mainhand')) && !is_on_cooldown('cleave') && character.mp >= G.skills.cleave.mp) use_skill('cleave')
+				
+				if (!is_on_cooldown('cleave') && character.mp >= G.skills.cleave.mp){
+					if (!war2h.includes(wepType('mainhand'))) {
+						unequip('offhand')
+						equip(locate_item('bataxe'))
+					}
+				} else {
+					if (war2h.includes(wepType('mainhand'))) {
+						equip(locate_item('fireblade'), 'mainhand')
+						equip(locate_item('ololipop'), 'offhand')
+					}
+				}
 				break
 				
 		}
