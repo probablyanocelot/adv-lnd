@@ -43,7 +43,7 @@ let adds = ['nerfedmummy', ]
 character.on('hit', function(data) {
 	if (data.heal > 0) return
 	let orb = character.slots.orb
-	if (character.ctype == 'priest' && !adds.includes(data.actor)) return
+	if (character.ctype == 'priest' && !G.events.hasOwnProperty(this.current_action)) return
 	if (!orb || !orb.name == 'jacko') return
 	if (lastScare == null || new Date() - lastScare >= 1000) {
 		if (character.mp >= G.skills.scare.mp && !is_on_cooldown('scare')) {
@@ -607,7 +607,7 @@ class Farmer {
 		
 
 		let companionTarget = getCompanionTarget('prayerBeads')
-		if (companionTarget) target = companionTarget
+		if (character.ctype != 'warrior' && companionTarget) target = companionTarget
 
 
 		if (!target && character.hp <- character.max_hp * 0.6) return
@@ -699,15 +699,17 @@ class Farmer {
 				if (!is_on_cooldown('charge')) use_skill('charge')
 				if (war2h.includes(wepType('mainhand')) && !is_on_cooldown('cleave') && character.mp >= G.skills.cleave.mp) use_skill('cleave')
 				
-				if (!is_on_cooldown('cleave') && character.mp >= G.skills.cleave.mp){
-					if (!war2h.includes(wepType('mainhand'))) {
-						unequip('offhand')
-						equip(locate_item('bataxe'))
-					}
-				} else {
-					if (war2h.includes(wepType('mainhand'))) {
-						equip(locate_item('fireblade'), 'mainhand')
-						equip(locate_item('ololipop'), 'offhand')
+				if (!G.events.hasOwnProperty(this.current_action)) {
+					if (!is_on_cooldown('cleave') && character.mp >= G.skills.cleave.mp) {
+						if (!war2h.includes(wepType('mainhand'))) {
+							unequip('offhand')
+							equip(locate_item('bataxe'))
+						}
+					} else {
+						if (war2h.includes(wepType('mainhand'))) {
+							equip(locate_item('fireblade'), 'mainhand')
+							equip(locate_item('ololipop'), 'offhand')
+						}
 					}
 				}
 				break
