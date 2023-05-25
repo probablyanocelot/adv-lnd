@@ -57,7 +57,7 @@ let itemsToBuy = [
     'tigerstone', 'orbg', 'vorb', 'orbofdex', 'orbofint', 'orbofstr',
 // WEAPONS
     'vhammer', 'throwingstars', 'broom', 'rod', 'pickaxe', 'firestaff', 'fireblade', 'pmace',
-    'ololipop',  'harpybow',
+    'ololipop', 'glolipop', 'harpybow',
 // SHIELDS
     "sshield", 'tigershield', 'xshield', "mshield",
 // OFFHANDS

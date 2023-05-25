@@ -8,6 +8,7 @@ load_code('11Npcs') // NPCS - buyFromPonty()/Goblin
 load_code('14Partying')
 load_code('19Management')
 load_code('40Gui')
+load_code('46BankOverview')
 load_code('98Telegram')
 
 //load_code(53) // upgrade_all2 WILL ADD MORE
@@ -887,11 +888,14 @@ function high_upgrade_all() {
 					continue;
                 }
 
-				// if (grade == 2) {
-				if (level >= maxLevel) { 
-					// save money
-					continue
+				let rareUpList = [
+					'bataxe', 'harbringer', 'oozingterror', 
+				]
 
+				if (grade == 2 && level >= 6) continue
+				if (level >= 4 && rareUpList.includes(itemName)) { 
+					// save money
+					// continue
 					scrollType = 'scroll2'					
 				}
 				if (grade == 2 && level >=6) continue

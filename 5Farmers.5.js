@@ -680,6 +680,7 @@ class Farmer {
 				if (target.hp < target.max_hp / 6) gearSwap(priLuck)
 				if (!is_on_cooldown('attack') && character.max_hp - character.hp >= character.heal) use_skill('heal', character.id)
 				this.priestHealParty()
+				if (!is_on_cooldown('darkblessing') && character.mp > G.skills.darkblessing.mp) use_skill('darkblessing')
 				if (character.hp >= character.max_hp * 0.6 && is_friendly(target.target) && target.target != character.name && !mobsGroup.includes(target.name) && !is_on_cooldown('absorb') && character.mp > G.skills.absorb.mp) use_skill('absorb', target.target)
 				if (character.hp >= character.max_hp * 0.6 && !is_on_cooldown('curse') && character.mp > G.skills.curse.mp) use_skill('curse', target)
 				break

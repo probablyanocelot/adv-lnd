@@ -1,5 +1,5 @@
 let Strategy = function () {
-    this.strategy = null
+    this.strategy = "";
 };
 
 Strategy.prototype = {
@@ -7,59 +7,90 @@ Strategy.prototype = {
         this.strategy = strategy;
     },
 
-    init: async function (context) {
-        return await this.strategy.init(context);
+    init: function (context) {
+        return this.strategy.init(context);
     }
 };
 
-class Farm {
-    init(context) {
-        smart_move(context.location);
-        return init;
+let UPS = function () {
+    this.init = function (context) {
+        console.log(context)
+        // calculations...
+        return "$45.95";
     }
 };
 
-class Goo {
-    context = {
-        location: "goo"
+let USPS = function () {
+    this.init = function (context) {
+        console.log(context)
+        // calculations...
+        return "$39.40";
+    }
+};
+
+let Fedex = function () {
+    this.init = function (context) {
+        console.log(context)
+        // calculations...
+        return "$43.20";
+    }
+};
+
+class context {
+    constructor(from, to, weight) {
+        this.from = from;
+        this.to = to;
+        this.weight = weight;
     }
 }
 
-let strategy = new Strategy();
-let farm = new Farm();
-// let goo = new Farm();
+function run() {
 
-// let USPS = function () {
-//     this.calculate = function (package) {
-//         // calculations...
-//         return "$39.40";
+    let context = { from: "76712", to: "10012", weight: "lkg" };
+
+    // the 3 strategies
+
+    let ups = new UPS();
+    let usps = new USPS();
+    let fedex = new Fedex();
+
+    let strategy = new Strategy();
+
+    strategy.setStrategy(ups);
+    console.log("UPS Strategy: " + strategy.init(context));
+    strategy.setStrategy(usps);
+    console.log("USPS Strategy: " + strategy.init(context));
+    strategy.setStrategy(fedex);
+    console.log("Fedex Strategy: " + strategy.init(context));
+}
+
+// let Strategy = function () {
+//     this.strategy = null
+// };
+
+// Strategy.prototype = {
+//     setStrategy: function (strategy) {
+//         this.strategy = strategy;
+//     },
+
+//     init: async function (context) {
+//         return await this.strategy.init(context);
 //     }
 // };
 
-// let Fedex = function () {
-//     this.calculate = function (package) {
-//         // calculations...
-//         return "$43.20";
+// class Farm {
+//     init(context) {
+//         smart_move(context.location);
+//         return init;
 //     }
 // };
 
-// function run() {
-
-//     let package = { from: "76712", to: "10012", weigth: "lkg" };
-
-//     // the 3 strategies
-
-//     let ups = new UPS();
-//     let usps = new USPS();
-//     let fedex = new Fedex();
-
-//     let shipping = new Shipping();
-
-//     shipping.setStrategy(ups);
-//     console.log("UPS Strategy: " + shipping.calculate(package));
-//     shipping.setStrategy(usps);
-//     console.log("USPS Strategy: " + shipping.calculate(package));
-//     shipping.setStrategy(fedex);
-//     console.log("Fedex Strategy: " + shipping.calculate(package));
+// class Goo {
+//     context = {
+//         location: "goo"
+//     }
 // }
 
+// let strategy = new Strategy();
+// let farm = new Farm();
+// let goo = new Farm();

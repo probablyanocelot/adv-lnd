@@ -7,6 +7,7 @@ function init_gui(){
 
     if (character.ctype == 'merchant') return
     load_code('42DpsMeter')
+    load_code('47XpTillLevel')
 }
 
 init_gui()

@@ -234,7 +234,7 @@ let upgradeDict = {
 		"hbow", "sshield",
 		"quiver", "cclaw",
 		 
-		'ololipop', 'broom', 'wingedboots'
+		'ololipop', 'glolipop', 'broom', 'wingedboots'
 	],
 	high_upgrade_all: [
 		// 'xmasshoes', 'xmaspants', 'xmassweater',
