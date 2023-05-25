@@ -31,7 +31,8 @@ let squigSouth = { map:'main', x: -1166.3100928140552, y: 478.627440332755 }
 let optimalBee = { map: "main", x: 745.0119325069998, y: 713.0353542476796 }
 let snake = { map:'main', x: -99.00430360974092, y: 1892.1728334181553}
 let osnake = {map: "halloween",x: -585.5701569278165,y: -350.4367234174731,}
-let cgoo = { map: 'arena', x:933, y:-178 }
+// let cgoo = { map: 'arena', x: 933, y: -178 }
+let cgoo = {"x": -364.6151891596926,"y": -268.80206830638093,"map": "level4"}
 let mrpumpkin = { map: 'halloween', x:-177, y: 776.2616171730763 }
 let rat = { map: 'mansion', x: 165.33474873906044, y: -261.7979385004271 }
 let spider = { map: 'main', x: 925, y: -155}
@@ -43,6 +44,7 @@ let bbpompom = { map: 'winter_cave', x: 50, y:-150 }
 let mrgreen = { map: 'spookytown', x: 480, y:1070 }
 let snowman = { map: 'winterland', x: 1150, y: -850 }
 let arcticbee = { map: 'winterland', x: 1150, y: -850 }
+let plantoid = 'plantoid'
 let croc = {
 	"x": 799,
 	"y": 1623.5,
@@ -57,6 +59,7 @@ let prat = {
 
 // TURRET MAY BE OVERKILL?
 let mobLocationDict = {
+	'plantoid': { loc: 'plantoid', },
 	'prat': { loc: prat, },
 	'crab': {
 		loc: crab,
@@ -168,16 +171,18 @@ let sell_dict = {
 			'hpot0', 'hpot1', 'mpot0', 'mpot1',
 			'stand0', 'tracker',
 			'rod', 'pickaxe',
-			'primling', 'offering',
+			'offering',
 			'scroll0', 'scroll1', 'scroll2',
 			'cscroll0', 'cscroll1', 'cscroll2',
 			'elixirluck', // 'jacko',
 			'seashell', 'computer',
-			'egg0', 'egg1', 'egg2', 'egg3', 'egg4', 'egg5', 'egg6', 'egg7', 'egg8', 'basketofeggs',
+			'egg0', 'egg1', 'egg2', 'egg3', 'egg4', 'egg5', 'egg6', 'egg7', 'egg8', 
 			
 			// CRAFTING
 			'essenceoffire', 'feather0',
 			
+			'candycane', 'mistletoe', 'basketofeggs',
+			'offeringp',
 			// 'candy1', 'candy0',
 		],
 	'farmer_keep':
@@ -208,8 +213,11 @@ let sell_dict = {
 			'wcap', 'wshoes', 'spear',
 			'pstem', 'frogt', 'bandages', 'smush', 'dstones', 'lspores', 
 
-			'eears', 'eslippers', 'epyjamas', 'carrotsword',
-		],
+			'sword',
+
+			'epyjamas', 'carrotsword', 
+			'xmassweater', 
+		], // 'xmasshoes', 'xmashat', 'eears', 'eslippers',
 	'merchTradeSell':
 		[
 
@@ -218,8 +226,8 @@ let sell_dict = {
 
 let upgradeDict = {
 	upgrade_all: [
-		'xmasshoes', 'xmaspants', 'xmassweater', "xmashat", 
-		// "eslippers", "eears", "epyjamas", "stinger", "swifty", 
+		'xmaspants', "xmashat", 'xmasshoes', // 'xmassweater',  
+		"eslippers", "eears", // "epyjamas", "stinger", "swifty", 
 		'mittens', 
 		
 		"wattire", "wbreeches", "wgloves", "wshoes", "wcap",
@@ -241,7 +249,7 @@ let upgradeDict = {
 		'merry', "firestaff", "fireblade", "bataxe", 'dagger',
 		'tigerhelmet', 'tigershield', 'xmace',
 
-		'firestars',
+		'firestars', 'snowflakes',
 
 		'hpants', 'hgloves', 'fierygloves', 'pmace',
 	], 
@@ -251,6 +259,7 @@ let upgradeDict = {
 		'dexring', 'dexbelt', 'dexearring', 'skullamulet',
 		'book0', 'hpamulet', 'hpbelt', 'ringsj', 'wbook0',
 		'vitring', 'jacko', 'talkingskull', 'vitearring',
+		'rednose',
 		//'lantern',
 	],
 }
@@ -280,8 +289,9 @@ let mobsFocus = [
 ]
 
 let mobsMed = [
-	// 'rat', 'bbpompom', 'cgoo', "iceroamer", 'scorpion', "bat", 'arcticbee',
+	// 'rat', 'bbpompom', "iceroamer", 'scorpion', "bat", 'arcticbee',
 	// "porcupine", "spider",
+	'cgoo',
 	'bigbird', 'mole', 'fireroamer', 'wolf', 'plantoid', 'xscorpion', 'prat', 
 ]
 

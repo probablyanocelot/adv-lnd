@@ -85,7 +85,11 @@ character.on("cm", async (m) => {
 			send_item(m.name, itemToSend, data.qty ?? 1)
 			break
 		
-		
+		case 'absorb':
+			if (character.ctype != 'priest') break
+			use_skill('absorb', m.name)
+			break
+
 		case 'sent_equip':
 			let itemReceived = locate_items(data.item, data.level)[0]
 			if (!itemReceived) break

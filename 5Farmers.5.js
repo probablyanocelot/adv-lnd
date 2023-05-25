@@ -36,7 +36,7 @@ const keyInviteBots = map_key("9", "snippet", "sendInvites('r3')")
 const keyKillBots = map_key('8', 'snippet', "killBots(currentGroup)")
 const keyStartBots = map_key('7', 'snippet', 'startBots(currentGroup)')
 
-if (character.ctype != 'rogue') setInterval(loot, 25)
+if (character.ctype != 'rogue' && character.ctype != 'warrior') setInterval(loot, 25)
 
 let adds = ['nerfedmummy', ]
 
@@ -607,7 +607,7 @@ class Farmer {
 		
 
 		let companionTarget = getCompanionTarget('prayerBeads')
-		if (character.ctype != 'warrior' && companionTarget) target = companionTarget
+		if ( companionTarget) target = companionTarget //character.ctype != 'warrior' &&
 
 
 		if (!target && character.hp <- character.max_hp * 0.6) return
@@ -697,9 +697,9 @@ class Farmer {
 				let wepType = (hand) => { return G.items[character.slots[hand].name].wtype } // checks weapon type
 				
 				if (!is_on_cooldown('charge')) use_skill('charge')
-				if (war2h.includes(wepType('mainhand')) && !is_on_cooldown('cleave') && character.mp >= G.skills.cleave.mp) use_skill('cleave')
+				if (war2h.includes(wepType('mainhand')) && !is_on_cooldown('cleave')&& target.attack <= 500 && character.mp >= G.skills.cleave.mp) use_skill('cleave').then(send_cm('prayerBeads', {cmd: 'absorb'}))
 				
-				if (!G.events.hasOwnProperty(this.current_action)) {
+				if (!G.events.hasOwnProperty(this.current_action) && character.esize >= 2) {
 					if (!is_on_cooldown('cleave') && character.mp >= G.skills.cleave.mp) {
 						if (!war2h.includes(wepType('mainhand'))) {
 							unequip('offhand')

@@ -1206,7 +1206,7 @@ function sell_extras() {
 			sell(itemSlot, item.q)
 			continue
 		}
-		if (item.level <= 2) sell(itemSlot)
+		if (sell_dict['merchSell'].includes(itemName) && item.level <= 2) sell(itemSlot)
     }
 	setTimeout(sell_extras, 3000) //1440 * 1000
 }
