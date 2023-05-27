@@ -413,7 +413,8 @@ class Merchant extends Character {
 	}
 
 	
-	merch_pots(){
+	merch_pots() {
+		if (character.esize == 0) return
 		if (parent.character.q.upgrade || parent.character.q.compound){
 				if (locate_item('mpot1') > -1) return
 				buy_with_gold('mpot1', 9999)
@@ -700,18 +701,18 @@ function do_combine(item_name) {
 		// if (level == 3 && item_name != 'ringsj') continue
 		
 		// get a list of items
-		let itemList = locate_items(item_name, level);
-		for (item in itemList) {
-			if (itemList[item].p && itemList[item].p != 'shiny') {
+		let itemIdxList = locate_items(item_name, level);
+		for (idx in itemIdxList) {
+			if (character.items[idx].p && character.items[idx].p != 'shiny') {
 				// compoundAlert = new Date()
 				// send_tg_bot_message(`Found a ${itemList[item].p} ${item_name}`)
-				continue
+				return
 			}
 		}
-		if (itemList.length >= 3) {
+		if (itemIdxList.length >= 3) {
 
 			// check if need different scroll
-			if (level == 3 || item_grade(character.items[itemList[0]]) == 1) {
+			if (level == 3 || item_grade(character.items[itemIdxList[0]]) == 1) {
 				COMPOUND_SCROLL = "cscroll1"
 			}
 			scrollSlot = locate_item(COMPOUND_SCROLL);
@@ -724,7 +725,7 @@ function do_combine(item_name) {
 			// do the compound
 			if (!parent.character.q.compound) {
 				if (character.ctype == "merchant" && character.mp > 400 && !character.s.massproductionpp) use_skill("massproductionpp")
-				compound(itemList[0], itemList[1], itemList[2], scrollSlot)
+				compound(itemIdxList[0], itemIdxList[1], itemIdxList[2], scrollSlot)
 			}
 		}
 	}

@@ -296,6 +296,11 @@ class Farmer {
 				join(event)
 				this.eventJoined = true
 			}
+			if (parent.S[event] == 'franky') smart_move({
+				"x": -49.63502742251986,
+				"y": 10.794962400312897,
+				"map": "level2w"
+			})
 			// if checks return true, set action to event
 			// if (this.joinEvent(event)) this.current_action = event // && G.monsters[event]
 	
