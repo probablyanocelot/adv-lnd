@@ -1,18 +1,23 @@
-let Strategy = function () {
+let Context = function () {
     this.strategy = "";
 };
 
-Strategy.prototype = {
+Context.prototype = {
     setStrategy: function (strategy) {
         this.strategy = strategy;
     },
 
-    init: function (context) {
-        return this.strategy.init(context);
+    init: function (strategy) {
+        return this.strategy.init(strategy);
     }
 };
 
+class Strategy{
+
+}
+
 let UPS = function () {
+    this.strategy = "UPS";
     this.init = function (context) {
         console.log(context)
         // calculations...
@@ -21,6 +26,7 @@ let UPS = function () {
 };
 
 let USPS = function () {
+    this.strategy = "USPS";
     this.init = function (context) {
         console.log(context)
         // calculations...
@@ -29,6 +35,7 @@ let USPS = function () {
 };
 
 let Fedex = function () {
+    this.strategy = "Fedex";
     this.init = function (context) {
         console.log(context)
         // calculations...
@@ -46,7 +53,7 @@ class context {
 
 function run() {
 
-    let context = { from: "76712", to: "10012", weight: "lkg" };
+    let package = { from: "76712", to: "10012", weight: "lkg" };
 
     // the 3 strategies
 
@@ -54,14 +61,14 @@ function run() {
     let usps = new USPS();
     let fedex = new Fedex();
 
-    let strategy = new Strategy();
+    let context = new Context();
 
-    strategy.setStrategy(ups);
-    console.log("UPS Strategy: " + strategy.init(context));
-    strategy.setStrategy(usps);
-    console.log("USPS Strategy: " + strategy.init(context));
-    strategy.setStrategy(fedex);
-    console.log("Fedex Strategy: " + strategy.init(context));
+    context.setStrategy(ups);
+    console.log("UPS Strategy: " + context.init(package));
+    context.setStrategy(usps);
+    console.log("USPS Strategy: " + context.init(package));
+    context.setStrategy(fedex);
+    console.log("Fedex Strategy: " + context.init(package));
 }
 
 // let Strategy = function () {
@@ -94,3 +101,4 @@ function run() {
 // let strategy = new Strategy();
 // let farm = new Farm();
 // let goo = new Farm();
+run()

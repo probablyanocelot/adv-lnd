@@ -706,13 +706,23 @@ class Farmer {
 				if (war2h.includes(wepType('mainhand')) && !is_on_cooldown('cleave')&& target.attack <= 500 && character.mp >= G.skills.cleave.mp) use_skill('cleave').then(send_cm('prayerBeads', {cmd: 'absorb'}))
 				
 				if (!G.events.hasOwnProperty(this.current_action) && character.esize >= 2) {
+					let bataxe = locate_item('bataxe')
+					let fireblade = locate_item('fireblade')
+					let ololipop = locate_item('ololipop')
 					if (!is_on_cooldown('cleave') && character.mp >= G.skills.cleave.mp) {
 						if (!war2h.includes(wepType('mainhand'))) {
 							unequip('offhand')
-							equip(locate_item('bataxe'))
+							if (!character.items[bataxe].l) break
+							equip(bataxe, 'mainhand')
+							// doWeaponEquip(bataxe)
 						}
 					} else {
 						if (war2h.includes(wepType('mainhand'))) {
+							// doWeaponEquip(fireblade, 'mainhand')
+							// doWeaponEquip(ololipop, 'offhand')
+							if (!character.items[fireblade].l) break
+							if (!character.items[ololipop].l) break
+
 							equip(locate_item('fireblade'), 'mainhand')
 							equip(locate_item('ololipop'), 'offhand')
 						}
@@ -1039,6 +1049,12 @@ function gearSwap(loadout) {
 	lastGearSwap = new Date()
 }
 
+
+function doWeaponEquip(itemName, hand = 'mainhand') {
+	let itemSlot = locate_item(itemName)
+	if (character.items[itemSlot].name != itemName)itemSlot = locate_item(itemName)
+	equip(itemSlot, hand)
+}
 
 
 function getTargetSpawnBorder(mtype, map = false) {
