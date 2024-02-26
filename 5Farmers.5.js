@@ -612,7 +612,7 @@ class Farmer {
 		
 
 		let companionTarget = getCompanionTarget('prayerBeads')
-		if ( companionTarget) target = companionTarget //character.ctype != 'warrior' &&
+		if (companionTarget) target = companionTarget //character.ctype != 'warrior' &&
 
 
 		if (!target && character.hp <- character.max_hp * 0.6) return
@@ -664,7 +664,7 @@ class Farmer {
 
 		// kite(target)
 
-		change_target(target)
+		if (is_in_range(target)) change_target(target)
 
 		
 		switch(character.ctype) {
@@ -707,13 +707,14 @@ class Farmer {
 				
 				if (!G.events.hasOwnProperty(this.current_action) && character.esize >= 2) {
 					let bataxe = locate_item('bataxe')
+					let scythe = locate_item('scythe')
 					let fireblade = locate_item('fireblade')
 					let ololipop = locate_item('ololipop')
 					if (!is_on_cooldown('cleave') && character.mp >= G.skills.cleave.mp) {
 						if (!war2h.includes(wepType('mainhand'))) {
 							unequip('offhand')
-							if (!character.items[bataxe].l) break
-							equip(bataxe, 'mainhand')
+							if (!character.items[scythe].l) break
+							equip(scythe, 'mainhand')
 							// doWeaponEquip(bataxe)
 						}
 					} else {
@@ -841,6 +842,15 @@ character.on("cm", async (m) => {
 	let data = m.message
 
 	if (!data.cmd) return;
+
+	if (data.cmd == 'move') {
+		char.clear_current_action()
+		if (data.loc){
+			smart_move(data.loc)
+			return
+		}
+		smart_move(myFarmLocation)
+	}
 
 	switch (data.cmd) {
 		case 'clear':
@@ -976,8 +986,13 @@ function combatDistancing(target) {
 	if (target) {
 		// if turret, don't poke
 		// ! TODO: fix having to list each ctype below
-		if (mobLocationDict.hasOwnProperty(target.name) && (character.ctype == 'ranger' && mobLocationDict[target].turret)) return
-		
+		if (mobLocationDict.hasOwnProperty(target.mtype) && 
+		mobLocationDict[target.mtype].turret && 
+		(character.ctype == 'mage' || character.ctype == 'priest' || character.ctype == 'ranger')) {
+			
+			return
+		}
+
 		// can't kill in 2 hits, 1/4 range or closer -> move away
 		if (target.hp > character.attack * 2 && distanceToTarget(target) <= character.range * 0.25) {
 			// TODO: poking ( CREATE LINE AND MOVE 1/4 character.range DOWN LINE )

@@ -59,22 +59,22 @@ character.on("cm", async (m) => {
 	log(`${m.name} requesting ${data.cmd}`)
 	switch (data.cmd) {
 		
-		case 'move':
-			if (character.ctype != 'merchant') char.clear_current_action()
-			// if (character.ctype == 'merchant') merchantBot.clear_current_action()
-			if (!data.loc) {
-				if (character.ctype != 'merchant') smart_move(myFarmDefault)
-				break;
-			}
-			if (smart.moving) return
-			await smart_move(data.loc)
-			if(!data.cmd2) break
-			switch (data.cmd2) {
-				case 'send_equip':
-					send_item(m.name, data.data.idx)
-					send_cm(m.name, {cmd: 'sent_equip', item: data.data.name, level: data.data.level})
-			}
-			break;
+		// case 'move':
+		// 	if (character.ctype != 'merchant') char.clear_current_action()
+		// 	// if (character.ctype == 'merchant') merchantBot.clear_current_action()
+		// 	if (!data.loc) {
+		// 		if (character.ctype != 'merchant') smart_move(myFarmDefault)
+		// 		break;
+		// 	}
+			// if (smart.moving) return
+			// smart_move(data.loc)
+			// if(!data.cmd2) break
+			// switch (data.cmd2) {
+			// 	case 'send_equip':
+			// 		send_item(m.name, data.data.idx)
+			// 		send_cm(m.name, {cmd: 'sent_equip', item: data.data.name, level: data.data.level})
+			// }
+			// break;
 				
 		
 		// ! what if sending +3 item and +0 item in character.items?

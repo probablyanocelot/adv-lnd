@@ -7,9 +7,9 @@ let farmDefault = {
 	camelCase: "crab",
 	couplaGrapes: "squig2",
 	Hoodlamb: "crab",
-	prayerBeads: "croc",
+	prayerBeads: "stoneworm",
 	Teef: "prat",
-	Boink: "croc",
+	Boink: "stoneworm",
   };
   
   let priTank = [
@@ -57,6 +57,11 @@ let farmDefault = {
 	y: 1623.5,
 	map: "main",
   };
+  let stoneworm = {
+	x:571,
+	y: 166,
+	map: "spookytown",
+	}
   
   let prat = {
 	x: -86,
@@ -114,6 +119,10 @@ let farmDefault = {
 	bbpompom: {
 	  loc: bbpompom,
 	  turret: true,
+	},
+	stoneworm: {
+		loc: stoneworm,
+		turret: true,
 	},
   
 	bigbird: {
@@ -365,6 +374,7 @@ let farmDefault = {
 	"frog",
 	"armadillo",
 	"spider",
+	"stoneworm",
   
 	// harder
 	"boar",
@@ -415,7 +425,7 @@ let farmDefault = {
 	"dragold",
 	"pinkgoo",
 	"wabbit",
-	"crabxx",
+	"crabxx"
   ];
   
   let mobsMed = [
