@@ -617,8 +617,9 @@ class Farmer {
 
 		if (!target && character.hp <- character.max_hp * 0.6) return
 		if (!target) return 	// must have target beyond here
-		if (character.ctype != 'priest' && character.ctype != 'warrior') { // keep farmer from suiciding by monster cop
-			if (mobsMed.includes(target.mtype) && !getCompanionTarget('prayerBeads')) return
+		if (character.ctype == 'warrior' || character.ctype == 'rogue') { // keep farmer from suiciding by monster cop
+			if (!get_player('prayerBeads')) return
+			if (target.id != getCompanionTarget('prayerBeads').id) return
 		}
 		
 		let targetTarget = target.target
